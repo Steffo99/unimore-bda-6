@@ -58,7 +58,7 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     """
 
     return reviews.aggregate([
-        {"$filter": {"overall": rating}},
+        {"$match": {"overall": rating}},
         {"$sample": {"size": amount}},
     ])
 
@@ -69,7 +69,14 @@ def sample_reviews_by_rating_polar(reviews: pymongo.collection.Collection, amoun
     """
 
     return reviews.aggregate([
-        {"$filter": {"overall": {"$or": [1.0, 5.0]}}},
+        {"$match":
+            {"$or":
+                [
+                    {"overall": 1.0},
+                    {"overall": 5.0},
+                ]
+            },
+        },
         {"$sample": {"size": amount}},
     ])
 
