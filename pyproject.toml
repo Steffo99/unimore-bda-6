@@ -132,6 +132,9 @@ classifiers = [
 #          3.10.1  →  == 3.10.1
 
 python = "^3.10"
+pymongo = "^4.3.3"
+nltk = "^3.8.1"
+cfig = {extras = ["cli"], version = "^0.3.0"}
 
 
 

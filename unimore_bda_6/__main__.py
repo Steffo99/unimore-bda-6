@@ -1,4 +1,5 @@
-# If you are building an **application**, use this file to run code!
+from .database import create_mongo_client_from_config
+
 
 def main():
     pass
