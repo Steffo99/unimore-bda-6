@@ -24,7 +24,7 @@ class VanillaSA(BaseSA, metaclass=abc.ABCMeta):
 
     def _tokenize_text(self, text: str) -> list[str]:
         """
-        Convert a text string into a list of tokens, using the language of the model.
+        Convert a text string into a list of tokens.
         """
         tokens = nltk.word_tokenize(text)
         nltk.sentiment.util.mark_negation(tokens, shallow=True)
