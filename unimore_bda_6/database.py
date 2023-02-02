@@ -114,13 +114,13 @@ def get_reviews_dataset_uniform(collection: pymongo.collection.Collection, amoun
     great    = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
 
     # Randomness here does not matter, so just merge the lists
-    both = [*positive, *negative]
+    full = [*terrible, *negative, *mixed, *positive, *great]
 
     # Shuffle the dataset, just in case it affects the performance
     # TODO: does it actually?
-    random.shuffle(both)
+    random.shuffle(full)
 
-    return both
+    return full
 
 
 __all__ = (
