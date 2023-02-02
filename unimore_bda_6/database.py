@@ -5,7 +5,7 @@ import contextlib
 import bson
 import logging
 
-from .config import MONGO_HOST, MONGO_PORT, TRAINING_SET_SIZE, TEST_SET_SIZE
+from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE, TRAINING_SET_SIZE, TEST_SET_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Ite
     log.debug("Getting a sample of %d reviews...", amount)
 
     return reviews.aggregate([
-        {"$limit": 10000},  # TODO
+        {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$sample": {"size": amount}},
     ])
 
@@ -73,7 +73,7 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     log.debug("Getting a sample of %d reviews with %d stars...", amount, rating)
 
     return reviews.aggregate([
-        {"$limit": 10000},  # TODO
+        {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match": {"overall": rating}},
         {"$sample": {"size": amount}},
     ])
@@ -86,7 +86,7 @@ def sample_reviews_by_rating_polar(reviews: pymongo.collection.Collection, amoun
     log.debug("Getting a sample of %d reviews with either 5 or 1 stars...", amount)
 
     return reviews.aggregate([
-        {"$limit": 10000},  # TODO
+        {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match":
             {"$or":
                 [
