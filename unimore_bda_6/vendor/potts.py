@@ -3,6 +3,7 @@ This file is a vendored version of `Christopher Potts' tokenizer <http://sentime
 
 It has been altered to be used with Python 3.10, but the code is mostly the same.
 
+=========================
 Original module docstring
 =========================
 
@@ -51,7 +52,7 @@ __email__ = "See the author's website"
 ######################################################################
 
 import re
-import htmlentitydefs
+import html.entities
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -204,7 +205,7 @@ class Tokenizer:
         for ent in ents:
             entname = ent[1:-1]
             try:            
-                s = s.replace(ent, unichr(htmlentitydefs.name2codepoint[entname]))
+                s = s.replace(ent, unichr(html.entities.name2codepoint[entname]))
             except:
                 pass                    
             s = s.replace(amp, " and ")
