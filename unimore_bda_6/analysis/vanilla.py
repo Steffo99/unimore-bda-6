@@ -22,11 +22,11 @@ class VanillaSA(BaseSA, metaclass=abc.ABCMeta):
         super().__init__()
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
 
-    def _tokenize_text(self, text: str, language: str = "english") -> list[str]:
+    def _tokenize_text(self, text: str) -> list[str]:
         """
         Convert a text string into a list of tokens, using the language of the model.
         """
-        tokens = nltk.word_tokenize(text, language=language)
+        tokens = nltk.word_tokenize(text)
         nltk.sentiment.util.mark_negation(tokens, shallow=True)
         return tokens
 
