@@ -152,7 +152,7 @@ class Tokenizer:
         Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
         """
         # Fix HTML character entitites:
-        s = self.__html2unicode(s)
+        s = self.__html2string(s)
         # Tokenize:
         words = word_re.findall(s)
         # Possible alter the case, but avoid changing emoticons like :D into :d:
@@ -160,26 +160,7 @@ class Tokenizer:
             words = map((lambda x : x if emoticon_re.search(x) else x.lower()), words)
         return words
 
-    def tokenize_random_tweet(self):
-        """
-        If the twitter library is installed and a twitter connection
-        can be established, then tokenize a random tweet.
-        """
-        try:
-            import twitter
-        except ImportError:
-            print "Apologies. The random tweet functionality requires the Python twitter library: http://code.google.com/p/python-twitter/"
-        from random import shuffle
-        api = twitter.Api()
-        tweets = api.GetPublicTimeline()
-        if tweets:
-            for tweet in tweets:
-                if tweet.user.lang == 'en':            
-                    return self.tokenize(tweet.text)
-        else:
-            raise Exception("Apologies. I couldn't get Twitter to give me a public English-language tweet. Perhaps try again")
-
-    def __html2unicode(self, s):
+    def __html2string(self, s: str) -> str:
         """
         Internal metod that seeks to replace all the HTML entities in
         s with their corresponding unicode characters.
