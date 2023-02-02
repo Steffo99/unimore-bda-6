@@ -4,9 +4,8 @@ import pymongo.collection
 import contextlib
 import bson
 import logging
-import random
 
-from .config import MONGO_HOST, MONGO_PORT, TRAINING_SET_SIZE, TEST_SET_SIZE, SAMPLE_MODE
+from .config import MONGO_HOST, MONGO_PORT, TRAINING_SET_SIZE, TEST_SET_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -55,25 +54,6 @@ def mongo_reviews_collection_from_config() -> pymongo.collection.Collection[Revi
         yield collection
 
 
-def pipeline_sample(collection: pymongo.collection.Collection, amount: int) -> list:
-    """
-    Create pipeline stages for sampling random documents, either with true randomness or by skipping a random amount of them.
-    """
-    if SAMPLE_MODE.__wrapped__ == "$sample":
-        return [
-            {"$sample": {"size": amount}},
-        ]
-    elif SAMPLE_MODE.__wrapped__ == "$limit":
-        log.warning("USE_SAMPLE is disabled, sampling documents using $skip and $limit.")
-        skip = random.randint(0, collection.estimated_document_count(maxTimeMS=100))
-        return [
-            {"$skip": skip},
-            {"$limit": amount},
-        ]
-    else:
-        raise ValueError("Unknown sample mode", SAMPLE_MODE)
-
-
 def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Iterable[Review]:
     """
     Get ``amount`` random reviews from the ``reviews`` collection.
@@ -81,7 +61,8 @@ def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Ite
     log.debug("Getting a sample of %d reviews...", amount)
 
     return reviews.aggregate([
-        *pipeline_sample(reviews, amount),
+        {"$limit": 10000},  # TODO
+        {"$sample": {"size": amount}},
     ])
 
 
@@ -92,8 +73,9 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     log.debug("Getting a sample of %d reviews with %d stars...", amount, rating)
 
     return reviews.aggregate([
+        {"$limit": 10000},  # TODO
         {"$match": {"overall": rating}},
-        *pipeline_sample(reviews, amount),
+        {"$sample": {"size": amount}},
     ])
 
 
@@ -104,6 +86,7 @@ def sample_reviews_by_rating_polar(reviews: pymongo.collection.Collection, amoun
     log.debug("Getting a sample of %d reviews with either 5 or 1 stars...", amount)
 
     return reviews.aggregate([
+        {"$limit": 10000},  # TODO
         {"$match":
             {"$or":
                 [
@@ -112,11 +95,11 @@ def sample_reviews_by_rating_polar(reviews: pymongo.collection.Collection, amoun
                 ]
             },
         },
-        *pipeline_sample(reviews, amount),
+        {"$sample": {"size": amount}},
     ])
 
 
-def get_reviews_training_set(reviews: pymongo.collection.Collection) -> t.Iterable[Review]:
+def get_training_reviews(collection: pymongo.collection.Collection) -> list[Review]:
     """
     Get the subset of reviews that should act as training set.
     """
@@ -130,8 +113,8 @@ def get_reviews_training_set(reviews: pymongo.collection.Collection) -> t.Iterab
     negative_amount: int = amount - positive_amount
 
     # Sample the required reviews
-    positive = sample_reviews_by_rating(reviews, 5.0, positive_amount)
-    negative = sample_reviews_by_rating(reviews, 1.0, negative_amount)
+    positive = sample_reviews_by_rating(collection, 5.0, positive_amount)
+    negative = sample_reviews_by_rating(collection, 1.0, negative_amount)
 
     # Randomness here does not matter, so just merge the lists
     both = [*positive, *negative]
@@ -139,7 +122,7 @@ def get_reviews_training_set(reviews: pymongo.collection.Collection) -> t.Iterab
     return both
 
 
-def get_reviews_test_set(reviews: pymongo.collection.Collection) -> t.Iterable[Review]:
+def get_test_reviews(collection: pymongo.collection.Collection) -> list[Review]:
     """
     Get the subset of reviews that should act as test set.
     """
@@ -148,7 +131,7 @@ def get_reviews_test_set(reviews: pymongo.collection.Collection) -> t.Iterable[R
 
     amount: int = TEST_SET_SIZE.__wrapped__
 
-    return sample_reviews_by_rating_polar(reviews, amount)
+    return list(sample_reviews_by_rating_polar(collection, amount))
 
 
 __all__ = (
@@ -158,6 +141,6 @@ __all__ = (
     "sample_reviews",
     "sample_reviews_by_rating",
     "sample_reviews_by_rating_polar",
-    "get_reviews_training_set",
-    "get_reviews_test_set",
+    "get_training_reviews",
+    "get_test_reviews",
 )

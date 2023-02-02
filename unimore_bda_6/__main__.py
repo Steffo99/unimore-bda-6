@@ -1,12 +1,23 @@
 from .config import config
-from .analysis.vanilla import create_model_vanilla, train_model_vanilla, evaluate_model_vanilla
+from .database import mongo_reviews_collection_from_config, get_training_reviews, get_test_reviews
+from .analysis.vanilla import VanillaReviewSA
 from .log import install_log_handler
 
 
 def main():
-    model = create_model_vanilla()
-    train_model_vanilla(model)
-    evaluate_model_vanilla(model)
+    with mongo_reviews_collection_from_config() as reviews:
+        training_reviews = get_training_reviews(collection=reviews)
+        test_reviews = get_test_reviews(collection=reviews)
+
+    model = VanillaReviewSA()
+    model.train(training_reviews)
+    
+    evaluation = model.evaluate(test_reviews)
+    print(evaluation)
+    
+    while True:
+        classification = model.use(input())
+        print(classification)
 
 
 if __name__ == "__main__":

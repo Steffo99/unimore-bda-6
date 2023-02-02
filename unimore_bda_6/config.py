@@ -7,6 +7,8 @@ config = cfig.Configuration()
 def MONGO_HOST(val: str | None) -> str:
     """
     The hostname of the MongoDB database to connect to.
+
+    Defaults to `"127.0.0.1"`.
     """
     return val or "127.0.0.1"
 
@@ -15,6 +17,8 @@ def MONGO_HOST(val: str | None) -> str:
 def MONGO_PORT(val: str | None) -> int:
     """
     The port of the MongoDB database to connect to.
+
+    Defaults to `27017`.
     """
     if val is None:
         return 27017
@@ -25,22 +29,11 @@ def MONGO_PORT(val: str | None) -> int:
 
 
 @config.optional()
-def SAMPLE_MODE(val: str | None) -> str:
-    """
-    Whether `$sample` or `$limit` should be used to aggregate the training and test sets.
-    `$limit` is much faster, but not truly random, while `$sample` is completely random.
-    """
-    if val is None:
-        return "$sample"
-    if val not in ["$sample", "$limit"]:
-        raise cfig.InvalidValueError("Neither $sample or $limit.")
-    return val
-
-
-@config.optional()
 def TRAINING_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the training set.
+
+    Defaults to `1000`.
     """
     if val is None:
         return 1000
@@ -54,6 +47,8 @@ def TRAINING_SET_SIZE(val: str | None) -> int:
 def TEST_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews to fetch for the test set.
+
+    Defaults to `1000`.
     """
     if val is None:
         return 1000
@@ -67,7 +62,11 @@ __all__ = (
     "config",
     "MONGO_HOST",
     "MONGO_PORT",
-    "SAMPLE_MODE",
     "TRAINING_SET_SIZE",
     "TEST_SET_SIZE",
+    "NLTK_DOUBLE_NEG_SWITCH",
 )
+
+
+if __name__ == "__main__":
+    config.cli()

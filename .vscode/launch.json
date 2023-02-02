@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: unimore_bda_6",
+            "type": "python",
+            "request": "launch",
+            "module": "unimore_bda_6",
+            "justMyCode": true,
+            "env": {
+                "NLTK_DATA": "./data/nltk",
+            },
+            "cwd": "${workspaceFolder}",
+        }
+    ]
+}
