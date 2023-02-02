@@ -53,6 +53,7 @@ __email__ = "See the author's website"
 
 import re
 import html.entities
+import typing as t
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -145,17 +146,11 @@ class Tokenizer:
     def __init__(self, preserve_case=False):
         self.preserve_case = preserve_case
 
-    def tokenize(self, s):
+    def tokenize(self, s: str) -> t.Iterable[str]:
         """
-        Argument: s -- any string or unicode object
+        Argument: s -- any string object
         Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
-        """        
-        # Try to ensure unicode:
-        try:
-            s = unicode(s)
-        except UnicodeDecodeError:
-            s = str(s).encode('string_escape')
-            s = unicode(s)
+        """
         # Fix HTML character entitites:
         s = self.__html2unicode(s)
         # Tokenize:
