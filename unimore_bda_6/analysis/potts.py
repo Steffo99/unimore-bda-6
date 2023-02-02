@@ -1,5 +1,5 @@
 from ..vendor.potts import Tokenizer
-from .vanilla import VanillaSA, VanillaReviewSA
+from .vanilla import VanillaSA, VanillaReviewSA, VanillaUniformReviewSA
 
 
 class PottsSA(VanillaSA):
@@ -21,6 +21,12 @@ class PottsSA(VanillaSA):
 class PottsReviewSA(VanillaReviewSA, PottsSA):
     """
     A `PottsSA` to be used with `Review`s.
+    """
+
+
+class PottsUniformReviewSA(VanillaUniformReviewSA, PottsSA):
+    """
+    A `PottsSA` with 5 buckets instead of 2.
     """
 
 

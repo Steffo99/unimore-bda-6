@@ -4,8 +4,9 @@ import pymongo.collection
 import contextlib
 import bson
 import logging
+import random
 
-from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE, TRAINING_SET_SIZE, TEST_SET_SIZE
+from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE, DATA_SET_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -79,59 +80,47 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def sample_reviews_by_rating_polar(reviews: pymongo.collection.Collection, amount: int) -> t.Iterable[Review]:
+def get_reviews_dataset_polar(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
     """
-    Get ``amount`` random reviews with either a 5-star or 1-star rating from the ``reviews`` collection.
+    Get a list of shuffled 1-star and 5-star reviews.
     """
-    log.debug("Getting a sample of %d reviews with either 5 or 1 stars...", amount)
-
-    return reviews.aggregate([
-        {"$limit": WORKING_SET_SIZE.__wrapped__},
-        {"$match":
-            {"$or":
-                [
-                    {"overall": 1.0},
-                    {"overall": 5.0},
-                ]
-            },
-        },
-        {"$sample": {"size": amount}},
-    ])
-
-
-def get_training_reviews(collection: pymongo.collection.Collection) -> list[Review]:
-    """
-    Get the subset of reviews that should act as training set.
-    """
-    log.info("Building training set...")
-
-    # Get the amount from the config
-    amount: int = TRAINING_SET_SIZE.__wrapped__
-
-    # Handle odd numbers
-    positive_amount: int = amount // 2
-    negative_amount: int = amount - positive_amount
+    log.info("Building dataset with %d polar reviews...", amount * 2)
 
     # Sample the required reviews
-    positive = sample_reviews_by_rating(collection, 5.0, positive_amount)
-    negative = sample_reviews_by_rating(collection, 1.0, negative_amount)
+    positive = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
+    negative = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
 
     # Randomness here does not matter, so just merge the lists
     both = [*positive, *negative]
 
+    # Shuffle the dataset, just in case it affects the performance
+    # TODO: does it actually?
+    random.shuffle(both)
+
     return both
 
 
-def get_test_reviews(collection: pymongo.collection.Collection) -> list[Review]:
+def get_reviews_dataset_uniform(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
     """
-    Get the subset of reviews that should act as test set.
+    Get a list of shuffled reviews of any rating.
     """
+    log.info("Building dataset with %d uniform reviews...", amount * 5)
 
-    log.info("Building test set...")
+    # Sample the required reviews
+    terrible = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
+    negative = sample_reviews_by_rating(collection, rating=2.0, amount=amount)
+    mixed    = sample_reviews_by_rating(collection, rating=3.0, amount=amount)
+    positive = sample_reviews_by_rating(collection, rating=4.0, amount=amount)
+    great    = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
 
-    amount: int = TEST_SET_SIZE.__wrapped__
+    # Randomness here does not matter, so just merge the lists
+    both = [*positive, *negative]
 
-    return list(sample_reviews_by_rating_polar(collection, amount))
+    # Shuffle the dataset, just in case it affects the performance
+    # TODO: does it actually?
+    random.shuffle(both)
+
+    return both
 
 
 __all__ = (
@@ -140,7 +129,5 @@ __all__ = (
     "mongo_reviews_collection_from_config",
     "sample_reviews",
     "sample_reviews_by_rating",
-    "sample_reviews_by_rating_polar",
-    "get_training_reviews",
-    "get_test_reviews",
+    "get_reviews_dataset_polar",
 )

@@ -108,6 +108,26 @@ class VanillaReviewSA(VanillaSA):
         return self._use_with_tokens(self._tokenize_text(text))
 
 
+class VanillaUniformReviewSA(VanillaReviewSA):
+    @staticmethod
+    def _rating_to_label(rating: float) -> str:
+        match rating:
+            case 0.0:
+                return "abysmal"
+            case 1.0:
+                return "terrible"
+            case 2.0:
+                return "negative"
+            case 3.0:
+                return "mixed"
+            case 4.0:
+                return "positive"
+            case 5.0:
+                return "great"
+            case _:
+                return "unknown"
+
+
 __all__ = (
     "VanillaSA",
     "VanillaReviewSA",

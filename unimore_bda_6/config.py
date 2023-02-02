@@ -45,24 +45,9 @@ def WORKING_SET_SIZE(val: str | None) -> int:
 
 
 @config.optional()
-def TRAINING_SET_SIZE(val: str | None) -> int:
+def DATA_SET_SIZE(val: str | None) -> int:
     """
-    The number of reviews from each category to fetch for the training set.
-
-    Defaults to `1000`.
-    """
-    if val is None:
-        return 1000
-    try:
-        return int(val)
-    except ValueError:
-        raise cfig.InvalidValueError("Not an int.")
-
-
-@config.optional()
-def TEST_SET_SIZE(val: str | None) -> int:
-    """
-    The number of reviews to fetch for the test set.
+    The number of reviews from each category to fetch for the datasets.
 
     Defaults to `1000`.
     """
@@ -79,9 +64,7 @@ __all__ = (
     "MONGO_HOST",
     "MONGO_PORT",
     "WORKING_SET_SIZE",
-    "TRAINING_SET_SIZE",
-    "TEST_SET_SIZE",
-    "NLTK_DOUBLE_NEG_SWITCH",
+    "DATA_SET_SIZE",
 )
 
 
