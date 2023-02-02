@@ -80,11 +80,11 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def get_reviews_dataset_polar(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
+def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
     """
-    Get a list of shuffled 1-star and 5-star reviews.
+    Get a list of the same amount of 1-star and 5-star reviews.
     """
-    log.info("Building dataset with %d polar reviews...", amount * 2)
+    log.info("Building polar dataset with %d reviews...", amount * 2)
 
     # Sample the required reviews
     positive = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
@@ -93,18 +93,14 @@ def get_reviews_dataset_polar(collection: pymongo.collection.Collection, amount:
     # Randomness here does not matter, so just merge the lists
     both = [*positive, *negative]
 
-    # Shuffle the dataset, just in case it affects the performance
-    # TODO: does it actually?
-    random.shuffle(both)
-
     return both
 
 
-def get_reviews_dataset_uniform(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
+def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
     """
-    Get a list of shuffled reviews of any rating.
+    Get a list of the same amount of reviews for each rating.
     """
-    log.info("Building dataset with %d uniform reviews...", amount * 5)
+    log.info("Building varied dataset with %d reviews...", amount * 5)
 
     # Sample the required reviews
     terrible = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
@@ -116,10 +112,6 @@ def get_reviews_dataset_uniform(collection: pymongo.collection.Collection, amoun
     # Randomness here does not matter, so just merge the lists
     full = [*terrible, *negative, *mixed, *positive, *great]
 
-    # Shuffle the dataset, just in case it affects the performance
-    # TODO: does it actually?
-    random.shuffle(full)
-
     return full
 
 
@@ -129,5 +121,5 @@ __all__ = (
     "mongo_reviews_collection_from_config",
     "sample_reviews",
     "sample_reviews_by_rating",
-    "get_reviews_dataset_polar",
+    "dataset_polar",
 )

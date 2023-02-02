@@ -12,7 +12,7 @@
             "justMyCode": true,
             "env": {
                 "NLTK_DATA": "./data/nltk",
-                "DATA_SET_SIZE": "100",
+                "DATA_SET_SIZE": "250",
             },
             "cwd": "${workspaceFolder}",
         }

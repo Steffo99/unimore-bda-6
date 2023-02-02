@@ -74,7 +74,7 @@ emoticon_string = r"""
       [<>]?
       [:;=8]                     # eyes
       [\-o\*\']?                 # optional nose
-      [\)\]\(\[dDpP/\:\}\{@\|\\] # mouth      
+      [\)\]\(\[dDpP/\:\}\{@\|\\] # mouth
       |
       [\)\]\(\[dDpP/\:\}\{@\|\\] # mouth
       [\-o\*\']?                 # optional nose
@@ -90,20 +90,20 @@ regex_strings = (
       (?:            # (international)
         \+?[01]
         [\-\s.]*
-      )?            
+      )?
       (?:            # (area code)
         [\(]?
         \d{3}
         [\-\s.\)]*
-      )?    
+      )?
       \d{3}          # exchange
-      [\-\s.]*   
+      [\-\s.]*
       \d{4}          # base
     )"""
     ,
     # Emoticons:
     emoticon_string
-    ,    
+    ,
     # HTML tags:
      r"""<[^>]+>"""
     ,
@@ -121,7 +121,7 @@ regex_strings = (
     |
     (?:[\w_]+)                     # Words without apostrophes or dashes.
     |
-    (?:\.(?:\s*\.){1,})            # Ellipsis dots. 
+    (?:\.(?:\s*\.){1,})            # Ellipsis dots.
     |
     (?:\S)                         # Everything else that isn't whitespace.
     """
@@ -129,7 +129,7 @@ regex_strings = (
 
 ######################################################################
 # This is the core tokenizing regex:
-    
+
 word_re = re.compile(r"""(%s)""" % "|".join(regex_strings), re.VERBOSE | re.I | re.UNICODE)
 
 # The emoticon string gets its own regex so that we can preserve case for them as needed:
@@ -142,47 +142,50 @@ amp = "&amp;"
 
 ######################################################################
 
-class Tokenizer:
-    def __init__(self, preserve_case=False):
-        self.preserve_case = preserve_case
 
-    def tokenize(self, s: str) -> t.Iterable[str]:
-        """
-        Argument: s -- any string object
-        Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
-        """
-        # Fix HTML character entitites:
-        s = self.__html2string(s)
-        # Tokenize:
-        words = word_re.findall(s)
-        # Possible alter the case, but avoid changing emoticons like :D into :d:
-        if not self.preserve_case:            
-            words = map((lambda x : x if emoticon_re.search(x) else x.lower()), words)
-        return words
+def tokenizer(text: str) -> t.Iterable[str]:
+    """
+    Argument: s -- any string object
+    Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
+    """
+    # Fix HTML character entitites:
+    s = __html2string(text)
+    # Tokenize:
+    words = word_re.findall(s)
+    # Possible alter the case, but avoid changing emoticons like :D into :d:
+    words = map((lambda x : x if emoticon_re.search(x) else x.lower()), words)
+    # Return the results
+    return words
 
-    def __html2string(self, s: str) -> str:
-        """
-        Internal metod that seeks to replace all the HTML entities in
-        s with their corresponding unicode characters.
-        """
-        # First the digits:
-        ents = set(html_entity_digit_re.findall(s))
-        if len(ents) > 0:
-            for ent in ents:
-                entnum = ent[2:-1]
-                try:
-                    entnum = int(entnum)
-                    s = s.replace(ent, chr(entnum))	
-                except:
-                    pass
-        # Now the alpha versions:
-        ents = set(html_entity_alpha_re.findall(s))
-        ents = filter((lambda x : x != amp), ents)
+
+def __html2string(html: str) -> str:
+    """
+    Internal metod that seeks to replace all the HTML entities in
+    s with their corresponding unicode characters.
+    """
+    # First the digits:
+    ents = set(html_entity_digit_re.findall(html))
+    if len(ents) > 0:
         for ent in ents:
-            entname = ent[1:-1]
-            try:            
-                s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
+            entnum = ent[2:-1]
+            try:
+                entnum = int(entnum)
+                html = html.replace(ent, chr(entnum))
             except:
-                pass                    
-            s = s.replace(amp, " and ")
-        return s
+                pass
+    # Now the alpha versions:
+    ents = set(html_entity_alpha_re.findall(html))
+    ents = filter((lambda x : x != amp), ents)
+    for ent in ents:
+        entname = ent[1:-1]
+        try:
+            html = html.replace(ent, chr(html.entities.name2codepoint[entname]))
+        except:
+            pass
+        html = html.replace(amp, " and ")
+    return html
+
+
+__all__ = (
+    "tokenizer",
+)

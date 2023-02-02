@@ -1,4 +1,3 @@
-import abc
 import nltk
 import nltk.classify
 import nltk.sentiment
@@ -6,31 +5,30 @@ import nltk.sentiment.util
 import logging
 import typing as t
 
-from ..database import Review
-from .base import BaseSA, AlreadyTrainedError, NotTrainedError
+from .base import Input, Category, BaseSA, AlreadyTrainedError, NotTrainedError
+
+TokenBag = list[str]
+IntermediateValue = t.TypeVar("IntermediateValue")
 
 
 log = logging.getLogger(__name__)
 
 
-class VanillaSA(BaseSA, metaclass=abc.ABCMeta):
+class VanillaSA(BaseSA):
     """
     A sentiment analyzer resembling the one implemented in structure the one implemented in the classroom, using the basic sentiment analyzer of NLTK.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, *, extractor: t.Callable[[Input], tuple[str, Category]], tokenizer: t.Callable[[str], TokenBag], categorizer: t.Callable[[Input], Category]) -> None:
         super().__init__()
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
+        self.trained: bool = False
 
-    def _tokenize_text(self, text: str) -> list[str]:
-        """
-        Convert a text string into a list of tokens.
-        """
-        tokens = nltk.word_tokenize(text)
-        nltk.sentiment.util.mark_negation(tokens, shallow=True)
-        return tokens
+        self.extractor: t.Callable[[Input], tuple[str, IntermediateValue]] = extractor
+        self.tokenizer: t.Callable[[str], TokenBag] = tokenizer
+        self.categorizer: t.Callable[[IntermediateValue], Category] = categorizer
 
-    def __add_feature_unigrams(self, training_set: list[tuple[list[str], str]]) -> None:
+    def __add_feature_unigrams(self, training_set: list[tuple[TokenBag, Category]]) -> None:
         """
         Add the `nltk.sentiment.util.extract_unigram_feats` feature to the model.
         """
@@ -38,116 +36,64 @@ class VanillaSA(BaseSA, metaclass=abc.ABCMeta):
         unigrams = self.model.unigram_word_feats(words=all_words, min_freq=4)
         self.model.add_feat_extractor(nltk.sentiment.util.extract_unigram_feats, unigrams=unigrams)
 
-    def _featurize_documents(self, documents: list[tuple[list[str], str]]):
+    def _add_features(self, training_set: list[tuple[TokenBag, Category]]):
         """
-        Apply features to a document.
+        Add new features to the sentiment analyzer.
         """
-        return self.model.apply_features(documents, labeled=True)
+        self.__add_feature_unigrams(training_set)
 
-    def _train_with_set(self, training_set: list[tuple[list[str], str]]) -> None:
+    def _train_from_dataset(self, dataset: list[tuple[TokenBag, Category]]) -> None:
         """
-        Train the model with the given **pre-classified but not pre-tokenized** training set.
+        Train the model with the given training set.
         """
         if self.trained:
             raise AlreadyTrainedError()
 
-        self.__add_feature_unigrams(training_set)
-        training_set_with_features = self._featurize_documents(training_set)
+        self.__add_feature_unigrams(dataset)
+        training_set_with_features = self.model.apply_features(dataset, labeled=True)
 
         self.model.train(trainer=nltk.classify.NaiveBayesClassifier.train, training_set=training_set_with_features)
         self.trained = True
 
-    def _evaluate_with_set(self, test_set: list[tuple[list[str], str]]) -> dict:
+    def _evaluate_from_dataset(self, dataset: list[tuple[TokenBag, Category]]) -> dict:
+        """
+        Perform a model evaluation with the given test set.
+        """
         if not self.trained:
             raise NotTrainedError()
-        
-        test_set_with_features = self._featurize_documents(test_set)
+
+        test_set_with_features = self.model.apply_features(dataset, labeled=True)
         return self.model.evaluate(test_set_with_features)
 
-    def _use_with_tokens(self, tokens: list[str]) -> str:
+    def _use_from_tokenbag(self, tokens: TokenBag) -> Category:
+        """
+        Categorize the given token bag.
+        """
         if not self.trained:
             raise NotTrainedError()
-        
+
         return self.model.classify(instance=tokens)
 
+    def _extract_data(self, inp: Input) -> tuple[TokenBag, Category]:
+        text, value = self.extractor(inp)
+        return self.tokenizer(text), self.categorizer(value)
 
-class VanillaReviewSA(VanillaSA):
-    """
-    A `VanillaSA` to be used with `Review`s.
-    """
+    def _extract_dataset(self, inp: list[Input]) -> list[tuple[TokenBag, Category]]:
+        return list(map(self._extract_data, inp))
 
-    def __init__(self, categorizer: t.Callable[[Review], str]) -> None:
-        super().__init__()
-        self.categorizer: t.Callable[[Review], str] = categorizer
+    def train(self, training_set: list[Input]) -> None:
+        dataset = self._extract_dataset(training_set)
+        self._train_from_dataset(dataset)
 
-    def _review_to_data_set(self, review: Review) -> tuple[list[str], str]:
-        """
-        Convert a review to a NLTK-compatible dataset.
-        """
-        return self._tokenize_text(text=review["reviewText"]), self.categorizer(rating=review["overall"])
-        
-    def train(self, reviews: t.Iterable[Review]) -> None:
-        data_set = list(map(self._review_to_data_set, reviews))
-        self._train_with_set(data_set)
+    def evaluate(self, test_set: list[tuple[Input, Category]]) -> None:
+        dataset = self._extract_dataset(test_set)
+        return self._evaluate_from_dataset(dataset)
 
-    def evaluate(self, reviews: t.Iterable[Review]):
-        data_set = list(map(self._review_to_data_set, reviews))
-        return self._evaluate_with_set(data_set)
-
-    def use(self, text: str) -> str:
-        return self._use_with_tokens(self._tokenize_text(text))
-
-
-def polar_categorizer(rating: float) -> str:
-    """
-    Return the polar label corresponding to the given rating.
-
-    Possible categories are:
-    
-    * negative (1.0, 2.0)
-    * positive (3.0, 4.0, 5.0)
-    * unknown (everything else)
-    """
-    match rating:
-        case 1.0 | 2.0:
-            return "negative"
-        case 3.0 | 4.0 | 5.0:
-            return "positive"
-        case _:
-            return "unknown"
-
-
-def stars_categorizer(rating: float) -> str:
-    """
-    Return the "stars" label corresponding to the given rating.
-
-    Possible categories are:
-    
-    * terrible (1.0)
-    * negative (2.0)
-    * mixed (3.0)
-    * positive (4.0)
-    * great (5.0)
-    * unknown (everything else)
-    """
-    match rating:
-        case 1.0:
-            return "terrible"
-        case 2.0:
-            return "negative"
-        case 3.0:
-            return "mixed"
-        case 4.0:
-            return "positive"
-        case 5.0:
-            return "great"
-        case _:
-            return "unknown"
+    def use(self, text: Input) -> Category:
+        tokens = self.tokenizer(text)
+        return self._use_from_tokenbag(tokens)
 
 
 __all__ = (
     "VanillaSA",
-    "VanillaReviewSA",
-    "polar_categorizer",
-    "stars_categorizer",
 )
