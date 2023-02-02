@@ -172,7 +172,7 @@ class Tokenizer:
                 entnum = ent[2:-1]
                 try:
                     entnum = int(entnum)
-                    s = s.replace(ent, unichr(entnum))	
+                    s = s.replace(ent, chr(entnum))	
                 except:
                     pass
         # Now the alpha versions:
@@ -181,7 +181,7 @@ class Tokenizer:
         for ent in ents:
             entname = ent[1:-1]
             try:            
-                s = s.replace(ent, unichr(html.entities.name2codepoint[entname]))
+                s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
             except:
                 pass                    
             s = s.replace(amp, " and ")
