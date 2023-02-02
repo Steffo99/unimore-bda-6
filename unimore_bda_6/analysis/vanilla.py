@@ -18,16 +18,15 @@ class VanillaSA(BaseSA, metaclass=abc.ABCMeta):
     A sentiment analyzer resembling the one implemented in structure the one implemented in the classroom, using the basic sentiment analyzer of NLTK.
     """
 
-    def __init__(self, language="english") -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.language: str = language
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
 
-    def _tokenize_text(self, text: str) -> list[str]:
+    def _tokenize_text(self, text: str, language: str = "english") -> list[str]:
         """
         Convert a text string into a list of tokens, using the language of the model.
         """
-        tokens = nltk.word_tokenize(text, language=self.language)
+        tokens = nltk.word_tokenize(text, language=language)
         nltk.sentiment.util.mark_negation(tokens, shallow=True)
         return tokens
 
