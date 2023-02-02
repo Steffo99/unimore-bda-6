@@ -30,15 +30,15 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
     Create a new MongoDB client and yield it.
     """
     log.debug("Opening connection to MongoDB...")
-    client = pymongo.MongoClient(
+    client: pymongo.MongoClient = pymongo.MongoClient(
         host=MONGO_HOST.__wrapped__,
         port=MONGO_PORT.__wrapped__,
     )
-    log.info("Opened connection to MongoDB: %s", client)
+    log.info("Opened connection to MongoDB at %s!", client.address)
 
     yield client
 
-    log.info("Closing connection to MongoDB: %s", client)
+    log.info("Closing connection to MongoDB...")
     client.close()
     log.debug("Closed connection to MongoDB!")
 
