@@ -83,14 +83,11 @@ class VanillaReviewSA(VanillaSA):
         Return the label corresponding to the given rating.
 
         Possible categories are:
-        * negative (0.0 <= rating < 2.5)
-        * mixed (2.5 <= rating <= 3.5)
-        * positive (3.5 < rating <= 5.0)
+        * negative (0.0 <= rating < 3.0)
+        * positive (3.0 < rating <= 5.0)
         """
-        if rating < 2.5:
+        if rating < 3.0:
             return "negative"
-        elif rating <= 3.5:
-            return "mixed"
         else:
             return "positive"
 
