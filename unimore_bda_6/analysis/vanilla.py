@@ -76,25 +76,15 @@ class VanillaReviewSA(VanillaSA):
     A `VanillaSA` to be used with `Review`s.
     """
 
-    @staticmethod
-    def _rating_to_label(rating: float) -> str:
-        """
-        Return the label corresponding to the given rating.
-
-        Possible categories are:
-        * negative (0.0 <= rating < 3.0)
-        * positive (3.0 < rating <= 5.0)
-        """
-        if rating < 3.0:
-            return "negative"
-        else:
-            return "positive"
+    def __init__(self, categorizer: t.Callable[[Review], str]) -> None:
+        super().__init__()
+        self.categorizer: t.Callable[[Review], str] = categorizer
 
     def _review_to_data_set(self, review: Review) -> tuple[list[str], str]:
         """
         Convert a review to a NLTK-compatible dataset.
         """
-        return self._tokenize_text(text=review["reviewText"]), self._rating_to_label(rating=review["overall"])
+        return self._tokenize_text(text=review["reviewText"]), self.categorizer(rating=review["overall"])
         
     def train(self, reviews: t.Iterable[Review]) -> None:
         data_set = list(map(self._review_to_data_set, reviews))
@@ -108,27 +98,56 @@ class VanillaReviewSA(VanillaSA):
         return self._use_with_tokens(self._tokenize_text(text))
 
 
-class VanillaUniformReviewSA(VanillaReviewSA):
-    @staticmethod
-    def _rating_to_label(rating: float) -> str:
-        match rating:
-            case 0.0:
-                return "abysmal"
-            case 1.0:
-                return "terrible"
-            case 2.0:
-                return "negative"
-            case 3.0:
-                return "mixed"
-            case 4.0:
-                return "positive"
-            case 5.0:
-                return "great"
-            case _:
-                return "unknown"
+def polar_categorizer(rating: float) -> str:
+    """
+    Return the polar label corresponding to the given rating.
+
+    Possible categories are:
+    
+    * negative (1.0, 2.0)
+    * positive (3.0, 4.0, 5.0)
+    * unknown (everything else)
+    """
+    match rating:
+        case 1.0 | 2.0:
+            return "negative"
+        case 3.0 | 4.0 | 5.0:
+            return "positive"
+        case _:
+            return "unknown"
+
+
+def stars_categorizer(rating: float) -> str:
+    """
+    Return the "stars" label corresponding to the given rating.
+
+    Possible categories are:
+    
+    * terrible (1.0)
+    * negative (2.0)
+    * mixed (3.0)
+    * positive (4.0)
+    * great (5.0)
+    * unknown (everything else)
+    """
+    match rating:
+        case 1.0:
+            return "terrible"
+        case 2.0:
+            return "negative"
+        case 3.0:
+            return "mixed"
+        case 4.0:
+            return "positive"
+        case 5.0:
+            return "great"
+        case _:
+            return "unknown"
 
 
 __all__ = (
     "VanillaSA",
     "VanillaReviewSA",
+    "polar_categorizer",
+    "stars_categorizer",
 )

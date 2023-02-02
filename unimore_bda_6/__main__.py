@@ -2,7 +2,7 @@ import logging
 
 from .config import config, DATA_SET_SIZE
 from .database import mongo_reviews_collection_from_config, get_reviews_dataset_polar, get_reviews_dataset_uniform
-from .analysis.vanilla import VanillaReviewSA, VanillaUniformReviewSA
+from .analysis.vanilla import VanillaReviewSA, polar_categorizer, stars_categorizer
 from .analysis.potts import PottsReviewSA
 from .log import install_log_handler
 
@@ -16,7 +16,7 @@ def main():
         reviews_uniform_training = get_reviews_dataset_uniform(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
         reviews_uniform_evaluation = get_reviews_dataset_uniform(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
 
-    vanilla_polar = VanillaReviewSA()
+    vanilla_polar = VanillaReviewSA(categorizer=polar_categorizer)
     vanilla_polar.train(reviews_polar_training)
     log.info("Vanilla polar evaluation results: %s", vanilla_polar.evaluate(reviews_polar_evaluation))
 
@@ -24,7 +24,7 @@ def main():
     potts_polar.train(reviews_polar_training)
     log.info("Potts polar evaluation results: %s", potts_polar.evaluate(reviews_polar_evaluation))
 
-    vanilla_uniform = VanillaUniformReviewSA()
+    vanilla_uniform = VanillaReviewSA(categorizer=stars_categorizer)
     vanilla_uniform.train(reviews_uniform_training)
     log.info("Vanilla uniform evaluation results: %s", vanilla_polar.evaluate(reviews_polar_evaluation))
 
