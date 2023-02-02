@@ -186,19 +186,3 @@ class Tokenizer:
                 pass                    
             s = s.replace(amp, " and ")
         return s
-
-###############################################################################
-
-if __name__ == '__main__':
-    tok = Tokenizer(preserve_case=False)
-    samples = (
-        u"RT @ #happyfuncoding: this is a typical Twitter tweet :-)",
-        u"HTML entities &amp; other Web oddities can be an &aacute;cute <em class='grumpy'>pain</em> >:(",
-        u"It's perhaps noteworthy that phone numbers like +1 (800) 123-4567, (800) 123-4567, and 123-4567 are treated as words despite their whitespace."
-        )
-
-    for s in samples:
-        print "======================================================================"
-        print s
-        tokenized = tok.tokenize(s)
-        print "\n".join(tokenized)
