@@ -1,8 +1,4 @@
 """
-This file is a vendored version of `Christopher Potts' tokenizer <http://sentiment.christopherpotts.net/tokenizing.html>`_, which the project's specifications require to use.
-
-It has been altered to be used with Python 3.10, but the code is mostly the same.
-
 =========================
 Original module docstring
 =========================
@@ -54,6 +50,9 @@ __email__ = "See the author's website"
 import re
 import html.entities
 import typing as t
+import nltk.sentiment.util
+
+from .base import BaseTokenizer
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -143,49 +142,58 @@ amp = "&amp;"
 ######################################################################
 
 
-def potts_tokenizer(text: str) -> t.Iterable[str]:
+class PottsTokenizer(BaseTokenizer):
     """
-    Argument: s -- any string object
-    Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
+    Tokenizer based on `Christopher Potts' tokenizer <http://sentiment.christopherpotts.net/tokenizing.html>`_.
     """
-    # Fix HTML character entitites:
-    s = __html2string(text)
-    # Tokenize:
-    words = word_re.findall(s)
-    # Possible alter the case, but avoid changing emoticons like :D into :d:
-    words = map((lambda x : x if emoticon_re.search(x) else x.lower()), words)
-    # Return the results
-    return words
 
-
-def __html2string(html: str) -> str:
-    """
-    Internal metod that seeks to replace all the HTML entities in
-    s with their corresponding unicode characters.
-    """
-    # First the digits:
-    ents = set(html_entity_digit_re.findall(html))
-    if len(ents) > 0:
+    @staticmethod
+    def __html2string(s: str) -> str:
+        """
+        Internal metod that seeks to replace all the HTML entities in
+        s with their corresponding unicode characters.
+        """
+        # First the digits:
+        ents = set(html_entity_digit_re.findall(s))
+        if len(ents) > 0:
+            for ent in ents:
+                entnum = ent[2:-1]
+                try:
+                    entnum = int(entnum)
+                    s = s.replace(ent, chr(entnum))
+                except (ValueError, KeyError):
+                    pass
+        # Now the alpha versions:
+        ents = set(html_entity_alpha_re.findall(s))
+        ents = filter((lambda x : x != amp), ents)
         for ent in ents:
-            entnum = ent[2:-1]
+            entname = ent[1:-1]
             try:
-                entnum = int(entnum)
-                html = html.replace(ent, chr(entnum))
-            except:
+                s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
+            except (ValueError, KeyError):
                 pass
-    # Now the alpha versions:
-    ents = set(html_entity_alpha_re.findall(html))
-    ents = filter((lambda x : x != amp), ents)
-    for ent in ents:
-        entname = ent[1:-1]
-        try:
-            html = html.replace(ent, chr(html.entities.name2codepoint[entname]))
-        except:
-            pass
-        html = html.replace(amp, " and ")
-    return html
+            s = s.replace(amp, " and ")
+        return s
+
+    def tokenize(self, text: str) -> t.Iterable[str]:
+        # Fix HTML character entitites:
+        s = self.__html2string(text)
+        # Tokenize:
+        words = word_re.findall(s)
+        # Possible alter the case, but avoid changing emoticons like :D into :d:
+        words = list(map(lambda x: x if emoticon_re.search(x) else x.lower(), words))
+        # Return the results
+        return words
+
+
+class PottsTokenizerWithNegation(PottsTokenizer):
+    def tokenize(self, text: str) -> t.Iterable[str]:
+        words = super().tokenize(text)
+        nltk.sentiment.util.mark_negation(words, shallow=True)
+        return words
 
 
 __all__ = (
-    "potts_tokenizer",
+    "PottsTokenizer",
+    "PottsTokenizerWithNegation",
 )

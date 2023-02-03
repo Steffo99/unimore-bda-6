@@ -1,6 +1,8 @@
-from .vanilla import BaseSA
+from .base import BaseSentimentAnalyzer
+from .nltk_sentiment import NLTKSentimentAnalyzer
 
 
 __all__ = (
-    "BaseSA",
+    "BaseSentimentAnalyzer",
+    "NLTKSentimentAnalyzer",
 )

@@ -6,7 +6,7 @@ import bson
 import logging
 import itertools
 
-from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE, DATA_SET_SIZE
+from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +22,12 @@ class Review(t.TypedDict):
     summary: str
     unixReviewTime: int
     reviewTime: str
+
+
+Text = str
+Category = str
+DataTuple = tuple[Text, Category]
+DataSet = t.Iterable[DataTuple]
 
 
 @contextlib.contextmanager
@@ -80,7 +86,40 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+def review_to_datatuple(review: Review) -> tuple[Text, Category]:
+    """
+    Return the label corresponding to the given review.
+
+    Possible categories are:
+
+    * terrible (1.0)
+    * negative (2.0)
+    * mixed (3.0)
+    * positive (4.0)
+    * great (5.0)
+    * unknown (everything else)
+    """
+    text = review["reviewText"]
+    rating = review["overall"]
+
+    match rating:
+        case 1.0:
+            category = "terrible"
+        case 2.0:
+            category = "negative"
+        case 3.0:
+            category = "mixed"
+        case 4.0:
+            category = "positive"
+        case 5.0:
+            category = "great"
+        case _:
+            category = "unknown"
+
+    return text, category
+
+
+def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
     """
     Get a list of the same amount of 1-star and 5-star reviews.
     """
@@ -90,13 +129,16 @@ def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> t.I
     positive = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
     negative = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
 
-    # Randomness here does not matter, so just merge the lists
-    both = itertools.chain(positive, negative)
+    # Chain the iterators
+    full = itertools.chain(positive, negative)
 
-    return both
+    # Convert reviews to datatuples
+    full = map(review_to_datatuple, full)
+
+    return full
 
 
-def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+def varied_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
     """
     Get a list of the same amount of reviews for each rating.
     """
@@ -109,17 +151,25 @@ def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> t.
     positive = sample_reviews_by_rating(collection, rating=4.0, amount=amount)
     great    = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
 
+    # Chain the iterators
     full = itertools.chain(terrible, negative, mixed, positive, great)
+
+    # Convert reviews to datatuples
+    full = map(review_to_datatuple, full)
 
     return full
 
 
 __all__ = (
     "Review",
+    "Text",
+    "Category",
+    "DataTuple",
+    "DataSet",
     "mongo_client_from_config",
     "mongo_reviews_collection_from_config",
     "sample_reviews",
     "sample_reviews_by_rating",
-    "dataset_polar",
-    "dataset_varied",
+    "polar_dataset",
+    "varied_dataset",
 )

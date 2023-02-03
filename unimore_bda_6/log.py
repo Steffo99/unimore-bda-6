@@ -2,7 +2,7 @@ import collections
 import logging
 import coloredlogs
 
-log = logging.getLogger(__name__)
+this_log = logging.getLogger(__name__)
 
 
 def install_log_handler(loggers: list[logging.Logger] = None):
@@ -32,13 +32,13 @@ def install_log_handler(loggers: list[logging.Logger] = None):
             ),
             isatty=True,
         )
-        log.debug("Installed custom log handler on: %s", logger)
+        this_log.debug("Installed custom log handler on: %s", logger)
 
 
 _passage_counts = collections.defaultdict(lambda: 0)
 
 
-def count_passage(key: str, mod: int):
+def count_passage(log: logging.Logger, key: str, mod: int):
     _passage_counts[key] += 1
     if not _passage_counts[key] % mod:
         log.debug("%s - %d calls", key, _passage_counts[key])

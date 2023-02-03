@@ -76,11 +76,11 @@ $ mongosh < ./data/scripts/index-db.js
 
 <!-- TODO -->
 
-## `base`: Costruzione dell'impalcatura necessaria al confronto
+## `.analysis.base`: Costruzione dell'impalcatura necessaria al confronto
 
 <!-- TODO -->
 
-## `vanilla`: Ricostruzione e ottimizzazione del modello basato su `nltk.sentiment` realizzato a lezione
+## `.analysis.nltk_sentiment`: Ricostruzione e ottimizzazione del modello basato su `nltk.sentiment` realizzato a lezione
 
 Per avere un modello baseline con cui effettuare un confronto, si è ricostruito un modello basato su `nltk.sentiment` ispirato a quello realizzato a lezione.
 
