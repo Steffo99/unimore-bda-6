@@ -31,6 +31,7 @@ class AlreadyTrainedError(Exception):
     This model has already been trained and cannot be trained again.
     """
 
+
 class NotTrainedError(Exception):
     """
     This model has not been trained yet.
