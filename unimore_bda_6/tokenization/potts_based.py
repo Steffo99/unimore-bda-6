@@ -143,7 +143,7 @@ amp = "&amp;"
 ######################################################################
 
 
-def tokenizer(text: str) -> t.Iterable[str]:
+def potts_tokenizer(text: str) -> t.Iterable[str]:
     """
     Argument: s -- any string object
     Value: a tokenize list of strings; conatenating this list returns the original string if preserve_case=False
@@ -187,5 +187,5 @@ def __html2string(html: str) -> str:
 
 
 __all__ = (
-    "tokenizer",
+    "potts_tokenizer",
 )

@@ -12,7 +12,7 @@ class BaseSA(metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def train(self, training_set: list[tuple[Input, Category]]) -> None:
+    def train(self, training_set: t.Iterable[tuple[Input, Category]]) -> None:
         """
         Train the analyzer with the given training set.
         """

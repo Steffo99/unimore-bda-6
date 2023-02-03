@@ -3,8 +3,8 @@ from . import potts_based
 
 
 all_tokenizers = [
-    nltk_based.tokenizer,
-    potts_based.tokenizer,
+    nltk_based.nltk_tokenizer,
+    potts_based.potts_tokenizer,
 ]
 
 

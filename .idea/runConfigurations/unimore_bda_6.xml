@@ -4,8 +4,10 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
+      <env name="DATA_SET_SIZE" value="10000" />
       <env name="NLTK_DATA" value="./data/nltk" />
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="WORKING_SET_SIZE" value="1000000" />
     </envs>
     <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
     <option name="SDK_NAME" value="Poetry (unimore-bda-6)" />

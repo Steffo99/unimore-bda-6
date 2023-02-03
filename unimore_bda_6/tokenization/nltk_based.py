@@ -2,7 +2,7 @@ import nltk
 import nltk.sentiment.util
 
 
-def tokenizer(text: str) -> list[str]:
+def nltk_tokenizer(text: str) -> list[str]:
     """
     Convert a text string into a list of tokens.
     """
@@ -12,5 +12,5 @@ def tokenizer(text: str) -> list[str]:
 
 
 __all__ = (
-    "tokenizer",
+    "nltk_tokenizer",
 )

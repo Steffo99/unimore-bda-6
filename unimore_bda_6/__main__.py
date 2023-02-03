@@ -64,35 +64,28 @@ def varied_categorizer(rating: float) -> str:
 
 
 def main():
-    with mongo_reviews_collection_from_config() as reviews:
-        reviews_polar_training = dataset_polar(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
-        reviews_polar_evaluation = dataset_polar(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
+    for dataset_func, categorizer in [
+        (dataset_polar, polar_categorizer),
+        (dataset_varied, varied_categorizer),
+    ]:
+        for tokenizer in all_tokenizers:
+            with mongo_reviews_collection_from_config() as reviews:
+                reviews_training = dataset_func(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
+                reviews_evaluation = dataset_func(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
 
-    for tokenizer in all_tokenizers:
-        log.info("Training polar model with %s tokenizer", tokenizer)
-        model = VanillaSA(extractor=review_vanilla_extractor, tokenizer=tokenizer, categorizer=polar_categorizer)
-        model.train(reviews_polar_training)
-        log.info("Evaluating polar model with %s tokenizer", tokenizer)
-        evaluation = model.evaluate(reviews_polar_evaluation)
-        log.info("Polar model with %s results: %s", tokenizer, evaluation)
+                model = VanillaSA(extractor=review_vanilla_extractor, tokenizer=tokenizer, categorizer=categorizer)
+                log.info("Training model %s", model)
+                model.train(reviews_training)
+                log.info("Evaluating model %s", model)
+                evaluation = model.evaluate(reviews_evaluation)
+                log.info("Results of model %s: %s", tokenizer, evaluation)
 
-    del reviews_polar_training
-    del reviews_polar_evaluation
-
-    with mongo_reviews_collection_from_config() as reviews:
-        reviews_varied_training = dataset_varied(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
-        reviews_varied_evaluation = dataset_varied(collection=reviews, amount=DATA_SET_SIZE.__wrapped__)
-
-    for tokenizer in all_tokenizers:
-        log.info("Training varied model with %s tokenizer", tokenizer)
-        model = VanillaSA(extractor=review_vanilla_extractor, tokenizer=tokenizer, categorizer=varied_categorizer)
-        model.train(reviews_varied_training)
-        log.info("Evaluating varied model with %s tokenizer", tokenizer)
-        evaluation =  model.evaluate(reviews_varied_evaluation)
-        log.info("Varied model with %s results: %s", tokenizer, evaluation)
-
-    del reviews_varied_training
-    del reviews_varied_evaluation
+            try:
+                print("Model %s" % model)
+                while True:
+                    print(model.use(input()))
+            except KeyboardInterrupt:
+                pass
 
 
 if __name__ == "__main__":

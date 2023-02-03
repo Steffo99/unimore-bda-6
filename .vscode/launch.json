@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "module": "unimore_bda_6",
-            "justMyCode": true,
+            "justMyCode": false,
             "env": {
                 "NLTK_DATA": "./data/nltk",
                 "DATA_SET_SIZE": "250",

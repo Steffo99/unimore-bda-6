@@ -4,7 +4,7 @@ import pymongo.collection
 import contextlib
 import bson
 import logging
-import random
+import itertools
 
 from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE, DATA_SET_SIZE
 
@@ -55,7 +55,7 @@ def mongo_reviews_collection_from_config() -> pymongo.collection.Collection[Revi
         yield collection
 
 
-def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Iterable[Review]:
+def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
     """
     Get ``amount`` random reviews from the ``reviews`` collection.
     """
@@ -67,7 +67,7 @@ def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Ite
     ])
 
 
-def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterable[Review]:
+def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterator[Review]:
     """
     Get ``amount`` random reviews with ``rating`` stars from the ``reviews`` collection.
     """
@@ -80,7 +80,7 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
+def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
     """
     Get a list of the same amount of 1-star and 5-star reviews.
     """
@@ -91,12 +91,12 @@ def dataset_polar(collection: pymongo.collection.Collection, amount: int) -> lis
     negative = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
 
     # Randomness here does not matter, so just merge the lists
-    both = [*positive, *negative]
+    both = itertools.chain(positive, negative)
 
     return both
 
 
-def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> list[Review]:
+def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
     """
     Get a list of the same amount of reviews for each rating.
     """
@@ -109,8 +109,7 @@ def dataset_varied(collection: pymongo.collection.Collection, amount: int) -> li
     positive = sample_reviews_by_rating(collection, rating=4.0, amount=amount)
     great    = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
 
-    # Randomness here does not matter, so just merge the lists
-    full = [*terrible, *negative, *mixed, *positive, *great]
+    full = itertools.chain(terrible, negative, mixed, positive, great)
 
     return full
 
@@ -122,4 +121,5 @@ __all__ = (
     "sample_reviews",
     "sample_reviews_by_rating",
     "dataset_polar",
+    "dataset_varied",
 )
