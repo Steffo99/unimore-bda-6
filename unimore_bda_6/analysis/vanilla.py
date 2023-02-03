@@ -61,6 +61,7 @@ class VanillaSA(BaseSA):
 
         Does not use `SentimentAnalyzer.apply_features` due to unexpected behaviour when using iterators.
         """
+        count_passage("processed_features", 100)
         return self.model.extract_features(data[0]), data[1]
 
     def _train_from_dataset(self, dataset: t.Iterator[tuple[TokenBag, Category]]) -> None:
@@ -87,7 +88,8 @@ class VanillaSA(BaseSA):
             raise NotTrainedError()
 
         dataset_1 = map(self.__extract_features, dataset)
-        return self.model.evaluate(dataset_1)
+        # FIXME: This won't work with streams :(
+        return self.model.evaluate(list(dataset_1))
 
     def _use_from_tokenbag(self, tokens: TokenBag) -> Category:
         """

@@ -82,8 +82,8 @@ def main():
 
             try:
                 print("Model %s" % model)
-                while True:
-                    print(model.use(input()))
+                while inp := input():
+                    print(model.use(inp))
             except KeyboardInterrupt:
                 pass
 
