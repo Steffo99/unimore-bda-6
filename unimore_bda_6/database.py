@@ -5,6 +5,7 @@ import contextlib
 import bson
 import logging
 import itertools
+import collections
 
 from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE
 
@@ -26,7 +27,7 @@ class Review(t.TypedDict):
 
 Text = str
 Category = str
-DataTuple = tuple[Text, Category]
+DataTuple = collections.namedtuple("DataTuple", ["text", "category"])
 DataSet = t.Iterable[DataTuple]
 
 
@@ -86,7 +87,7 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def review_to_datatuple(review: Review) -> tuple[Text, Category]:
+def review_to_datatuple(review: Review) -> DataTuple:
     """
     Return the label corresponding to the given review.
 
@@ -116,7 +117,7 @@ def review_to_datatuple(review: Review) -> tuple[Text, Category]:
         case _:
             category = "unknown"
 
-    return text, category
+    return DataTuple(text, category)
 
 
 def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
