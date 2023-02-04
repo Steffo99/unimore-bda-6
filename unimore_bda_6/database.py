@@ -5,7 +5,6 @@ import contextlib
 import bson
 import logging
 import itertools
-import collections
 
 from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE
 
@@ -27,7 +26,32 @@ class Review(t.TypedDict):
 
 Text = str
 Category = float
-DataTuple = collections.namedtuple("DataTuple", ["text", "category"], verbose=True)
+
+
+class DataTuple:
+    def __init__(self, text, category):
+        self.text: Text = text
+        self.category: Category = category
+
+    @classmethod
+    def from_review(cls, review):
+        return cls(
+            text=review["reviewText"],
+            category=review["overall"],
+        )
+
+    def __repr__(self):
+        return f"<{self.__class__.__qualname__}: [{self.category}] {self.text}>"
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.text
+        elif item == 1:
+            return self.category
+        else:
+            raise KeyError(item)
+
+
 DataSet = t.Iterable[DataTuple]
 
 
@@ -87,25 +111,6 @@ def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: flo
     ])
 
 
-def review_to_datatuple(review: Review) -> DataTuple:
-    """
-    Return the label corresponding to the given review.
-
-    Possible categories are:
-
-    * terrible (1.0)
-    * negative (2.0)
-    * mixed (3.0)
-    * positive (4.0)
-    * great (5.0)
-    * unknown (everything else)
-    """
-    text = review["reviewText"]
-    category = review["overall"]
-
-    return DataTuple(text=text, category=category)
-
-
 def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
     """
     Get a list of the same amount of 1-star and 5-star reviews.
@@ -120,7 +125,7 @@ def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.I
     full = itertools.chain(positive, negative)
 
     # Convert reviews to datatuples
-    full = map(review_to_datatuple, full)
+    full = map(DataTuple.from_review, full)
 
     return full
 
@@ -142,7 +147,7 @@ def varied_dataset(collection: pymongo.collection.Collection, amount: int) -> t.
     full = itertools.chain(terrible, negative, mixed, positive, great)
 
     # Convert reviews to datatuples
-    full = map(review_to_datatuple, full)
+    full = map(DataTuple.from_review, full)
 
     return full
 
