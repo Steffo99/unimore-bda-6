@@ -7,7 +7,7 @@ import typing as t
 import itertools
 
 from ..database import Text, Category, DataTuple, DataSet
-from .base import BaseSentimentAnalyzer
+from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 from ..log import count_passage
 from ..tokenizer import BaseTokenizer
 
@@ -17,38 +17,22 @@ TokenBag = list[str]
 Features = dict[str, int]
 
 
-class AlreadyTrainedError(Exception):
-    """
-    This model has already been trained and cannot be trained again.
-    """
-
-
-class NotTrainedError(Exception):
-    """
-    This model has not been trained yet.
-    """
-
-
 class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
     """
     A sentiment analyzer resembling the one implemented in structure the one implemented in the classroom, using the basic sentiment analyzer of NLTK.
     """
 
     def __init__(self, *, tokenizer: BaseTokenizer) -> None:
-        super().__init__()
+        super().__init__(tokenizer=tokenizer)
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
         self.trained: bool = False
-        self.tokenizer: BaseTokenizer = tokenizer
-
-    def __repr__(self):
-        return f"<{self.__class__.__qualname__} {'trained' if self.trained else 'untrained'} tokenizer={self.tokenizer!r}>"
 
     def __tokenize_datatuple(self, datatuple: DataTuple) -> tuple[TokenBag, Category]:
         """
         Convert the `Text` of a `DataTuple` to a `TokenBag`.
         """
         count_passage(log, "tokenize_datatuple", 100)
-        return self.tokenizer.tokenize(datatuple[0]), datatuple[1]
+        return self.tokenizer.tokenize_builtins(datatuple[0]), datatuple[1]
 
     def _add_feature_unigrams(self, dataset: t.Iterator[tuple[TokenBag, Category]]) -> None:
         """
@@ -112,7 +96,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
             raise NotTrainedError()
 
         # Tokenize the input
-        tokens = self.tokenizer.tokenize(text)
+        tokens = self.tokenizer.tokenize_builtins(text)
 
         # Run the classification method
         return self.model.classify(instance=tokens)

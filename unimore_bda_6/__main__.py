@@ -1,18 +1,33 @@
 import logging
+import tensorflow
 
 from .config import config, DATA_SET_SIZE
 from .database import mongo_reviews_collection_from_config, polar_dataset, varied_dataset
 from .analysis.nltk_sentiment import NLTKSentimentAnalyzer
-from .tokenizer import NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation
+from .analysis.tf_text import TensorflowSentimentAnalyzer
+from .tokenizer import NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation, LowercaseTokenizer
 from .log import install_log_handler
 
 log = logging.getLogger(__name__)
 
 
 def main():
+    if len(tensorflow.config.list_physical_devices(device_type="GPU")) == 0:
+        log.warning("Tensorflow reports no GPU acceleration available.")
+    else:
+        log.debug("Tensorflow successfully found GPU acceleration!")
+
     for dataset_func in [polar_dataset, varied_dataset]:
-        for SentimentAnalyzer in [NLTKSentimentAnalyzer]:
-            for Tokenizer in [NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation]:
+        for SentimentAnalyzer in [
+            # NLTKSentimentAnalyzer,
+            TensorflowSentimentAnalyzer,
+        ]:
+            for Tokenizer in [
+                # NLTKWordTokenizer,
+                # PottsTokenizer,
+                # PottsTokenizerWithNegation,
+                LowercaseTokenizer,
+            ]:
                 tokenizer = Tokenizer()
                 model = SentimentAnalyzer(tokenizer=tokenizer)
 

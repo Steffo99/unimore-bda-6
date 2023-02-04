@@ -2,6 +2,7 @@ import abc
 import logging
 
 from ..database import DataSet, Text, Category
+from ..tokenizer import BaseTokenizer
 
 log = logging.getLogger(__name__)
 
@@ -10,6 +11,12 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
     """
     Abstract base class for sentiment analyzers implemented in this project.
     """
+
+    def __init__(self, *, tokenizer: BaseTokenizer):
+        self.tokenizer: BaseTokenizer = tokenizer
+
+    def __repr__(self):
+        return f"<{self.__class__.__qualname__} tokenizer={self.tokenizer!r}>"
 
     @abc.abstractmethod
     def train(self, training_set: DataSet) -> None:
@@ -44,6 +51,20 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
+class AlreadyTrainedError(Exception):
+    """
+    This model has already been trained and cannot be trained again.
+    """
+
+
+class NotTrainedError(Exception):
+    """
+    This model has not been trained yet.
+    """
+
+
 __all__ = (
     "BaseSentimentAnalyzer",
+    "AlreadyTrainedError",
+    "NotTrainedError",
 )

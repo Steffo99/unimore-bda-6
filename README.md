@@ -30,15 +30,19 @@
 
 ### Codice
 
-Il codice dell'attività è incluso come package Python compatibile con PEP518.
+Il codice dell'attività è incluso come package Python 3.10 compatibile con PEP518.
 
 Per installare il package, è sufficiente eseguire i seguenti comandi dall'interno della directory del progetto:
 
 ```console
-$ python -m venv .venv
+$ python3.10 -m venv .venv
 $ source venv/bin/activate
 $ pip install .
 ```
+
+> **Note:**
+>
+> Per via di requisiti particolari di Tensorflow, Python 3.11 non è supportato.
 
 #### NLTK
 

@@ -175,7 +175,7 @@ class PottsTokenizer(BaseTokenizer):
             s = s.replace(amp, " and ")
         return s
 
-    def tokenize(self, text: str) -> t.Iterable[str]:
+    def tokenize_builtins(self, text: str) -> t.Iterable[str]:
         # Fix HTML character entitites:
         s = self.__html2string(text)
         # Tokenize:
@@ -187,8 +187,8 @@ class PottsTokenizer(BaseTokenizer):
 
 
 class PottsTokenizerWithNegation(PottsTokenizer):
-    def tokenize(self, text: str) -> t.Iterable[str]:
-        words = super().tokenize(text)
+    def tokenize_builtins(self, text: str) -> t.Iterable[str]:
+        words = super().tokenize_builtins(text)
         nltk.sentiment.util.mark_negation(words, shallow=True)
         return words
 
