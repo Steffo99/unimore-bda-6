@@ -19,13 +19,13 @@ def main():
 
     for dataset_func in [polar_dataset, varied_dataset]:
         for SentimentAnalyzer in [
-            # NLTKSentimentAnalyzer,
-            TensorflowSentimentAnalyzer,
+            NLTKSentimentAnalyzer,
+            # TensorflowSentimentAnalyzer,
         ]:
             for Tokenizer in [
-                # NLTKWordTokenizer,
-                # PottsTokenizer,
-                # PottsTokenizerWithNegation,
+                NLTKWordTokenizer,
+                PottsTokenizer,
+                PottsTokenizerWithNegation,
                 LowercaseTokenizer,
             ]:
                 tokenizer = Tokenizer()

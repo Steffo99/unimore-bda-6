@@ -26,7 +26,7 @@ class Review(t.TypedDict):
 
 
 Text = str
-Category = str
+Category = float
 DataTuple = collections.namedtuple("DataTuple", ["text", "category"])
 DataSet = t.Iterable[DataTuple]
 
@@ -101,23 +101,9 @@ def review_to_datatuple(review: Review) -> DataTuple:
     * unknown (everything else)
     """
     text = review["reviewText"]
-    rating = review["overall"]
+    category = review["overall"]
 
-    match rating:
-        case 1.0:
-            category = "terrible"
-        case 2.0:
-            category = "negative"
-        case 3.0:
-            category = "mixed"
-        case 4.0:
-            category = "positive"
-        case 5.0:
-            category = "great"
-        case _:
-            category = "unknown"
-
-    return DataTuple(text, category)
+    return DataTuple(text=text, category=category)
 
 
 def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
