@@ -4,14 +4,19 @@ import pymongo.collection
 import contextlib
 import bson
 import logging
-import itertools
+import tensorflow
 
 from .config import MONGO_HOST, MONGO_PORT, WORKING_SET_SIZE
 
 log = logging.getLogger(__name__)
 
 
-class Review(t.TypedDict):
+class MongoReview(t.TypedDict):
+    """
+    A review as it is stored on MongoDB.
+
+    .. warning:: Do not instantiate: this is only for type hints!
+    """
     _id: bson.ObjectId
     reviewerID: str
     asin: str
@@ -28,13 +33,13 @@ Text = str
 Category = float
 
 
-class DataTuple:
-    def __init__(self, text, category):
+class Review:
+    def __init__(self, text: Text, category: Category):
         self.text: Text = text
         self.category: Category = category
 
     @classmethod
-    def from_review(cls, review):
+    def from_mongoreview(cls, review: MongoReview):
         return cls(
             text=review["reviewText"],
             category=review["overall"],
@@ -44,15 +49,15 @@ class DataTuple:
         return f"<{self.__class__.__qualname__}: [{self.category}] {self.text}>"
 
     def __getitem__(self, item):
-        if item == 0:
+        if item == 0 or item == "text":
             return self.text
-        elif item == 1:
+        elif item == 1 or item == "category":
             return self.category
         else:
             raise KeyError(item)
 
-
-DataSet = t.Iterable[DataTuple]
+    def to_tensor_tuple(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
+        return tensorflow.convert_to_tensor(self.text, dtype=tensorflow.string), tensorflow.convert_to_tensor(self.category, dtype=tensorflow.string)
 
 
 @contextlib.contextmanager
@@ -65,7 +70,7 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
         host=MONGO_HOST.__wrapped__,
         port=MONGO_PORT.__wrapped__,
     )
-    log.info("Opened connection to MongoDB at %s!", client.address)
+    log.info("Opened connection to MongoDB!")
 
     yield client
 
@@ -75,7 +80,7 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
 
 
 @contextlib.contextmanager
-def mongo_reviews_collection_from_config() -> pymongo.collection.Collection[Review]:
+def mongo_reviews_collection_from_config() -> pymongo.collection.Collection[MongoReview]:
     """
     Create a new MongoDB client, access the ``reviews`` collection in the ``reviews`` database, and yield it.
     """
@@ -86,82 +91,118 @@ def mongo_reviews_collection_from_config() -> pymongo.collection.Collection[Revi
         yield collection
 
 
-def sample_reviews(reviews: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+class DatasetFunc(t.Protocol):
+    def __call__(self) -> t.Iterator[Review]:
+        pass
+
+
+def sample_reviews(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
     """
     Get ``amount`` random reviews from the ``reviews`` collection.
     """
     log.debug("Getting a sample of %d reviews...", amount)
 
-    return reviews.aggregate([
+    cursor = collection.aggregate([
         {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$sample": {"size": amount}},
     ])
 
+    cursor = map(Review.from_mongoreview, cursor)
+    return cursor
 
-def sample_reviews_by_rating(reviews: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterator[Review]:
+
+def sample_reviews_by_rating(collection: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterator[Review]:
     """
     Get ``amount`` random reviews with ``rating`` stars from the ``reviews`` collection.
     """
     log.debug("Getting a sample of %d reviews with %d stars...", amount, rating)
 
-    return reviews.aggregate([
+    cursor = collection.aggregate([
         {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match": {"overall": rating}},
         {"$sample": {"size": amount}},
     ])
 
-
-def polar_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
-    """
-    Get a list of the same amount of 1-star and 5-star reviews.
-    """
-    log.info("Building polar dataset with %d reviews...", amount * 2)
-
-    # Sample the required reviews
-    positive = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
-    negative = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
-
-    # Chain the iterators
-    full = itertools.chain(positive, negative)
-
-    # Convert reviews to datatuples
-    full = map(DataTuple.from_review, full)
-
-    return full
+    cursor = map(Review.from_mongoreview, cursor)
+    return cursor
 
 
-def varied_dataset(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[DataTuple]:
-    """
-    Get a list of the same amount of reviews for each rating.
-    """
-    log.info("Building varied dataset with %d reviews...", amount * 5)
+def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+    log.debug("Getting a sample of %d polar reviews...", amount * 2)
 
-    # Sample the required reviews
-    terrible = sample_reviews_by_rating(collection, rating=1.0, amount=amount)
-    negative = sample_reviews_by_rating(collection, rating=2.0, amount=amount)
-    mixed    = sample_reviews_by_rating(collection, rating=3.0, amount=amount)
-    positive = sample_reviews_by_rating(collection, rating=4.0, amount=amount)
-    great    = sample_reviews_by_rating(collection, rating=5.0, amount=amount)
+    cursor = collection.aggregate([
+        {"$limit": WORKING_SET_SIZE.__wrapped__},
+        {"$match": {"overall": 1.0}},
+        {"$sample": {"size": amount}},
+        {"$unionWith": {
+            "coll": collection.name,
+            "pipeline": [
+                {"$limit": WORKING_SET_SIZE.__wrapped__},
+                {"$match": {"overall": 5.0}},
+                {"$sample": {"size": amount}},
+            ],
+        }}
+    ])
 
-    # Chain the iterators
-    full = itertools.chain(terrible, negative, mixed, positive, great)
+    cursor = map(Review.from_mongoreview, cursor)
+    return cursor
 
-    # Convert reviews to datatuples
-    full = map(DataTuple.from_review, full)
 
-    return full
+def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+    log.debug("Getting a sample of %d varied reviews...", amount * 5)
+
+    # Wow, this is ugly.
+    cursor = collection.aggregate([
+        {"$limit": WORKING_SET_SIZE.__wrapped__},
+        {"$match": {"overall": 1.0}},
+        {"$sample": {"size": amount}},
+        {"$unionWith": {
+            "coll": collection.name,
+            "pipeline": [
+                {"$limit": WORKING_SET_SIZE.__wrapped__},
+                {"$match": {"overall": 2.0}},
+                {"$sample": {"size": amount}},
+                {"$unionWith": {
+                    "coll": collection.name,
+                    "pipeline": [
+                        {"$limit": WORKING_SET_SIZE.__wrapped__},
+                        {"$match": {"overall": 3.0}},
+                        {"$sample": {"size": amount}},
+                        {"$unionWith": {
+                            "coll": collection.name,
+                            "pipeline": [
+                                {"$limit": WORKING_SET_SIZE.__wrapped__},
+                                {"$match": {"overall": 4.0}},
+                                {"$sample": {"size": amount}},
+                                {"$unionWith": {
+                                    "coll": collection.name,
+                                    "pipeline": [
+                                        {"$limit": WORKING_SET_SIZE.__wrapped__},
+                                        {"$match": {"overall": 5.0}},
+                                        {"$sample": {"size": amount}},
+                                    ],
+                                }}
+                            ],
+                        }}
+                    ],
+                }}
+            ],
+        }}
+    ])
+
+    cursor = map(Review.from_mongoreview, cursor)
+    return cursor
 
 
 __all__ = (
-    "Review",
     "Text",
     "Category",
-    "DataTuple",
-    "DataSet",
+    "Review",
+    "DatasetFunc",
     "mongo_client_from_config",
     "mongo_reviews_collection_from_config",
     "sample_reviews",
     "sample_reviews_by_rating",
-    "polar_dataset",
-    "varied_dataset",
+    "sample_reviews_polar",
+    "sample_reviews_varied",
 )

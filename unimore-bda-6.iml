@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/data/db" />
       <excludeFolder url="file://$MODULE_DIR$/data/raw" />
       <excludeFolder url="file://$MODULE_DIR$/data/nltk" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
     <orderEntry type="jdk" jdkName="Poetry (unimore-bda-6)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

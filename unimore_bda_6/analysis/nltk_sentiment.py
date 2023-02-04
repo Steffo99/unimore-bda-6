@@ -6,7 +6,7 @@ import logging
 import typing as t
 import itertools
 
-from ..database import Text, Category, DataTuple, DataSet
+from ..database import Text, Category, Review
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 from ..log import count_passage
 from ..tokenizer import BaseTokenizer
@@ -23,16 +23,20 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
     """
 
     def __init__(self, *, tokenizer: BaseTokenizer) -> None:
-        super().__init__(tokenizer=tokenizer)
+        super().__init__()
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
         self.trained: bool = False
+        self.tokenizer: BaseTokenizer = tokenizer
 
-    def __tokenize_datatuple(self, datatuple: DataTuple) -> tuple[TokenBag, Category]:
+    def __repr__(self):
+        return f"<{self.__class__.__qualname__} tokenizer={self.tokenizer!r}>"
+
+    def __tokenize_datatuple(self, datatuple: Review) -> tuple[TokenBag, Category]:
         """
         Convert the `Text` of a `DataTuple` to a `TokenBag`.
         """
         count_passage(log, "tokenize_datatuple", 100)
-        return self.tokenizer.tokenize_builtins(datatuple[0]), datatuple[1]
+        return self.tokenizer.tokenize_builtins(datatuple.text), datatuple.category
 
     def _add_feature_unigrams(self, dataset: t.Iterator[tuple[TokenBag, Category]]) -> None:
         """
@@ -63,7 +67,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         count_passage(log, "extract_features", 100)
         return self.model.extract_features(data[0]), data[1]
 
-    def train(self, dataset: DataSet) -> None:
+    def train(self, dataset: t.Iterator[Review]) -> None:
         # Forbid retraining the model
         if self.trained:
             raise AlreadyTrainedError()

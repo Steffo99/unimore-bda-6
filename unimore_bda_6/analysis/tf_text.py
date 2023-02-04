@@ -2,42 +2,25 @@ import tensorflow
 import itertools
 import typing as t
 
-from ..database import DataSet, Text, Category
+from ..database import Text, Category, Review
 from ..tokenizer import BaseTokenizer
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 
 
 class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
-    def __init__(self, *, tokenizer: BaseTokenizer):
-        super().__init__(tokenizer=tokenizer)
+    def __init__(self):
+        super().__init__()
         self.trained = False
         self.text_vectorization_layer = None
         self.neural_network: tensorflow.keras.Sequential | None = None
 
-    @staticmethod
-    def __infinite_dataset_generator_factory(dataset: DataSet):
-        """
-        A generator of infinite copies of dataset.
-
-        .. todo:: Loads the whole dataset in memory. What a waste! Can we perform multiple MongoDB queries instead?
-        """
-        dataset = map(lambda text, category: (tensorflow.convert_to_tensor(text, dtype=tensorflow.string), tensorflow.convert_to_tensor(category, dtype=tensorflow.string)), dataset)
-
-        def generator():
-            while True:
-                nonlocal dataset
-                dataset, result = itertools.tee(dataset, 2)
-                yield result
-
-        return generator
-
     @classmethod
-    def __bda_dataset_to_tf_dataset(cls, dataset: DataSet) -> tensorflow.data.Dataset:
+    def __bda_dataset_to_tf_dataset(cls, dataset_func: t.Callable[[], t.Iterator[Review]]) -> tensorflow.data.Dataset:
         """
         Convert a `unimore_bda_6.database.DataSet` to a "real" `tensorflow.data.Dataset`.
         """
         return tensorflow.data.Dataset.from_generator(
-            cls.__infinite_dataset_generator_factory(dataset),
+            dataset_func,
             output_signature=(
                 tensorflow.TensorSpec(shape=(), dtype=tensorflow.string),
                 tensorflow.TensorSpec(shape=(), dtype=tensorflow.string),
@@ -48,7 +31,7 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
     EMBEDDING_DIM = 16
     EPOCHS = 10
 
-    def train(self, training_set: DataSet) -> None:
+    def train(self, training_set: t.Iterator[Review]) -> None:
         if self.trained:
             raise AlreadyTrainedError()
 
