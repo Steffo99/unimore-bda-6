@@ -27,7 +27,7 @@ class Review(t.TypedDict):
 
 Text = str
 Category = float
-DataTuple = collections.namedtuple("DataTuple", ["text", "category"])
+DataTuple = collections.namedtuple("DataTuple", ["text", "category"], verbose=True)
 DataSet = t.Iterable[DataTuple]
 
 
