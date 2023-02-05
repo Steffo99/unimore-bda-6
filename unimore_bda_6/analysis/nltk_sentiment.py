@@ -6,7 +6,7 @@ import logging
 import typing as t
 import itertools
 
-from ..database import Text, Category, Review
+from ..database import Text, Category, Review, DatasetFunc
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 from ..log import count_passage
 from ..tokenizer import BaseTokenizer
@@ -31,7 +31,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
     def __repr__(self):
         return f"<{self.__class__.__qualname__} tokenizer={self.tokenizer!r}>"
 
-    def __tokenize_datatuple(self, datatuple: Review) -> tuple[TokenBag, Category]:
+    def __tokenize_review(self, datatuple: Review) -> tuple[TokenBag, Category]:
         """
         Convert the `Text` of a `DataTuple` to a `TokenBag`.
         """
@@ -67,13 +67,16 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         count_passage(log, "extract_features", 100)
         return self.model.extract_features(data[0]), data[1]
 
-    def train(self, dataset: t.Iterator[Review]) -> None:
+    def train(self, dataset_func: DatasetFunc) -> None:
         # Forbid retraining the model
         if self.trained:
             raise AlreadyTrainedError()
 
+        # Get a generator
+        dataset: t.Generator[Review] = dataset_func()
+
         # Tokenize the dataset
-        dataset: t.Iterator[tuple[TokenBag, Category]] = map(self.__tokenize_datatuple, dataset)
+        dataset: t.Iterator[tuple[TokenBag, Category]] = map(self.__tokenize_review, dataset)
 
         # Cleanly duplicate the dataset iterator
         # Reduce average memory footprint, but not maximum

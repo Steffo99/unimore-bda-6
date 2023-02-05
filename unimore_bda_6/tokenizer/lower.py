@@ -8,4 +8,6 @@ class LowercaseTokenizer(BaseTokenizer):
         return text.lower().split()
 
     def tokenize_tensorflow(self, text: tensorflow.Tensor) -> tensorflow.Tensor:
-        return tensorflow.strings.lower(text)
+        text = tensorflow.strings.lower(text)
+        text = tensorflow.expand_dims(text, -1, name="tokens")
+        return text
