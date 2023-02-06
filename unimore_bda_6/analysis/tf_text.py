@@ -1,47 +1,23 @@
 import tensorflow
-import itertools
-import typing as t
 
-from ..database import Text, Category, Review, DatasetFunc
-from ..tokenizer import BaseTokenizer
+from ..database import Text, Category, DatasetFunc
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 
 
 class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
-    def __init__(self, *, tokenizer: BaseTokenizer):
+    def __init__(self, *args, **kwargs):
         super().__init__()
-        self.trained = False
-        self.neural_network: tensorflow.keras.Sequential | None = None
-        self.tokenizer: BaseTokenizer = tokenizer  # TODO
+        self.trained: bool = False
 
-    MAX_FEATURES = 20000
-    EMBEDDING_DIM = 16
-    EPOCHS = 10
+        self.text_vectorization_layer: tensorflow.keras.layers.TextVectorization = self._build_vectorizer()
+        self.model: tensorflow.keras.Sequential = self._build_model()
 
-    def train(self, dataset_func: DatasetFunc) -> None:
-        if self.trained:
-            raise AlreadyTrainedError()
-
-        def dataset_func_with_tensor_text():
-            for review in dataset_func():
-                yield review.to_tensor_text()
-
-        text_set = tensorflow.data.Dataset.from_generator(
-            dataset_func_with_tensor_text,
-            output_signature=tensorflow.TensorSpec(shape=(), dtype=tensorflow.string)
-        )
-
-        text_vectorization_layer = tensorflow.keras.layers.TextVectorization(
-            max_tokens=self.MAX_FEATURES,
-            standardize=self.tokenizer.tokenize_tensorflow,
-        )
-        text_vectorization_layer.adapt(text_set)
-
+    def _build_dataset(self, dataset_func: DatasetFunc) -> tensorflow.data.Dataset:
         def dataset_func_with_tensor_tuple():
             for review in dataset_func():
                 yield review.to_tensor_tuple()
 
-        training_set = tensorflow.data.Dataset.from_generator(
+        return tensorflow.data.Dataset.from_generator(
             dataset_func_with_tensor_tuple,
             output_signature=(
                 tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
@@ -49,26 +25,41 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
             )
         )
 
-        # I have no idea of what I'm doing here
-        self.neural_network = tensorflow.keras.Sequential([
-            tensorflow.keras.layers.Embedding(self.MAX_FEATURES + 1, self.EMBEDDING_DIM),
+    def _build_model(self) -> tensorflow.keras.Sequential:
+        return tensorflow.keras.Sequential([
+            tensorflow.keras.layers.Embedding(input_dim=self.MAX_FEATURES + 1, output_dim=self.EMBEDDING_DIM),
             tensorflow.keras.layers.Dropout(0.2),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
             tensorflow.keras.layers.Dropout(0.2),
             tensorflow.keras.layers.Dense(1),
         ])
 
-        self.neural_network.compile(
-            loss=tensorflow.losses.BinaryCrossentropy(from_logits=True),  # Only works with two tags
-            metrics=tensorflow.metrics.BinaryAccuracy(threshold=0.0)
-        )
+    def _build_vectorizer(self) -> tensorflow.keras.layers.TextVectorization:
+        return tensorflow.keras.layers.TextVectorization(max_tokens=self.MAX_FEATURES)
 
-        training_set = training_set.map(text_vectorization_layer)
+    def __vectorize_data(self, text, category):
+        text = tensorflow.expand_dims(text, -1)  # TODO: ??????
+        return self.text_vectorization_layer(text), category
 
-        self.neural_network.fit(
-            training_set,
-            epochs=self.EPOCHS,
-        )
+    MAX_FEATURES = 1000
+    EMBEDDING_DIM = 16
+    EPOCHS = 10
+
+    def train(self, dataset_func: DatasetFunc) -> None:
+        if self.trained:
+            raise AlreadyTrainedError()
+
+        training_set = self._build_dataset(dataset_func)
+
+        only_text_set = training_set.map(lambda text, category: text)
+        self.text_vectorization_layer.adapt(only_text_set)
+        training_set = training_set.map(self.__vectorize_data)
+
+        self.model.compile(loss=tensorflow.keras.losses.CosineSimilarity(axis=0), metrics=["accuracy"])
+
+        history = self.model.fit(training_set, epochs=self.EPOCHS)
+
+        ...
 
         self.trained = True
 
@@ -76,5 +67,5 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
         if not self.trained:
             raise NotTrainedError()
 
-        prediction = self.neural_network.predict(text)
+        prediction = self.model.predict(text)
         breakpoint()
