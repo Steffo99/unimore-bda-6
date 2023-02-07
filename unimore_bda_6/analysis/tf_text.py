@@ -1,6 +1,7 @@
 import tensorflow
 
 from ..database import Text, Category, DatasetFunc
+from ..config import DATA_SET_SIZE
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 
 
@@ -21,17 +22,20 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
             dataset_func_with_tensor_tuple,
             output_signature=(
                 tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
-                tensorflow.TensorSpec(shape=(), dtype=tensorflow.float32, name="category"),
+                tensorflow.TensorSpec(shape=(5,), dtype=tensorflow.float32, name="category"),
             )
         )
 
     def _build_model(self) -> tensorflow.keras.Sequential:
         return tensorflow.keras.Sequential([
-            tensorflow.keras.layers.Embedding(input_dim=self.MAX_FEATURES + 1, output_dim=self.EMBEDDING_DIM),
-            tensorflow.keras.layers.Dropout(0.2),
+            tensorflow.keras.layers.Embedding(
+                input_dim=self.MAX_FEATURES + 1,
+                output_dim=self.EMBEDDING_DIM,
+            ),
+            # tensorflow.keras.layers.Dropout(0.2),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
-            tensorflow.keras.layers.Dropout(0.2),
-            tensorflow.keras.layers.Dense(1),
+            # tensorflow.keras.layers.Dropout(0.2),
+            tensorflow.keras.layers.Dense(5, activation="softmax"),
         ])
 
     def _build_vectorizer(self) -> tensorflow.keras.layers.TextVectorization:
@@ -41,9 +45,13 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
         text = tensorflow.expand_dims(text, -1)  # TODO: ??????
         return self.text_vectorization_layer(text), category
 
-    MAX_FEATURES = 1000
-    EMBEDDING_DIM = 16
-    EPOCHS = 10
+    MAX_FEATURES = 2500
+    EMBEDDING_DIM = 24
+    """
+    Count of possible "semantic meanings" of words, represented as dimensions of a tensor.
+    """
+
+    EPOCHS = 3
 
     def train(self, dataset_func: DatasetFunc) -> None:
         if self.trained:
@@ -55,11 +63,10 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
         self.text_vectorization_layer.adapt(only_text_set)
         training_set = training_set.map(self.__vectorize_data)
 
-        self.model.compile(loss=tensorflow.keras.losses.CosineSimilarity(axis=0), metrics=["accuracy"])
+        # self.model.compile(loss=tensorflow.keras.losses.SparseCategoricalCrossentropy(from_logits=True), optimizer="adam", metrics=["accuracy"])
+        self.model.compile(loss=tensorflow.keras.losses.MeanAbsoluteError(), optimizer="adam", metrics=["accuracy"])
 
-        history = self.model.fit(training_set, epochs=self.EPOCHS)
-
-        ...
+        self.model.fit(training_set, epochs=self.EPOCHS)
 
         self.trained = True
 
@@ -67,5 +74,15 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer):
         if not self.trained:
             raise NotTrainedError()
 
-        prediction = self.model.predict(text)
-        breakpoint()
+        vector = self.text_vectorization_layer(tensorflow.expand_dims(text, -1))
+
+        prediction = self.model.predict(vector)
+
+        max_i = None
+        max_p = None
+        for i, p in enumerate(iter(prediction[0])):
+            if max_p is None or p > max_p:
+                max_i = i
+                max_p = p
+
+        return float(max_i) + 1.0

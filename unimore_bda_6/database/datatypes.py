@@ -33,7 +33,13 @@ class Review:
         return tensorflow.convert_to_tensor(self.text, dtype=tensorflow.string)
 
     def to_tensor_category(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor(self.category / 5.0, dtype=tensorflow.float32)
+        return tensorflow.convert_to_tensor([
+            1.0 if self.category == 1.0 else 0.0,
+            1.0 if self.category == 2.0 else 0.0,
+            1.0 if self.category == 3.0 else 0.0,
+            1.0 if self.category == 4.0 else 0.0,
+            1.0 if self.category == 5.0 else 0.0,
+        ], dtype=tensorflow.float32)
 
     def to_tensor_tuple(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
         return (

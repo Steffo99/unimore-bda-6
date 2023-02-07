@@ -1,9 +1,8 @@
 import abc
 import logging
-import typing as t
 import dataclasses
 
-from ..database import Text, Category, Review, DatasetFunc
+from ..database import Text, Category, DatasetFunc
 
 log = logging.getLogger(__name__)
 

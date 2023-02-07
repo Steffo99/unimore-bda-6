@@ -41,7 +41,6 @@ def load_cache(path: str | pathlib.Path) -> DatasetFunc:
     path = pathlib.Path(path)
 
     if not path.exists():
-        log.error("Specified cache directory does not exist: %s", path)
         raise FileNotFoundError("The specified path does not exist.")
 
     def data_cache_loader():

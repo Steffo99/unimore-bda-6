@@ -15,7 +15,7 @@ def install_log_handler(loggers: list[logging.Logger] = None):
     for logger in loggers:
         coloredlogs.install(
             logger=logger,
-            level="DEBUG",
+            level="INFO",
             fmt="{asctime} | {name:<32} | {levelname:>8} | {message}",
             style="{",
             level_styles=dict(
