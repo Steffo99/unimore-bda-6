@@ -15,7 +15,7 @@ def install_log_handler(loggers: list[logging.Logger] = None):
     for logger in loggers:
         coloredlogs.install(
             logger=logger,
-            level="INFO",
+            level="DEBUG",
             fmt="{asctime} | {name:<32} | {levelname:>8} | {message}",
             style="{",
             level_styles=dict(
@@ -33,6 +33,9 @@ def install_log_handler(loggers: list[logging.Logger] = None):
             isatty=True,
         )
         this_log.debug("Installed custom log handler on: %s", logger)
+
+    logging.getLogger("unimore_bda_6.database.cache").setLevel("INFO")
+    logging.getLogger("unimore_bda_6.database.datatypes").setLevel("INFO")
 
 
 _passage_counts = collections.defaultdict(lambda: 0)

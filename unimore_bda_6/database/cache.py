@@ -36,7 +36,7 @@ def store_cache(reviews: t.Iterator[Review], path: str | pathlib.Path) -> None:
 
 def load_cache(path: str | pathlib.Path) -> DatasetFunc:
     """
-    Load the contents of a directory
+    Load the contents of a directory into a `Review` iterator.
     """
     path = pathlib.Path(path)
 
@@ -47,8 +47,10 @@ def load_cache(path: str | pathlib.Path) -> DatasetFunc:
         document_paths = path.iterdir()
         for document_path in document_paths:
             document_path = pathlib.Path(document_path)
+
             if not str(document_path).endswith(".pickle"):
                 log.debug("Ignoring non-pickle file: %s", document_path)
+                continue
 
             log.debug("Loading pickle file: %s", document_path)
             with open(document_path, "rb") as file:
@@ -58,8 +60,22 @@ def load_cache(path: str | pathlib.Path) -> DatasetFunc:
     return data_cache_loader
 
 
+def delete_cache(path: str | pathlib.Path) -> None:
+    """
+    Delete the given cache directory.
+    """
+    path = pathlib.Path(path)
+
+    if not path.exists():
+        raise FileNotFoundError("The specified path does not exist.")
+
+    log.warning("Deleting cache directory: %s", path)
+    shutil.rmtree(path)
+
+
 __all__ = (
     "DatasetFunc",
     "store_cache",
     "load_cache",
+    "delete_cache",
 )

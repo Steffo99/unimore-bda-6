@@ -11,12 +11,13 @@ log = logging.getLogger(__name__)
 class EvaluationResults:
     correct: int
     evaluated: int
+    score: float
 
     def __repr__(self):
-        return f"<EvaluationResults: {self.correct}/{self.evaluated}, {self.correct / self.evaluated * 100:.2f}>"
+        return f"<EvaluationResults: score of {self.score} out of {self.evaluated} evaluated tuples>"
 
     def __str__(self):
-        return f"{self.correct} / {self.evaluated} - {self.correct / self.evaluated * 100:.2f} %"
+        return f"{self.evaluated} evaluated, {self.correct} correct, {self.correct / self.evaluated * 100:.2} % accuracy, {self.score:.2} score, {self.score / self.evaluated * 100:.2} scoreaccuracy"
 
 
 class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
@@ -40,15 +41,18 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
 
         evaluated: int = 0
         correct: int = 0
+        score: float = 0.0
 
         for review in dataset_func():
             resulting_category = self.use(review.text)
             evaluated += 1
             correct += 1 if resulting_category == review.category else 0
+            score += 1 - (abs(resulting_category - review.category) / 4)
             if not evaluated % 100:
-                log.debug("%d evaluated, %d correct, %0.2d %% accuracy", evaluated, correct, correct / evaluated * 100)
+                temp_results = EvaluationResults(correct=correct, evaluated=evaluated, score=score)
+                log.debug(f"{temp_results!s}")
 
-        return EvaluationResults(correct=correct, evaluated=evaluated)
+        return EvaluationResults(correct=correct, evaluated=evaluated, score=score)
 
     @abc.abstractmethod
     def use(self, text: Text) -> Category:
@@ -70,8 +74,15 @@ class NotTrainedError(Exception):
     """
 
 
+class TrainingFailedError(Exception):
+    """
+    The model wasn't able to complete the training and should not be used anymore.
+    """
+
+
 __all__ = (
     "BaseSentimentAnalyzer",
     "AlreadyTrainedError",
     "NotTrainedError",
+    "TrainingFailedError",
 )

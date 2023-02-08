@@ -1,5 +1,8 @@
 import tensorflow
 from .collections import MongoReview
+import logging
+
+log = logging.getLogger(__name__)
 
 
 Text = str
@@ -33,19 +36,21 @@ class Review:
         return tensorflow.convert_to_tensor(self.text, dtype=tensorflow.string)
 
     def to_tensor_category(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor([
+        return tensorflow.convert_to_tensor([[
             1.0 if self.category == 1.0 else 0.0,
             1.0 if self.category == 2.0 else 0.0,
             1.0 if self.category == 3.0 else 0.0,
             1.0 if self.category == 4.0 else 0.0,
             1.0 if self.category == 5.0 else 0.0,
-        ], dtype=tensorflow.float32)
+        ]], dtype=tensorflow.float32)
 
     def to_tensor_tuple(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
-        return (
+        t = (
             self.to_tensor_text(),
             self.to_tensor_category(),
         )
+        log.debug("Converted %s", t)
+        return t
 
 
 __all__ = (

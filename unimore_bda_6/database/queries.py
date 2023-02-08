@@ -54,6 +54,12 @@ def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int)
                 {"$match": {"overall": 5.0}},
                 {"$sample": {"size": amount}},
             ],
+        }},
+        {"$addFields": {
+            "sortKey": {"$rand": {}},
+        }},
+        {"$sort": {
+            "sortKey": 1,
         }}
     ])
 
@@ -101,6 +107,12 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
                     ],
                 }}
             ],
+        }},
+        {"$addFields": {
+            "sortKey": {"$rand": {}},
+        }},
+        {"$sort": {
+            "sortKey": 1,
         }}
     ])
 

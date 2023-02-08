@@ -1,4 +1,3 @@
-import contextlib
 import pymongo.collection
 import typing as t
 import bson
@@ -30,8 +29,8 @@ def reviews_collection(db: pymongo.MongoClient) -> pymongo.collection.Collection
     Create a new MongoDB client, access the ``reviews`` collection in the ``reviews`` database, and yield it.
     """
     log.debug("Accessing the reviews collection...")
-    collection = db.reviews.reviews
-    log.debug("Collection accessed successfully: %s", collection)
+    collection: pymongo.collection.Collection[MongoReview] = db.reviews.reviews
+    log.debug("Collection accessed successfully: %s", collection.name)
     return collection
 
 

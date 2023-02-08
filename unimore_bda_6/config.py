@@ -49,10 +49,55 @@ def DATA_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the datasets.
 
-    Defaults to `1000`.
+    Defaults to `1750`.
     """
     if val is None:
-        return 1000
+        return 1750
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def TENSORFLOW_MAX_FEATURES(val: str | None) -> int:
+    """
+    The maximum number of features to use in Tensorflow models.
+
+    Defaults to `30000`.
+    """
+    if val is None:
+        return 30000
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def TENSORFLOW_EMBEDDING_SIZE(val: str | None) -> int:
+    """
+    The size of the embeddings tensor to use in Tensorflow models.
+
+    Defaults to `12`.
+    """
+    if val is None:
+        return 12
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def TENSORFLOW_EPOCHS(val: str | None) -> int:
+    """
+    The number of epochs to train Tensorflow models for.
+
+    Defaults to `15`.
+    """
+    if val is None:
+        return 15
     try:
         return int(val)
     except ValueError:
@@ -65,6 +110,9 @@ __all__ = (
     "MONGO_PORT",
     "WORKING_SET_SIZE",
     "DATA_SET_SIZE",
+    "TENSORFLOW_MAX_FEATURES",
+    "TENSORFLOW_EMBEDDING_SIZE",
+    "TENSORFLOW_EPOCHS",
 )
 
 
