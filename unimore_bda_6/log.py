@@ -15,15 +15,15 @@ def install_log_handler(loggers: list[logging.Logger] = None):
     for logger in loggers:
         coloredlogs.install(
             logger=logger,
-            level="DEBUG",
-            fmt="{asctime} | {name:<32} | {levelname:>8} | {message}",
+            level="DEBUG" if __debug__ else "INFO",
+            fmt="{asctime} | {name:<80} | {levelname:>8} | {message}",
             style="{",
             level_styles=dict(
                 debug=dict(color="white"),
                 info=dict(color="cyan"),
                 warning=dict(color="yellow"),
                 error=dict(color="red"),
-                critical=dict(color="red", bold=True),
+                critical=dict(color="black", background="red", bold=True),
             ),
             field_styles=dict(
                 asctime=dict(color='magenta'),

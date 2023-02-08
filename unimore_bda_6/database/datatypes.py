@@ -10,6 +10,11 @@ Category = float
 
 
 class Review:
+    __slots__ = (
+        "text",
+        "category",
+    )
+
     def __init__(self, text: Text, category: Category):
         self.text: str = text
         self.category: float = category

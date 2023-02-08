@@ -1,23 +1,13 @@
+from __future__ import annotations
+
 import abc
 import logging
 import dataclasses
 
-from ..database import Text, Category, DatasetFunc
+from ..database import Text, Category, CachedDatasetFunc
+from ..tokenizer import BaseTokenizer
 
 log = logging.getLogger(__name__)
-
-
-@dataclasses.dataclass
-class EvaluationResults:
-    correct: int
-    evaluated: int
-    score: float
-
-    def __repr__(self):
-        return f"<EvaluationResults: score of {self.score} out of {self.evaluated} evaluated tuples>"
-
-    def __str__(self):
-        return f"{self.evaluated} evaluated, {self.correct} correct, {self.correct / self.evaluated * 100:.2} % accuracy, {self.score:.2} score, {self.score / self.evaluated * 100:.2} scoreaccuracy"
 
 
 class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
@@ -25,14 +15,28 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
     Abstract base class for sentiment analyzers implemented in this project.
     """
 
+    # noinspection PyUnusedLocal
+    def __init__(self, *, tokenizer: BaseTokenizer):
+        pass
+
+    def __repr__(self):
+        return f"<{self.__class__.__qualname__}>"
+
     @abc.abstractmethod
-    def train(self, dataset_func: DatasetFunc) -> None:
+    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
         """
-        Train the analyzer with the given training dataset.
+        Train the analyzer with the given training and validation datasets.
         """
         raise NotImplementedError()
 
-    def evaluate(self, dataset_func: DatasetFunc) -> EvaluationResults:
+    @abc.abstractmethod
+    def use(self, text: Text) -> Category:
+        """
+        Run the model on the given input.
+        """
+        raise NotImplementedError()
+
+    def evaluate(self, evaluation_dataset_func: CachedDatasetFunc) -> EvaluationResults:
         """
         Perform a model evaluation by calling repeatedly `.use` on every text of the test dataset and by comparing its resulting category with the expected category.
 
@@ -43,23 +47,30 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         correct: int = 0
         score: float = 0.0
 
-        for review in dataset_func():
+        for review in evaluation_dataset_func():
             resulting_category = self.use(review.text)
             evaluated += 1
             correct += 1 if resulting_category == review.category else 0
             score += 1 - (abs(resulting_category - review.category) / 4)
-            if not evaluated % 100:
-                temp_results = EvaluationResults(correct=correct, evaluated=evaluated, score=score)
-                log.debug(f"{temp_results!s}")
 
         return EvaluationResults(correct=correct, evaluated=evaluated, score=score)
 
-    @abc.abstractmethod
-    def use(self, text: Text) -> Category:
-        """
-        Run the model on the given input.
-        """
-        raise NotImplementedError()
+
+@dataclasses.dataclass
+class EvaluationResults:
+    """
+    Container for the results of a dataset evaluation.
+    """
+
+    correct: int
+    evaluated: int
+    score: float
+
+    def __repr__(self):
+        return f"<EvaluationResults: {self!s}>"
+
+    def __str__(self):
+        return f"{self.evaluated} evaluated, {self.correct} correct, {self.correct / self.evaluated:.2%} accuracy, {self.score:.2f} score, {self.score / self.evaluated:.2%} scoreaccuracy"
 
 
 class AlreadyTrainedError(Exception):

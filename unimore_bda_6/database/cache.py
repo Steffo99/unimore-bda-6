@@ -9,7 +9,7 @@ from .datatypes import Review
 log = logging.getLogger(__name__)
 
 
-DatasetFunc = t.Callable[[], t.Generator[Review, t.Any, None]]
+CachedDatasetFunc = t.Callable[[], t.Generator[Review, t.Any, None]]
 
 
 def store_cache(reviews: t.Iterator[Review], path: str | pathlib.Path) -> None:
@@ -34,7 +34,7 @@ def store_cache(reviews: t.Iterator[Review], path: str | pathlib.Path) -> None:
             pickle.dump(document, file)
 
 
-def load_cache(path: str | pathlib.Path) -> DatasetFunc:
+def load_cache(path: str | pathlib.Path) -> CachedDatasetFunc:
     """
     Load the contents of a directory into a `Review` iterator.
     """
@@ -69,12 +69,12 @@ def delete_cache(path: str | pathlib.Path) -> None:
     if not path.exists():
         raise FileNotFoundError("The specified path does not exist.")
 
-    log.warning("Deleting cache directory: %s", path)
+    log.debug("Deleting cache directory: %s", path)
     shutil.rmtree(path)
 
 
 __all__ = (
-    "DatasetFunc",
+    "CachedDatasetFunc",
     "store_cache",
     "load_cache",
     "delete_cache",

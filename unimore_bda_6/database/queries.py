@@ -9,6 +9,9 @@ from .datatypes import Review
 log = logging.getLogger(__name__)
 
 
+SampleFunc = t.Callable[[pymongo.collection.Collection, int], t.Iterator[Review]]
+
+
 def sample_reviews(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
     """
     Get ``amount`` random reviews from the ``reviews`` collection.
@@ -41,18 +44,20 @@ def sample_reviews_by_rating(collection: pymongo.collection.Collection, rating: 
 
 
 def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
-    log.debug("Getting a sample of %d polar reviews...", amount * 2)
+    category_amount = amount // 2
+
+    log.debug("Getting a sample of %d polar reviews...", category_amount * 2)
 
     cursor = collection.aggregate([
         {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match": {"overall": 1.0}},
-        {"$sample": {"size": amount}},
+        {"$sample": {"size": category_amount}},
         {"$unionWith": {
             "coll": collection.name,
             "pipeline": [
                 {"$limit": WORKING_SET_SIZE.__wrapped__},
                 {"$match": {"overall": 5.0}},
-                {"$sample": {"size": amount}},
+                {"$sample": {"size": category_amount}},
             ],
         }},
         {"$addFields": {
@@ -69,37 +74,39 @@ def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int)
 
 
 def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
-    log.debug("Getting a sample of %d varied reviews...", amount * 5)
+    category_amount = amount // 5
+
+    log.debug("Getting a sample of %d varied reviews...", category_amount * 5)
 
     # Wow, this is ugly.
     cursor = collection.aggregate([
         {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match": {"overall": 1.0}},
-        {"$sample": {"size": amount}},
+        {"$sample": {"size": category_amount}},
         {"$unionWith": {
             "coll": collection.name,
             "pipeline": [
                 {"$limit": WORKING_SET_SIZE.__wrapped__},
                 {"$match": {"overall": 2.0}},
-                {"$sample": {"size": amount}},
+                {"$sample": {"size": category_amount}},
                 {"$unionWith": {
                     "coll": collection.name,
                     "pipeline": [
                         {"$limit": WORKING_SET_SIZE.__wrapped__},
                         {"$match": {"overall": 3.0}},
-                        {"$sample": {"size": amount}},
+                        {"$sample": {"size": category_amount}},
                         {"$unionWith": {
                             "coll": collection.name,
                             "pipeline": [
                                 {"$limit": WORKING_SET_SIZE.__wrapped__},
                                 {"$match": {"overall": 4.0}},
-                                {"$sample": {"size": amount}},
+                                {"$sample": {"size": category_amount}},
                                 {"$unionWith": {
                                     "coll": collection.name,
                                     "pipeline": [
                                         {"$limit": WORKING_SET_SIZE.__wrapped__},
                                         {"$match": {"overall": 5.0}},
-                                        {"$sample": {"size": amount}},
+                                        {"$sample": {"size": category_amount}},
                                     ],
                                 }}
                             ],
@@ -122,6 +129,7 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
 
 
 __all__ = (
+    "SampleFunc",
     "sample_reviews",
     "sample_reviews_by_rating",
     "sample_reviews_polar",

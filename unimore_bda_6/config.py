@@ -45,14 +45,44 @@ def WORKING_SET_SIZE(val: str | None) -> int:
 
 
 @config.optional()
-def DATA_SET_SIZE(val: str | None) -> int:
+def TRAINING_SET_SIZE(val: str | None) -> int:
     """
-    The number of reviews from each category to fetch for the datasets.
+    The number of reviews from each category to fetch for the training dataset.
 
-    Defaults to `1750`.
+    Defaults to `5000`.
     """
     if val is None:
-        return 1750
+        return 5000
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def VALIDATION_SET_SIZE(val: str | None) -> int:
+    """
+    The number of reviews from each category to fetch for the training dataset.
+
+    Defaults to `400`.
+    """
+    if val is None:
+        return 400
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def EVALUATION_SET_SIZE(val: str | None) -> int:
+    """
+    The number of reviews from each category to fetch for the evaluation dataset.
+
+    Defaults to `1000`.
+    """
+    if val is None:
+        return 1000
     try:
         return int(val)
     except ValueError:
@@ -79,10 +109,10 @@ def TENSORFLOW_EMBEDDING_SIZE(val: str | None) -> int:
     """
     The size of the embeddings tensor to use in Tensorflow models.
 
-    Defaults to `12`.
+    Defaults to `6`.
     """
     if val is None:
-        return 12
+        return 6
     try:
         return int(val)
     except ValueError:
@@ -94,10 +124,10 @@ def TENSORFLOW_EPOCHS(val: str | None) -> int:
     """
     The number of epochs to train Tensorflow models for.
 
-    Defaults to `15`.
+    Defaults to `12`.
     """
     if val is None:
-        return 15
+        return 12
     try:
         return int(val)
     except ValueError:
@@ -109,7 +139,9 @@ __all__ = (
     "MONGO_HOST",
     "MONGO_PORT",
     "WORKING_SET_SIZE",
-    "DATA_SET_SIZE",
+    "TRAINING_SET_SIZE",
+    "VALIDATION_SET_SIZE",
+    "EVALUATION_SET_SIZE",
     "TENSORFLOW_MAX_FEATURES",
     "TENSORFLOW_EMBEDDING_SIZE",
     "TENSORFLOW_EPOCHS",

@@ -10,7 +10,7 @@ class NLTKWordTokenizer(BaseTokenizer):
     Tokenizer based on `nltk.word_tokenize`.
     """
 
-    def tokenize_builtins(self, text: str) -> t.Iterable[str]:
+    def tokenize_plain(self, text: str) -> t.Iterable[str]:
         tokens = nltk.word_tokenize(text)
         nltk.sentiment.util.mark_negation(tokens, shallow=True)
         return tokens

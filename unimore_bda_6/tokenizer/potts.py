@@ -104,7 +104,7 @@ regex_strings = (
     emoticon_string
     ,
     # HTML tags:
-     r"""<[^>]+>"""
+    r"""<[^>]+>"""
     ,
     # Twitter username:
     r"""(?:@[\w_]+)"""
@@ -124,7 +124,7 @@ regex_strings = (
     |
     (?:\S)                         # Everything else that isn't whitespace.
     """
-    )
+)
 
 ######################################################################
 # This is the core tokenizing regex:
@@ -138,6 +138,7 @@ emoticon_re = re.compile(regex_strings[1], re.VERBOSE | re.I | re.UNICODE)
 html_entity_digit_re = re.compile(r"&#\d+;")
 html_entity_alpha_re = re.compile(r"&\w+;")
 amp = "&amp;"
+
 
 ######################################################################
 
@@ -165,7 +166,7 @@ class PottsTokenizer(BaseTokenizer):
                     pass
         # Now the alpha versions:
         ents = set(html_entity_alpha_re.findall(s))
-        ents = filter((lambda x : x != amp), ents)
+        ents = filter((lambda x: x != amp), ents)
         for ent in ents:
             entname = ent[1:-1]
             try:
@@ -175,7 +176,7 @@ class PottsTokenizer(BaseTokenizer):
             s = s.replace(amp, " and ")
         return s
 
-    def tokenize_builtins(self, text: str) -> t.Iterable[str]:
+    def tokenize_plain(self, text: str) -> t.Iterable[str]:
         # Fix HTML character entitites:
         s = self.__html2string(text)
         # Tokenize:
@@ -187,8 +188,8 @@ class PottsTokenizer(BaseTokenizer):
 
 
 class PottsTokenizerWithNegation(PottsTokenizer):
-    def tokenize_builtins(self, text: str) -> t.Iterable[str]:
-        words = super().tokenize_builtins(text)
+    def tokenize_plain(self, text: str) -> t.Iterable[str]:
+        words = super().tokenize_plain(text)
         nltk.sentiment.util.mark_negation(words, shallow=True)
         return words
 

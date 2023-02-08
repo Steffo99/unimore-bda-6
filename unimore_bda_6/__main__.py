@@ -1,84 +1,81 @@
 import logging
-import tensorflow
+import pymongo.errors
+from .log import install_log_handler
 
-from .config import config, DATA_SET_SIZE
-from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied, store_cache, load_cache, delete_cache
+install_log_handler()
+
+from .config import config
+from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
 from .analysis.nltk_sentiment import NLTKSentimentAnalyzer
 from .analysis.tf_text import TensorflowSentimentAnalyzer
 from .analysis.base import TrainingFailedError
-from .tokenizer import LowercaseTokenizer
-from .log import install_log_handler
+from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation
+from .gathering import Caches
 
 log = logging.getLogger(__name__)
 
 
 def main():
-    if len(tensorflow.config.list_physical_devices(device_type="GPU")) == 0:
-        log.warning("Tensorflow reports no GPU acceleration available.")
-    else:
-        log.debug("Tensorflow successfully found GPU acceleration!")
+    log.info("Started unimore-bda-6 in %s mode!", "DEBUG" if __debug__ else "PRODUCTION")
 
-    try:
-        delete_cache("./data/training")
-        delete_cache("./data/evaluation")
-    except FileNotFoundError:
-        pass
+    log.debug("Validating configuration...")
+    config.proxies.resolve()
 
-    for dataset_func in [sample_reviews_polar, sample_reviews_varied]:
-        for SentimentAnalyzer in [TensorflowSentimentAnalyzer, NLTKSentimentAnalyzer]:
-            for Tokenizer in [
-                # NLTKWordTokenizer,
-                # PottsTokenizer,
-                # PottsTokenizerWithNegation,
-                LowercaseTokenizer,
+    log.debug("Ensuring there are no leftover caches...")
+    Caches.ensure_clean()
+
+    with mongo_client_from_config() as db:
+        try:
+            db.admin.command("ping")
+        except pymongo.errors.ServerSelectionTimeoutError:
+            log.fatal("MongoDB database is not available, exiting...")
+            exit(1)
+
+        reviews = reviews_collection(db)
+
+        for sample_func in [sample_reviews_varied, sample_reviews_polar]:
+
+            for SentimentAnalyzer in [
+                TensorflowSentimentAnalyzer,
+                NLTKSentimentAnalyzer
             ]:
-                while True:
-                    try:
-                        tokenizer = Tokenizer()
-                        model = SentimentAnalyzer(tokenizer=tokenizer)
 
-                        with mongo_client_from_config() as db:
-                            log.debug("Finding the reviews MongoDB collection...")
-                            collection = reviews_collection(db)
+                for Tokenizer in [
+                    PlainTokenizer,
+                    LowercaseTokenizer,
+                    NLTKWordTokenizer,
+                    PottsTokenizer,
+                    PottsTokenizerWithNegation,
+                ]:
 
+                    slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
+
+                    while True:
+
+                        try:
+                            slog.debug("Creating sentiment analyzer...")
+                            sa = SentimentAnalyzer(tokenizer=Tokenizer())
+                        except TypeError:
+                            slog.warning("%s does not support %s, skipping...", Tokenizer.__name__, SentimentAnalyzer.__name__)
+                            break
+
+                        with Caches.from_database_samples(collection=reviews, sample_func=sample_func) as datasets:
                             try:
-                                training_cache = load_cache("./data/training")
-                                evaluation_cache = load_cache("./data/evaluation")
-                            except FileNotFoundError:
-                                log.debug("Gathering datasets...")
-                                reviews_training = dataset_func(collection=collection, amount=DATA_SET_SIZE.__wrapped__)
-                                reviews_evaluation = dataset_func(collection=collection, amount=DATA_SET_SIZE.__wrapped__)
+                                slog.info("Training sentiment analyzer: %s", sa)
+                                sa.train(training_dataset_func=datasets.training, validation_dataset_func=datasets.validation)
 
-                                log.debug("Caching datasets...")
-                                store_cache(reviews_training, "./data/training")
-                                store_cache(reviews_evaluation, "./data/evaluation")
-                                del reviews_training
-                                del reviews_evaluation
+                            except TrainingFailedError:
+                                slog.error("Training failed, trying again with a different dataset...")
+                                continue
 
-                                training_cache = load_cache("./data/training")
-                                evaluation_cache = load_cache("./data/evaluation")
-                                log.debug("Caches stored and loaded successfully!")
                             else:
-                                log.debug("Caches loaded successfully!")
+                                slog.info("Training succeeded!")
 
-                            log.info("Training model: %s", model)
-                            model.train(training_cache)
-                            log.info("Evaluating model: %s", model)
-                            evaluation_results = model.evaluate(evaluation_cache)
-                            log.info("%s", evaluation_results)
-
-                    except TrainingFailedError:
-                        log.error("Training failed, restarting with a different dataset.")
-                        continue
-                    else:
-                        log.info("Training")
-                        break
-                    finally:
-                        delete_cache("./data/training")
-                        delete_cache("./data/evaluation")
+                                slog.info("Evaluating sentiment analyzer: %s", sa)
+                                evaluation_results = sa.evaluate(evaluation_dataset_func=datasets.evaluation)
+                                slog.info("Evaluation results: %s", evaluation_results)
+                                break
 
 
 if __name__ == "__main__":
-    install_log_handler()
-    config.proxies.resolve()
     main()

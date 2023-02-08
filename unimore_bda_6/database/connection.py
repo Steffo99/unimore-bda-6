@@ -1,4 +1,5 @@
 import pymongo
+import pymongo.errors
 import contextlib
 import typing as t
 import logging
@@ -13,12 +14,12 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
     """
     Create a new MongoDB client and yield it.
     """
-    log.debug("Opening connection to MongoDB...")
+    log.debug("Creating MongoDB client...")
     client: pymongo.MongoClient = pymongo.MongoClient(
         host=MONGO_HOST.__wrapped__,
         port=MONGO_PORT.__wrapped__,
     )
-    log.info("Opened connection to MongoDB!")
+    log.debug("Created MongoDB client!")
 
     yield client
 
