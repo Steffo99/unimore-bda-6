@@ -1,52 +1,4 @@
-"""
-=========================
-Original module docstring
-=========================
-
-This code implements a basic, Twitter-aware tokenizer.
-
-A tokenizer is a function that splits a string of text into words. In
-Python terms, we map string and unicode objects into lists of unicode
-objects.
-
-There is not a single right way to do tokenizing. The best method
-depends on the application.  This tokenizer is designed to be flexible
-and this easy to adapt to new domains and tasks.  The basic logic is
-this:
-
-1. The tuple regex_strings defines a list of regular expression
-   strings.
-
-2. The regex_strings strings are put, in order, into a compiled
-   regular expression object called word_re.
-
-3. The tokenization is done by word_re.findall(s), where s is the
-   user-supplied string, inside the tokenize() method of the class
-   Tokenizer.
-
-4. When instantiating Tokenizer objects, there is a single option:
-   preserve_case.  By default, it is set to True. If it is set to
-   False, then the tokenizer will downcase everything except for
-   emoticons.
-
-The __main__ method illustrates by tokenizing a few examples.
-
-I've also included a Tokenizer method tokenize_random_tweet(). If the
-twitter library is installed (http://code.google.com/p/python-twitter/)
-and Twitter is cooperating, then it should tokenize a random
-English-language tweet.
-"""
-
-__author__ = "Christopher Potts"
-__copyright__ = "Copyright 2011, Christopher Potts"
-__credits__ = []
-__license__ = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License: http://creativecommons.org/licenses/by-nc-sa/3.0/"
-__version__ = "1.0"
-__maintainer__ = "Christopher Potts"
-__email__ = "See the author's website"
-
-######################################################################
-
+import tensorflow
 import re
 import html.entities
 import typing as t
@@ -54,108 +6,98 @@ import nltk.sentiment.util
 
 from .base import BaseTokenizer
 
-######################################################################
-# The following strings are components in the regular expression
-# that is used for tokenizing. It's important that phone_number
-# appears first in the final regex (since it can contain whitespace).
-# It also could matter that tags comes after emoticons, due to the
-# possibility of having text like
-#
-#     <:| and some text >:)
-#
-# Most imporatantly, the final element should always be last, since it
-# does a last ditch whitespace-based tokenization of whatever is left.
-
-# This particular element is used in a couple ways, so we define it
-# with a name:
-emoticon_string = r"""
-    (?:
-      [<>]?
-      [:;=8]                     # eyes
-      [\-o\*\']?                 # optional nose
-      [\)\]\(\[dDpP/\:\}\{@\|\\] # mouth
-      |
-      [\)\]\(\[dDpP/\:\}\{@\|\\] # mouth
-      [\-o\*\']?                 # optional nose
-      [:;=8]                     # eyes
-      [<>]?
-    )"""
-
-# The components of the tokenizer:
-regex_strings = (
-    # Phone numbers:
-    r"""
-    (?:
-      (?:            # (international)
-        \+?[01]
-        [\-\s.]*
-      )?
-      (?:            # (area code)
-        [\(]?
-        \d{3}
-        [\-\s.\)]*
-      )?
-      \d{3}          # exchange
-      [\-\s.]*
-      \d{4}          # base
-    )"""
-    ,
-    # Emoticons:
-    emoticon_string
-    ,
-    # HTML tags:
-    r"""<[^>]+>"""
-    ,
-    # Twitter username:
-    r"""(?:@[\w_]+)"""
-    ,
-    # Twitter hashtags:
-    r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)"""
-    ,
-    # Remaining word types:
-    r"""
-    (?:[a-z][a-z'\-_]+[a-z])       # Words with apostrophes or dashes.
-    |
-    (?:[+\-]?\d+[,/.:-]\d+[+\-]?)  # Numbers, including fractions, decimals.
-    |
-    (?:[\w_]+)                     # Words without apostrophes or dashes.
-    |
-    (?:\.(?:\s*\.){1,})            # Ellipsis dots.
-    |
-    (?:\S)                         # Everything else that isn't whitespace.
-    """
-)
-
-######################################################################
-# This is the core tokenizing regex:
-
-word_re = re.compile(r"""(%s)""" % "|".join(regex_strings), re.VERBOSE | re.I | re.UNICODE)
-
-# The emoticon string gets its own regex so that we can preserve case for them as needed:
-emoticon_re = re.compile(regex_strings[1], re.VERBOSE | re.I | re.UNICODE)
-
-# These are for regularizing HTML entities to Unicode:
-html_entity_digit_re = re.compile(r"&#\d+;")
-html_entity_alpha_re = re.compile(r"&\w+;")
-amp = "&amp;"
-
-
-######################################################################
-
 
 class PottsTokenizer(BaseTokenizer):
     """
-    Tokenizer based on `Christopher Potts' tokenizer <http://sentiment.christopherpotts.net/tokenizing.html>`_.
+    Tokenizer based on `Christopher Potts' tokenizer <http://sentiment.christopherpotts.net/tokenizing.html>`_, released in 2011.
+
+    This module is released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License: https://creativecommons.org/licenses/by-nc-sa/3.0/ .
     """
 
-    @staticmethod
-    def __html2string(s: str) -> str:
+    # noinspection RegExpRepeatedSpace
+    # language=pythonregexp
+    emoticon_re_string = r"""
+            [<>]?
+            [:;=8]                   # eyes
+            [\-o*']?                 # optional nose
+            [)\](\[dDpP/:}{@|\\]     # mouth
+            |
+            [)\](\[dDpP/:}{@|\\]     # mouth
+            [\-o*']?                 # optional nose
+            [:;=8]                   # eyes
+            [<>]?
         """
-        Internal metod that seeks to replace all the HTML entities in
-        s with their corresponding unicode characters.
+
+    emoticon_re = re.compile(emoticon_re_string, re.VERBOSE | re.I)
+
+    # noinspection RegExpRepeatedSpace,RegExpUnnecessaryNonCapturingGroup
+    # language=pythonregexp
+    words_re_string = (
+        # Emoticons:
+        emoticon_re_string
+        ,
+        # Phone numbers:
+        r"""
+        (?:            # (international)
+            \+?[01]
+            [\-\s.]*
+        )?
+        (?:            # (area code)
+            [(]?
+            \d{3}
+            [\-\s.)]*
+        )?
+        \d{3}          # exchange
+        [\-\s.]*
+        \d{4}          # base
+        """
+        ,
+        # HTML tags:
+        r"""<[^>]+>"""
+        ,
+        # Twitter username:
+        r"""@[\w_]+"""
+        ,
+        # Twitter hashtags:
+        r"""#+[\w_]+[\w'_\-]*[\w_]+"""
+        ,
+        # Words with apostrophes or dashes
+        r"""[a-z][a-z'\-_]+[a-z]"""
+        ,
+        # Numbers, including fractions, decimals
+        r"""[+\-]?\d+[,/.:-]\d+[+\-]?"""
+        ,
+        # Words without apostrophes or dashes
+        r"""[\w_]+"""
+        ,
+        # Ellipsis dots
+        r"""\.(?:\s*\.)+"""
+        ,
+        # Everything else that isn't whitespace
+        r"""(?:\S)"""
+    )
+
+    words_re = re.compile("|".join(words_re_string), re.VERBOSE | re.I)
+
+    # language=pythonregexp
+    digit_re_string = r"&#\d+;"
+
+    digit_re = re.compile(digit_re_string, re.VERBOSE)
+
+    # language=pythonregexp
+    alpha_re_string = r"&\w+;"
+
+    alpha_re = re.compile(alpha_re_string, re.VERBOSE)
+
+    amp = "&amp;"
+
+    @classmethod
+    def __html2string(cls, s: str) -> str:
+        """
+        Internal metod that seeks to replace all the HTML entities in s with their corresponding characters.
         """
         # First the digits:
-        ents = set(html_entity_digit_re.findall(s))
+        ents = set(cls.digit_re.findall(s))
         if len(ents) > 0:
             for ent in ents:
                 entnum = ent[2:-1]
@@ -165,26 +107,28 @@ class PottsTokenizer(BaseTokenizer):
                 except (ValueError, KeyError):
                     pass
         # Now the alpha versions:
-        ents = set(html_entity_alpha_re.findall(s))
-        ents = filter((lambda x: x != amp), ents)
+        ents = set(cls.alpha_re.findall(s))
+        ents = filter((lambda x: x != cls.amp), ents)
         for ent in ents:
             entname = ent[1:-1]
             try:
                 s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
             except (ValueError, KeyError):
                 pass
-            s = s.replace(amp, " and ")
+            s = s.replace(cls.amp, " and ")
         return s
 
     def tokenize_plain(self, text: str) -> t.Iterable[str]:
-        # Fix HTML character entitites:
+        # Fix HTML character entitites
         s = self.__html2string(text)
-        # Tokenize:
-        words = word_re.findall(s)
+        # Tokenize
+        words = self.words_re.findall(s)
         # Possible alter the case, but avoid changing emoticons like :D into :d:
-        words = list(map(lambda x: x if emoticon_re.search(x) else x.lower(), words))
-        # Return the results
-        return words
+        words = list(map(lambda x: x if self.emoticon_re.search(x) else x.lower(), words))
+        # Re-join words
+        result = " ".join(words)
+        # Return the result
+        return result
 
 
 class PottsTokenizerWithNegation(PottsTokenizer):

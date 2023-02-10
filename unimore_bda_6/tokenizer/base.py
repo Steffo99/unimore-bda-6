@@ -21,11 +21,17 @@ class BaseTokenizer:
         return not getattr(self.tokenize_tensorflow, "__notimplemented__", False)
 
     @__not_implemented
-    def tokenize_plain(self, text: str) -> list[str]:
+    def tokenize_plain(self, text: str) -> str:
         """
-        Convert a text string into a list of tokens.
+        Convert a text `str` into another `str` containing a series of whitespace-separated tokens.
         """
         raise NotImplementedError()
+
+    def tokenize_and_split_plain(self, text: str) -> list[str]:
+        """
+        Run `.tokenize_plain`, then split the result using `str.split`.
+        """
+        return self.tokenize_plain(text).split()
 
     @__not_implemented
     def tokenize_tensorflow(self, text: "tensorflow.Tensor") -> "tensorflow.Tensor":
@@ -33,3 +39,11 @@ class BaseTokenizer:
         Convert a `tensorflow.Tensor` string into another `tensorflow.Tensor` space-separated string.
         """
         raise NotImplementedError()
+
+    def tokenize_tensorflow_and_expand_dims(self, text: "tensorflow.Tensor") -> "tensorflow.Tensor":
+        """
+        Run `.tokenize_tensorflow`, then add a dimension to the tensor for reasons unknown to me, but required to get `tensorflow` to work properly.
+        """
+        text = self.tokenize_tensorflow(text)
+        text = tensorflow.expand_dims(text, -1, name="tokens")
+        return text
