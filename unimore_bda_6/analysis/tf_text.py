@@ -189,9 +189,9 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
             ),
-            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dropout(0.10),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
-            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dropout(0.10),
             tensorflow.keras.layers.Dense(5, activation="softmax"),
         ])
 
@@ -240,9 +240,9 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
             ),
-            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dropout(0.10),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
-            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dropout(0.10),
             tensorflow.keras.layers.Dense(1),
         ])
 
