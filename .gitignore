@@ -13,6 +13,7 @@ data/nltk/
 data/training/
 data/validation/
 data/evaluation/
+data/logs/
 
 ##################
 # Python ignores #

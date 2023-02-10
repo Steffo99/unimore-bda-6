@@ -1,8 +1,8 @@
 import logging
 import pymongo.errors
-from .log import install_log_handler
+from .log import install_general_log_handlers
 
-install_log_handler()
+install_general_log_handlers()
 
 from .config import config
 from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
@@ -36,7 +36,7 @@ def main():
         for sample_func in [sample_reviews_varied, sample_reviews_polar]:
 
             slog = logging.getLogger(f"{__name__}.{sample_func.__name__}")
-            slog.debug("Selected sample_func: %s", sample_func)
+            slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
                 TensorflowSentimentAnalyzer,
@@ -44,7 +44,7 @@ def main():
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
-                slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer)
+                slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer.__name__)
 
                 for Tokenizer in [
                     PlainTokenizer,
@@ -55,7 +55,7 @@ def main():
                 ]:
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
-                    slog.debug("Selected Tokenizer: %s", Tokenizer)
+                    slog.debug("Selected Tokenizer: %s", Tokenizer.__name__)
 
                     run_counter = 0
 
@@ -66,10 +66,10 @@ def main():
                         slog.debug("Run #%d", run_counter)
 
                         try:
-                            slog.debug("Instantiating %s with %s...", SentimentAnalyzer, Tokenizer)
+                            slog.debug("Instantiating %s with %s...", SentimentAnalyzer.__name__, Tokenizer.__name__)
                             sa = SentimentAnalyzer(tokenizer=Tokenizer())
                         except TypeError:
-                            slog.warning("%s is not supported by %s, skipping run...", SentimentAnalyzer, Tokenizer)
+                            slog.warning("%s is not supported by %s, skipping run...", SentimentAnalyzer.__name__, Tokenizer.__name__)
                             break
 
                         with Caches.from_database_samples(collection=reviews, sample_func=sample_func) as datasets:

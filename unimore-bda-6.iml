@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/data/evaluation" />
       <excludeFolder url="file://$MODULE_DIR$/data/training" />
+      <excludeFolder url="file://$MODULE_DIR$/data/validation" />
+      <excludeFolder url="file://$MODULE_DIR$/data/logs" />
     </content>
     <orderEntry type="jdk" jdkName="Poetry (unimore-bda-6)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
