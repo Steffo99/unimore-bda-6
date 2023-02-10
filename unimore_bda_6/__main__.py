@@ -36,7 +36,7 @@ def main():
         for sample_func in [sample_reviews_varied, sample_reviews_polar]:
 
             slog = logging.getLogger(f"{__name__}.{sample_func.__name__}")
-            slog.debug(f"Selected sample_func: %s", sample_func)
+            slog.debug("Selected sample_func: %s", sample_func)
 
             for SentimentAnalyzer in [
                 TensorflowSentimentAnalyzer,
@@ -44,7 +44,7 @@ def main():
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
-                slog.debug(f"Selected SentimentAnalyzer: %s", SentimentAnalyzer)
+                slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer)
 
                 for Tokenizer in [
                     PlainTokenizer,
@@ -55,9 +55,15 @@ def main():
                 ]:
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
-                    slog.debug(f"Selected Tokenizer: %s", Tokenizer)
+                    slog.debug("Selected Tokenizer: %s", Tokenizer)
+
+                    run_counter = 0
 
                     while True:
+
+                        slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}.{run_counter}")
+                        run_counter += 1
+                        slog.debug("Run #%d", run_counter)
 
                         try:
                             slog.debug("Instantiating %s with %s...", SentimentAnalyzer, Tokenizer)
