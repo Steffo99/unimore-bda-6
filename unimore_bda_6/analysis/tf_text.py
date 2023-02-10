@@ -71,7 +71,7 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
         """
         log.debug("Creating TextVectorization layer...")
         layer = tensorflow.keras.layers.TextVectorization(
-            standardize=self.tokenizer.tokenize_tensorflow,
+            standardize=self.tokenizer.tokenize_tensorflow_and_expand_dims,
             max_tokens=TENSORFLOW_MAX_FEATURES.__wrapped__
         )
         log.debug("Created TextVectorization layer: %s", layer)
@@ -177,8 +177,8 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
             dataset_func=dataset_func,
             conversion_func=Review.to_tensor_tuple,
             output_signature=(
-                tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.string, name="text"),
-                tensorflow.TensorSpec(shape=(5,), dtype=tensorflow.float32, name="review_one_hot"),
+                tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
+                tensorflow.TensorSpec(shape=(1, 5,), dtype=tensorflow.float32, name="review_one_hot"),
             ),
         )
 

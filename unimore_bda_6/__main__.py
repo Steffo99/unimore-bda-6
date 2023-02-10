@@ -39,19 +39,19 @@ def main():
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
-                NLTKSentimentAnalyzer,
                 TensorflowCategorySentimentAnalyzer,
+                NLTKSentimentAnalyzer,
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
                 slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer.__name__)
 
                 for Tokenizer in [
-                    PottsTokenizer,
-                    PottsTokenizerWithNegation,
                     PlainTokenizer,
                     LowercaseTokenizer,
                     NLTKWordTokenizer,
+                    PottsTokenizer,
+                    PottsTokenizerWithNegation,
                 ]:
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")

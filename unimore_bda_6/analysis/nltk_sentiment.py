@@ -40,7 +40,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         Convert the `Text` of a `DataTuple` to a `TokenBag`.
         """
         count_passage(log, "tokenize_datatuple", 100)
-        return self.tokenizer.tokenize_plain(datatuple.text), datatuple.category
+        return self.tokenizer.tokenize_and_split_plain(datatuple.text), datatuple.category
 
     def _add_feature_unigrams(self, dataset: t.Iterator[tuple[TokenBag, Category]]) -> None:
         """
