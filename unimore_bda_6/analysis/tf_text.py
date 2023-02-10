@@ -252,7 +252,6 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
             loss=tensorflow.keras.losses.MeanSquaredError(),
             metrics=[
                 tensorflow.keras.metrics.MeanAbsoluteError(),
-                tensorflow.keras.metrics.CosineSimilarity(),
             ]
         )
 
