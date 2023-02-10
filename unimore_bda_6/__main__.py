@@ -35,10 +35,16 @@ def main():
 
         for sample_func in [sample_reviews_varied, sample_reviews_polar]:
 
+            slog = logging.getLogger(f"{__name__}.{sample_func.__name__}")
+            slog.debug(f"Selected sample_func: %s", sample_func)
+
             for SentimentAnalyzer in [
                 TensorflowSentimentAnalyzer,
                 NLTKSentimentAnalyzer
             ]:
+
+                slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
+                slog.debug(f"Selected SentimentAnalyzer: %s", SentimentAnalyzer)
 
                 for Tokenizer in [
                     PlainTokenizer,
@@ -49,14 +55,15 @@ def main():
                 ]:
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
+                    slog.debug(f"Selected Tokenizer: %s", Tokenizer)
 
                     while True:
 
                         try:
-                            slog.debug("Creating sentiment analyzer...")
+                            slog.debug("Instantiating %s with %s...", SentimentAnalyzer, Tokenizer)
                             sa = SentimentAnalyzer(tokenizer=Tokenizer())
                         except TypeError:
-                            slog.warning("%s does not support %s, skipping...", Tokenizer.__name__, SentimentAnalyzer.__name__)
+                            slog.warning("%s is not supported by %s, skipping run...", SentimentAnalyzer, Tokenizer)
                             break
 
                         with Caches.from_database_samples(collection=reviews, sample_func=sample_func) as datasets:
