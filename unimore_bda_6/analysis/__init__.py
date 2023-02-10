@@ -1,8 +1,7 @@
-from .base import BaseSentimentAnalyzer
-from .nltk_sentiment import NLTKSentimentAnalyzer
+"""
+This module contains all implemented types of sentiment analyzers.
+"""
 
-
-__all__ = (
-    "BaseSentimentAnalyzer",
-    "NLTKSentimentAnalyzer",
-)
+from .base import *
+from .nltk_sentiment import *
+from .tf_text import *
