@@ -50,7 +50,7 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         for review in evaluation_dataset_func():
             resulting_category = self.use(review.text)
             evaluated += 1
-            correct += 1 if resulting_category == review.category else 0
+            correct += 1 if round(resulting_category) == round(review.category) else 0
             score += 1 - (abs(resulting_category - review.category) / 4)
 
         return EvaluationResults(correct=correct, evaluated=evaluated, score=score)

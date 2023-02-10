@@ -4,10 +4,14 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
-      <env name="PYTHONUNBUFFERED" value="1" />
       <env name="CONFIRM_OVERWRITE" value="False" />
       <env name="NLTK_DATA" value="./data/nltk" />
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="TENSORFLOW_EPOCHS" value="4" />
+      <env name="EVALUATION_SET_SIZE" value="100" />
       <env name="TF_CPP_MIN_LOG_LEVEL" value="2" />
+      <env name="TRAINING_SET_SIZE" value="1000" />
+      <env name="VALIDATION_SET_SIZE" value="100" />
       <env name="WORKING_SET_SIZE" value="1000000" />
       <env name="XLA_FLAGS" value="--xla_gpu_cuda_data_dir=/opt/cuda" />
     </envs>

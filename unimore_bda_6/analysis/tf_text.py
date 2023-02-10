@@ -164,7 +164,7 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
         vector = self.text_vectorization_layer(text)
         prediction = self.model.predict(vector, verbose=False)
 
-        return prediction
+        return self._translate_prediction(prediction)
 
 
 class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
@@ -175,10 +175,10 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
     def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
         return build_dataset(
             dataset_func=dataset_func,
-            conversion_func=Review.to_tensor_tuple,
+            conversion_func=Review.to_tensor_tuple_category,
             output_signature=(
                 tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
-                tensorflow.TensorSpec(shape=(1, 5,), dtype=tensorflow.float32, name="review_one_hot"),
+                tensorflow.TensorSpec(shape=(1, 5,), dtype=tensorflow.float32, name="category_one_hot"),
             ),
         )
 
@@ -218,7 +218,53 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
         return result
 
 
+class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
+    """
+    A `tensorflow`-based sentiment analyzer that uses the floating point value rating to get as close as possible to the correct category.
+    """
+
+    def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
+        return build_dataset(
+            dataset_func=dataset_func,
+            conversion_func=Review.to_tensor_tuple_normvalue,
+            output_signature=(
+                tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
+                tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.float32, name="category"),
+            ),
+        )
+
+    def _build_model(self) -> tensorflow.keras.Sequential:
+        log.debug("Creating sequential categorizer model...")
+        model = tensorflow.keras.Sequential([
+            tensorflow.keras.layers.Embedding(
+                input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
+                output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
+            ),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.GlobalAveragePooling1D(),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(1),
+        ])
+
+        log.debug("Compiling model: %s", model)
+        model.compile(
+            optimizer=tensorflow.keras.optimizers.Adam(global_clipnorm=1.0),
+            loss=tensorflow.keras.losses.MeanSquaredError(),
+            metrics=[
+                tensorflow.keras.metrics.MeanAbsoluteError(),
+                tensorflow.keras.metrics.CosineSimilarity(),
+            ]
+        )
+
+        log.debug("Compiled model: %s", model)
+        return model
+
+    def _translate_prediction(self, a: numpy.array) -> Category:
+        return a[0, 0]
+
+
 __all__ = (
     "TensorflowSentimentAnalyzer",
     "TensorflowCategorySentimentAnalyzer",
+    "TensorflowPolarSentimentAnalyzer",
 )
