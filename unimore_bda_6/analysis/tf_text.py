@@ -260,7 +260,7 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
         return model
 
     def _translate_prediction(self, a: numpy.array) -> Category:
-        return a[0, 0]
+        return a[0, 0] * 5
 
 
 __all__ = (
