@@ -49,11 +49,11 @@ class Review:
             1.0 if self.category == 5.0 else 0.0,
         ]], dtype=tensorflow.float32)
 
-    def to_tensor_tuple(self) -> list[tensorflow.Tensor, tensorflow.Tensor]:
-        t = [
+    def to_tensor_tuple(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
+        t = (
             self.to_tensor_text(),
             self.to_tensor_category(),
-        ]
+        )
         log.debug("Converted %s", t)
         return t
 

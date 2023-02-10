@@ -19,10 +19,10 @@ else:
     log.debug("Tensorflow successfully found GPU acceleration!")
 
 
-ConversionFunc = t.Callable[[Review], list[tensorflow.Tensor]]
+ConversionFunc = t.Callable[[Review], tensorflow.Tensor | tuple]
 
 
-def build_dataset(dataset_func: CachedDatasetFunc, conversion_func: ConversionFunc, output_signature: tensorflow.TensorSpec | list[tensorflow.TensorSpec]) -> tensorflow.data.Dataset:
+def build_dataset(dataset_func: CachedDatasetFunc, conversion_func: ConversionFunc, output_signature: tensorflow.TensorSpec | tuple) -> tensorflow.data.Dataset:
     """
     Convert a `CachedDatasetFunc` to a `tensorflow.data.Dataset`.
     """
@@ -176,10 +176,10 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
         return build_dataset(
             dataset_func=dataset_func,
             conversion_func=Review.to_tensor_tuple,
-            output_signature=[
+            output_signature=(
                 tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.string, name="text"),
                 tensorflow.TensorSpec(shape=(5,), dtype=tensorflow.float32, name="review_one_hot"),
-            ],
+            ),
         )
 
     def _build_model(self) -> tensorflow.keras.Sequential:
