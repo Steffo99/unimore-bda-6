@@ -65,6 +65,10 @@ def main():
                         run_counter += 1
                         slog.debug("Run #%d", run_counter)
 
+                        if run_counter >= 100:
+                            slog.fatal("Exceeded 100 runs, giving up and exiting...")
+                            exit(2)
+
                         try:
                             slog.debug("Instantiating %s with %s...", SentimentAnalyzer.__name__, Tokenizer.__name__)
                             sa = SentimentAnalyzer(tokenizer=Tokenizer())

@@ -248,7 +248,7 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
 
         log.debug("Compiling model: %s", model)
         model.compile(
-            optimizer=tensorflow.keras.optimizers.Adam(global_clipnorm=1.0),
+            optimizer=tensorflow.keras.optimizers.Adadelta(global_clipnorm=1.0),
             loss=tensorflow.keras.losses.MeanSquaredError(),
             metrics=[
                 tensorflow.keras.metrics.MeanAbsoluteError(),

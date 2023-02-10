@@ -50,8 +50,11 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         for review in evaluation_dataset_func():
             resulting_category = self.use(review.text)
             evaluated += 1
-            correct += 1 if round(resulting_category) == round(review.category) else 0
-            score += 1 - (abs(resulting_category - review.category) / 4)
+            try:
+                correct += 1 if round(resulting_category) == round(review.category) else 0
+                score += 1 - (abs(resulting_category - review.category) / 4)
+            except ValueError:
+                log.warning("Model execution on %s resulted in a NaN value: %s", review, resulting_category)
 
         return EvaluationResults(correct=correct, evaluated=evaluated, score=score)
 
