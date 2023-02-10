@@ -7,7 +7,7 @@ install_general_log_handlers()
 from .config import config
 from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
 from .analysis.nltk_sentiment import NLTKSentimentAnalyzer
-from .analysis.tf_text import TensorflowSentimentAnalyzer
+from .analysis.tf_text import TensorflowCategorySentimentAnalyzer
 from .analysis.base import TrainingFailedError
 from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation
 from .gathering import Caches
@@ -39,7 +39,7 @@ def main():
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
-                TensorflowSentimentAnalyzer,
+                TensorflowCategorySentimentAnalyzer,
                 NLTKSentimentAnalyzer
             ]:
 
