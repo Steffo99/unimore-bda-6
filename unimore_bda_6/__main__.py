@@ -38,9 +38,9 @@ def main():
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
-                NLTKSentimentAnalyzer,
                 TensorflowPolarSentimentAnalyzer,
                 TensorflowCategorySentimentAnalyzer,
+                # NLTKSentimentAnalyzer,
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")

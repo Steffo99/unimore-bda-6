@@ -199,7 +199,7 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
 
         log.debug("Compiling model: %s", model)
         model.compile(
-            optimizer=tensorflow.keras.optimizers.Adam(global_clipnorm=1.0),
+            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=1.0),
             loss=tensorflow.keras.losses.CategoricalCrossentropy(),
             metrics=[
                 tensorflow.keras.metrics.CategoricalAccuracy(),
@@ -217,7 +217,7 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
                 max_i = i
                 max_p = p
         result = float(max_i) + 1.0
-        return result
+        return float(round(result))
 
 
 class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
@@ -245,25 +245,23 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
             tensorflow.keras.layers.Dropout(0.25),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
             tensorflow.keras.layers.Dropout(0.25),
-            tensorflow.keras.layers.Dense(8),
-            tensorflow.keras.layers.Dropout(0.25),
-            tensorflow.keras.layers.Dense(1, activation="relu"),
+            tensorflow.keras.layers.Dense(1, activation="sigmoid"),
         ])
 
         log.debug("Compiling model: %s", model)
         model.compile(
-            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=2.0),
+            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=1.0),
             loss=tensorflow.keras.losses.MeanAbsoluteError(),
-            metrics=[
-                # tensorflow.keras.metrics.MeanAbsoluteError(),
-            ]
         )
 
         log.debug("Compiled model: %s", model)
         return model
 
     def _translate_prediction(self, a: numpy.array) -> Category:
-        return 1 + (a[0, 0] + 0.5) * 4
+        a: float = a[0, 0]
+        a = a * 2 + 1
+        a = float(round(a))
+        return a
 
 
 __all__ = (

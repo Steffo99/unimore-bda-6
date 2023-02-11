@@ -124,10 +124,10 @@ def TENSORFLOW_EPOCHS(val: str | None) -> int:
     """
     The number of epochs to train Tensorflow models for.
 
-    Defaults to `5`.
+    Defaults to `3`.
     """
     if val is None:
-        return 5
+        return 3
     try:
         return int(val)
     except ValueError:

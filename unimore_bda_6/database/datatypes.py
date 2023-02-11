@@ -37,11 +37,14 @@ class Review:
         else:
             raise KeyError(item)
 
+    def normvalue(self) -> float:
+        return (self.category - 1) / 2
+
     def to_tensor_text(self) -> tensorflow.Tensor:
         return tensorflow.convert_to_tensor(self.text, dtype=tensorflow.string)
 
     def to_tensor_normvalue(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor([(self.category - 1) / 4 - 0.5], dtype=tensorflow.float32)
+        return tensorflow.convert_to_tensor([self.normvalue()], dtype=tensorflow.float32)
 
     def to_tensor_tuple_normvalue(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
         return (

@@ -26,13 +26,23 @@
 > (https://jupyter.org/) invece di codice .py e relativi commenti separati su PDF (per comodità di consultazione,
 > consegnare comunque anche una stampa PDF del notebook oltre al notebook stesso).
 
+## Sinossi
+
+In questo progetto si è realizzato una struttura che permettesse di mettere a confronto diversi modi per effettuare sentiment analysis, e poi si sono realizzati su di essa alcuni modelli di sentiment analysis con caratteristiche diverse per confrontarli.
+
 ## Premessa
 
-### Codice
+### Packaging
 
 Il codice dell'attività è incluso come package Python 3.10 compatibile con PEP518.
 
-Per installare il package, è sufficiente eseguire i seguenti comandi dall'interno della directory del progetto:
+> **Warning:**
+>
+> Il progetto non supporta Python 3.11 per via del mancato supporto di Tensorflow a quest'ultimo.
+
+#### Installazione del package
+
+Per installare il package, è necessario eseguire i seguenti comandi dall'interno della directory del progetto:
 
 ```console
 $ python3.10 -m venv .venv
@@ -40,11 +50,7 @@ $ source venv/bin/activate
 $ pip install .
 ```
 
-> **Note:**
->
-> Per via di requisiti particolari di Tensorflow, Python 3.11 non è supportato.
-
-#### NLTK
+##### NLTK
 
 NLTK richiede dipendenze aggiuntive per funzionare, che possono essere scaricate eseguendo il seguente comando su console:
 
@@ -52,11 +58,38 @@ NLTK richiede dipendenze aggiuntive per funzionare, che possono essere scaricate
 $ ./scripts/download-nltk.sh
 ```
 
-### Dataset
+##### Tensorflow
 
-Il codice dell'attività richiede la connessione a un server MongoDB 6 contenente il dataset di recensioni Amazon fornito a lezione.
+L'accelerazione hardware di Tensorflow richiede che una scheda grafica NVIDIA con supporto a CUDA sia disponibile sul dispositivo, e che gli strumenti di sviluppo di CUDA siano installati sul sistema operativo.
 
-Si forniscono alcuni script nella cartella `./data/scripts` per facilitare la configurazione e l'esecuzione di quest'ultimo.
+Per indicare a Tensorflow il percorso degli strumenti di sviluppo di CUDA, è necessario impostare la seguente variabile d'ambiente, sostituendo a `/opt/cuda` il percorso in cui gli strumenti sono installati sul dispositivo:
+
+```console
+$ export XLA_FLAGS=--xla_gpu_cuda_data_dir\=/opt/cuda
+```
+
+Per più informazioni, si suggerisce di consultare la pagina [Install Tensorflow 2](https://www.tensorflow.org/install) della documentazione di Tensorflow.
+
+#### Esecuzione del programma
+
+Per eseguire il programma principale, è possibile eseguire i seguenti comandi dall'interno della directory del progetto:
+
+```console
+$ source venv/bin/activate
+$ python3.10 -m unimore_bda_6
+```
+
+### Dati
+
+Il codice dell'attività richiede la connessione a un server MongoDB 6 contenente la collezione di recensioni Amazon fornita a lezione.
+
+> **Warning:**
+>
+> La collezione non è inclusa con il repository, in quanto occupa 21 GB!
+
+Si forniscono alcuni script nella cartella `./data/scripts` per facilitare la configurazione e l'esecuzione di quest'ultima.
+
+#### Esecuzione del database
 
 Per eseguire il database MongoDB come processo utente, salvando i dati nella cartella `./data/db`:
 
@@ -64,30 +97,46 @@ Per eseguire il database MongoDB come processo utente, salvando i dati nella car
 $ ./data/scripts/run-db.sh
 ```
 
+#### Importazione dei dati da JSON
+
 Per importare il dataset `./data/raw/reviewsexport.json` fornito a lezione nel database MongoDB:
 
 ```console
 $ ./data/scripts/import-db.sh
 ```
 
-Per creare indici MongoDB utili al funzionamento efficiente del codice:
+#### Creazione indici
+
+Per creare indici MongoDB potenzialmente utili al funzionamento efficiente del codice:
 
 ```console
 $ mongosh < ./data/scripts/index-db.js
 ```
 
-## Introduzione
+## Struttura per il confronto
+### Configurazione ambiente e iperparametri - `.config`
+### Recupero dati dal database - `.database`
+### Tokenizzatore astratto - `.tokenizer.base`
+### Analizzatore astratto - `.analysis.base`
+### Logging - `.log`
+### Tester - `.__main__`
 
-<!-- TODO -->
+## Ri-implementazione dell'esercizio con NLTK - `.analysis.nltk_sentiment`
+### Wrapping del tokenizzatore di NLTK - `.tokenizer.nltk_word_tokenize`
+### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
+### Problemi di memoria
 
-## `.analysis.base`: Costruzione dell'impalcatura necessaria al confronto
+## Ottimizzazione di memoria
+### Caching - `.database.cache` e `.gathering`
 
-<!-- TODO -->
+## Implementazione di modelli con Tensorflow - `.analysis.tf_text`
+### Creazione di tokenizzatori compatibili con Tensorflow - `.tokenizer.plain` e `.tokenizer.lower`
+### Creazione di un modello di regressione - `.analysis.tf_text.TensorflowPolarSentimentAnalyzer`
+### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
+#### Esplosione del gradiente
 
-## `.analysis.nltk_sentiment`: Ricostruzione e ottimizzazione del modello basato su `nltk.sentiment` realizzato a lezione
+## Implementazione di tokenizzatori di HuggingFace - `.tokenizer.hugging`
 
-Per avere un modello baseline con cui effettuare un confronto, si è ricostruito un modello basato su `nltk.sentiment` ispirato a quello realizzato a lezione.
+## Confronto dei modelli
 
-<!-- TODO -->
-
-## TODO
+## Conclusione
