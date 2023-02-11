@@ -109,10 +109,10 @@ def TENSORFLOW_EMBEDDING_SIZE(val: str | None) -> int:
     """
     The size of the embeddings tensor to use in Tensorflow models.
 
-    Defaults to `6`.
+    Defaults to `12`.
     """
     if val is None:
-        return 6
+        return 12
     try:
         return int(val)
     except ValueError:
@@ -124,10 +124,10 @@ def TENSORFLOW_EPOCHS(val: str | None) -> int:
     """
     The number of epochs to train Tensorflow models for.
 
-    Defaults to `12`.
+    Defaults to `5`.
     """
     if val is None:
-        return 12
+        return 5
     try:
         return int(val)
     except ValueError:

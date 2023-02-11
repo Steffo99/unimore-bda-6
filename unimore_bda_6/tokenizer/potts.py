@@ -16,78 +16,62 @@ class PottsTokenizer(BaseTokenizer):
 
     # noinspection RegExpRepeatedSpace
     # language=pythonregexp
-    emoticon_re_string = r"""
-            [<>]?
-            [:;=8]                   # eyes
-            [\-o*']?                 # optional nose
-            [)\](\[dDpP/:}{@|\\]     # mouth
-            |
-            [)\](\[dDpP/:}{@|\\]     # mouth
-            [\-o*']?                 # optional nose
-            [:;=8]                   # eyes
-            [<>]?
-        """
+    emoticon_re_string = r"""[<>]?[:;=8][\-o*']?[)\](\[dDpP/:}{@|\\]"""
 
-    emoticon_re = re.compile(emoticon_re_string, re.VERBOSE | re.I)
+    emoticon_re = re.compile(emoticon_re_string)
 
-    # noinspection RegExpRepeatedSpace,RegExpUnnecessaryNonCapturingGroup
-    # language=pythonregexp
-    words_re_string = (
+    words_re_string = "(" + "|".join([
         # Emoticons:
         emoticon_re_string
         ,
         # Phone numbers:
-        r"""
-        (?:            # (international)
-            \+?[01]
-            [\-\s.]*
-        )?
-        (?:            # (area code)
-            [(]?
-            \d{3}
-            [\-\s.)]*
-        )?
-        \d{3}          # exchange
-        [\-\s.]*
-        \d{4}          # base
-        """
+        # language=pythonregexp
+        r"""(?:[+]?[01][\s.-]*)?(?:[(]?\d{3}[\s.)-]*)?\d{3}[\-\s.]*\d{4}"""
         ,
         # HTML tags:
+        # language=pythonregexp
         r"""<[^>]+>"""
         ,
         # Twitter username:
+        # language=pythonregexp
         r"""@[\w_]+"""
         ,
         # Twitter hashtags:
-        r"""#+[\w_]+[\w'_\-]*[\w_]+"""
+        # language=pythonregexp
+        r"""#+[\w_]+[\w'_-]*[\w_]+"""
         ,
         # Words with apostrophes or dashes
-        r"""[a-z][a-z'\-_]+[a-z]"""
+        # language=pythonregexp
+        r"""[a-z][a-z'_-]+[a-z]"""
         ,
         # Numbers, including fractions, decimals
-        r"""[+\-]?\d+[,/.:-]\d+[+\-]?"""
+        # language=pythonregexp
+        r"""[+-]?\d+(?:[,/.:-]\d+)?"""
         ,
         # Words without apostrophes or dashes
+        # language=pythonregexp
         r"""[\w_]+"""
         ,
         # Ellipsis dots
-        r"""\.(?:\s*\.)+"""
+        # language=pythonregexp
+        r"""[.](?:\s*[.])+"""
         ,
         # Everything else that isn't whitespace
-        r"""(?:\S)"""
-    )
+        # language=pythonregexp
+        r"""\S+"""
+    ]) + ")"
 
-    words_re = re.compile("|".join(words_re_string), re.VERBOSE | re.I)
+    words_re = re.compile(words_re_string, re.I)
 
     # language=pythonregexp
     digit_re_string = r"&#\d+;"
 
-    digit_re = re.compile(digit_re_string, re.VERBOSE)
+    digit_re = re.compile(digit_re_string)
 
     # language=pythonregexp
     alpha_re_string = r"&\w+;"
 
-    alpha_re = re.compile(alpha_re_string, re.VERBOSE)
+    alpha_re = re.compile(alpha_re_string)
 
     amp = "&amp;"
 
@@ -118,7 +102,7 @@ class PottsTokenizer(BaseTokenizer):
             s = s.replace(cls.amp, " and ")
         return s
 
-    def tokenize_plain(self, text: str) -> t.Iterable[str]:
+    def tokenize_plain(self, text: str) -> str:
         # Fix HTML character entitites
         s = self.__html2string(text)
         # Tokenize
@@ -132,10 +116,10 @@ class PottsTokenizer(BaseTokenizer):
 
 
 class PottsTokenizerWithNegation(PottsTokenizer):
-    def tokenize_plain(self, text: str) -> t.Iterable[str]:
-        words = super().tokenize_plain(text)
+    def tokenize_plain(self, text: str) -> str:
+        words = super().tokenize_plain(text).split()
         nltk.sentiment.util.mark_negation(words, shallow=True)
-        return words
+        return " ".join(words)
 
 
 __all__ = (

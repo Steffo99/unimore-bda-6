@@ -107,7 +107,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
             raise NotTrainedError()
 
         # Tokenize the input
-        tokens = self.tokenizer.tokenize_plain(text)
+        tokens = self.tokenizer.tokenize_and_split_plain(text)
 
         # Run the classification method
         return self.model.classify(instance=tokens)

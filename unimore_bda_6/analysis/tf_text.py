@@ -189,9 +189,11 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
             ),
-            tensorflow.keras.layers.Dropout(0.10),
+            tensorflow.keras.layers.Dropout(0.25),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
-            tensorflow.keras.layers.Dropout(0.10),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(8),
+            tensorflow.keras.layers.Dropout(0.25),
             tensorflow.keras.layers.Dense(5, activation="softmax"),
         ])
 
@@ -240,18 +242,20 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
             ),
-            tensorflow.keras.layers.Dropout(0.10),
+            tensorflow.keras.layers.Dropout(0.25),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
-            tensorflow.keras.layers.Dropout(0.10),
-            tensorflow.keras.layers.Dense(1),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(8),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(1, activation="relu"),
         ])
 
         log.debug("Compiling model: %s", model)
         model.compile(
-            optimizer=tensorflow.keras.optimizers.Adadelta(global_clipnorm=1.0),
-            loss=tensorflow.keras.losses.MeanSquaredError(),
+            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=2.0),
+            loss=tensorflow.keras.losses.MeanAbsoluteError(),
             metrics=[
-                tensorflow.keras.metrics.MeanAbsoluteError(),
+                # tensorflow.keras.metrics.MeanAbsoluteError(),
             ]
         )
 
@@ -259,7 +263,7 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
         return model
 
     def _translate_prediction(self, a: numpy.array) -> Category:
-        return (a[0, 0] + 0.5) * 5
+        return 1 + (a[0, 0] + 0.5) * 4
 
 
 __all__ = (

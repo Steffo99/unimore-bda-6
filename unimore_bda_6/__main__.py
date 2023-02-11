@@ -8,7 +8,7 @@ from .config import config
 from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
 from .analysis import NLTKSentimentAnalyzer, TensorflowCategorySentimentAnalyzer, TensorflowPolarSentimentAnalyzer
 from .analysis.base import TrainingFailedError
-from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation
+from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation, HuggingBertTokenizer
 from .gathering import Caches
 
 log = logging.getLogger(__name__)
@@ -38,20 +38,21 @@ def main():
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
+                NLTKSentimentAnalyzer,
                 TensorflowPolarSentimentAnalyzer,
                 TensorflowCategorySentimentAnalyzer,
-                NLTKSentimentAnalyzer,
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
                 slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer.__name__)
 
                 for Tokenizer in [
+                    PottsTokenizerWithNegation,
+                    PottsTokenizer,
+                    HuggingBertTokenizer,
                     PlainTokenizer,
                     LowercaseTokenizer,
                     NLTKWordTokenizer,
-                    PottsTokenizer,
-                    PottsTokenizerWithNegation,
                 ]:
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
