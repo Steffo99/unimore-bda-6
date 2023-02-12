@@ -4,15 +4,15 @@ import typing as t
 
 from ..config import WORKING_SET_SIZE
 from .collections import MongoReview
-from .datatypes import Review
+from .datatypes import TextReview
 
 log = logging.getLogger(__name__)
 
 
-SampleFunc = t.Callable[[pymongo.collection.Collection, int], t.Iterator[Review]]
+SampleFunc = t.Callable[[pymongo.collection.Collection, int], t.Iterator[TextReview]]
 
 
-def sample_reviews(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+def sample_reviews(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[TextReview]:
     """
     Get ``amount`` random reviews from the ``reviews`` collection.
     """
@@ -23,12 +23,12 @@ def sample_reviews(collection: pymongo.collection.Collection, amount: int) -> t.
         {"$sample": {"size": amount}},
     ])
 
-    cursor = map(Review.from_mongoreview, cursor)
+    cursor = map(TextReview.from_mongoreview, cursor)
 
     return cursor
 
 
-def sample_reviews_by_rating(collection: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterator[Review]:
+def sample_reviews_by_rating(collection: pymongo.collection.Collection, rating: float, amount: int) -> t.Iterator[TextReview]:
     """
     Get ``amount`` random reviews with ``rating`` stars from the ``reviews`` collection.
     """
@@ -43,7 +43,7 @@ def sample_reviews_by_rating(collection: pymongo.collection.Collection, rating: 
     return cursor
 
 
-def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[TextReview]:
     category_amount = amount // 2
 
     log.debug("Getting a sample of %d polar reviews...", category_amount * 2)
@@ -68,12 +68,12 @@ def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int)
         }}
     ])
 
-    cursor = map(Review.from_mongoreview, cursor)
+    cursor = map(TextReview.from_mongoreview, cursor)
 
     return cursor
 
 
-def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[Review]:
+def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[TextReview]:
     category_amount = amount // 5
 
     log.debug("Getting a sample of %d varied reviews...", category_amount * 5)
@@ -123,7 +123,7 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
         }}
     ])
 
-    cursor = map(Review.from_mongoreview, cursor)
+    cursor = map(TextReview.from_mongoreview, cursor)
 
     return cursor
 

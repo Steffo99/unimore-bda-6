@@ -4,15 +4,15 @@ import shutil
 import pathlib
 import pickle
 
-from .datatypes import Review
+from .datatypes import TextReview
 
 log = logging.getLogger(__name__)
 
 
-CachedDatasetFunc = t.Callable[[], t.Generator[Review, t.Any, None]]
+CachedDatasetFunc = t.Callable[[], t.Generator[TextReview, t.Any, None]]
 
 
-def store_cache(reviews: t.Iterator[Review], path: str | pathlib.Path) -> None:
+def store_cache(reviews: t.Iterator[TextReview], path: str | pathlib.Path) -> None:
     """
     Store the contents of the given `Review` iterator to different files in a directory at the given path.
     """
@@ -54,7 +54,7 @@ def load_cache(path: str | pathlib.Path) -> CachedDatasetFunc:
 
             log.debug("Loading pickle file: %s", document_path)
             with open(document_path, "rb") as file:
-                result: Review = pickle.load(file)
+                result: TextReview = pickle.load(file)
                 yield result
 
     return data_cache_loader

@@ -1,75 +1,80 @@
-import tensorflow
+import abc
+import typing as t
+
 from .collections import MongoReview
-import logging
-
-log = logging.getLogger(__name__)
 
 
-Text = str
-Category = float
+class Review(metaclass=abc.ABCMeta):
+    """
+    Base class for method common to both review types.
+    """
+
+    def __init__(self, *, rating: float):
+        self.rating: float = rating
+        """
+        The star rating of the review, from ``1.0`` to ``5.0``.
+        """
 
 
-class Review:
+class TextReview(Review):
+    """
+    Optimized container for a review with the text still intact.
+
+    Uses `__slots__` for better performance.
+    """
+
     __slots__ = (
         "text",
-        "category",
+        "rating",
     )
 
-    def __init__(self, text: Text, category: Category):
+    def __init__(self, *, rating: float, text: str):
+        super().__init__(rating=rating)
+
         self.text: str = text
-        self.category: float = category
+        """
+        The contents of the review.
+        """
 
     @classmethod
-    def from_mongoreview(cls, review: MongoReview):
+    def from_mongoreview(cls, review: MongoReview) -> "TextReview":
+        """
+        Create a new `.Review` object from a `MongoReview` `dict`.
+        """
         return cls(
             text=review["reviewText"],
-            category=review["overall"],
+            rating=review["overall"],
         )
 
     def __repr__(self):
-        return f"<{self.__class__.__qualname__}: [{self.category}] {self.text}>"
+        return f"<{self.__class__.__qualname__}: ({self.rating}*) {self.text[:80]}>"
 
-    def __getitem__(self, item):
-        if item == 0 or item == "text":
-            return self.text
-        elif item == 1 or item == "category":
-            return self.category
-        else:
-            raise KeyError(item)
 
-    def normvalue(self) -> float:
-        return (self.category - 1) / 2
+class TokenizedReview(Review):
+    """
+    Optimized container for a review with a tokenized text.
 
-    def to_tensor_text(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor(self.text, dtype=tensorflow.string)
+    Uses `__slots__` for better performance.
+    """
 
-    def to_tensor_normvalue(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor([self.normvalue()], dtype=tensorflow.float32)
+    __slots__ = (
+        "tokens",
+        "rating",
+    )
 
-    def to_tensor_tuple_normvalue(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
-        return (
-            self.to_tensor_text(),
-            self.to_tensor_normvalue(),
-        )
+    def __init__(self, *, rating: float, tokens: t.Iterator[str]):
+        super().__init__(rating=rating)
 
-    def to_tensor_category(self) -> tensorflow.Tensor:
-        return tensorflow.convert_to_tensor([[
-            1.0 if self.category == 1.0 else 0.0,
-            1.0 if self.category == 2.0 else 0.0,
-            1.0 if self.category == 3.0 else 0.0,
-            1.0 if self.category == 4.0 else 0.0,
-            1.0 if self.category == 5.0 else 0.0,
-        ]], dtype=tensorflow.float32)
+        self.tokens: list[str] = list(tokens)
+        """
+        List of all tokens in the review text.
+        """
 
-    def to_tensor_tuple_category(self) -> tuple[tensorflow.Tensor, tensorflow.Tensor]:
-        return (
-            self.to_tensor_text(),
-            self.to_tensor_category(),
-        )
+    def __repr__(self):
+        return f"<{self.__class__.__qualname__}: ({self.rating}*) [{len(self.tokens)} tokens]>"
 
 
 __all__ = (
-    "Text",
-    "Category",
-    "Review",
+    "TextReview",
+    "TokenizedReview",
 )

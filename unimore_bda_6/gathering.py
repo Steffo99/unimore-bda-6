@@ -5,7 +5,7 @@ import logging
 import pymongo
 
 from .config import TRAINING_SET_SIZE, VALIDATION_SET_SIZE, EVALUATION_SET_SIZE
-from .database import SampleFunc, CachedDatasetFunc, mongo_client_from_config, reviews_collection, store_cache, load_cache, delete_cache
+from .database import SampleFunc, CachedDatasetFunc, store_cache, load_cache, delete_cache
 
 log = logging.getLogger(__name__)
 

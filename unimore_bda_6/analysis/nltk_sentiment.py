@@ -6,7 +6,7 @@ import logging
 import typing as t
 import itertools
 
-from ..database import Text, Category, Review, CachedDatasetFunc
+from ..database import TextReview, CachedDatasetFunc, TokenizedReview
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
 from ..log import count_passage
 from ..tokenizer import BaseTokenizer
@@ -23,31 +23,17 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
     """
 
     def __init__(self, *, tokenizer: BaseTokenizer) -> None:
-        if not tokenizer.supports_plain():
-            raise TypeError("Tokenizer does not support NLTK")
-
         super().__init__(tokenizer=tokenizer)
 
         self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
         self.trained: bool = False
-        self.tokenizer: BaseTokenizer = tokenizer
 
-    def __repr__(self):
-        return f"<{self.__class__.__qualname__} tokenizer={self.tokenizer!r}>"
-
-    def __tokenize_review(self, datatuple: Review) -> tuple[TokenBag, Category]:
-        """
-        Convert the `Text` of a `DataTuple` to a `TokenBag`.
-        """
-        count_passage(log, "tokenize_datatuple", 100)
-        return self.tokenizer.tokenize_and_split_plain(datatuple.text), datatuple.category
-
-    def _add_feature_unigrams(self, dataset: t.Iterator[tuple[TokenBag, Category]]) -> None:
+    def _add_feature_unigrams(self, dataset: t.Iterator[TokenizedReview]) -> None:
         """
         Register the `nltk.sentiment.util.extract_unigram_feats` feature extrator on the model.
         """
         # Ignore the category and only access the tokens
-        tokenbags = map(lambda d: d[0], dataset)
+        tokenbags = map(lambda r: r.rating, dataset)
         # Get all words in the documents
         all_words = self.model.all_words(tokenbags, labeled=False)
         # Create unigram `contains(*)` features from the previously gathered words
@@ -55,59 +41,48 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         # Add the feature extractor to the model
         self.model.add_feat_extractor(nltk.sentiment.util.extract_unigram_feats, unigrams=unigrams)
 
-    def _add_feature_extractors(self, dataset: t.Iterator[tuple[TokenBag, Category]]):
+    def _add_feature_extractors(self, dataset: t.Iterator[TextReview]):
         """
         Register new feature extractors on the `.model`.
         """
+        # Tokenize the reviews
+        dataset: t.Iterator[TokenizedReview] = map(self.tokenizer.tokenize_review, dataset)
         # Add the unigrams feature
         self._add_feature_unigrams(dataset)
 
-    def __extract_features(self, data: tuple[TokenBag, Category]) -> tuple[Features, Category]:
+    def __extract_features(self, review: TextReview) -> tuple[Features, float]:
         """
         Convert a (TokenBag, Category) tuple to a (Features, Category) tuple.
 
         Does not use `SentimentAnalyzer.apply_features` due to unexpected behaviour when using iterators.
         """
-        count_passage(log, "extract_features", 100)
-        return self.model.extract_features(data[0]), data[1]
+        review: TokenizedReview = self.tokenizer.tokenize_review(review)
+        return self.model.extract_features(review.tokens), review.rating
 
     def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
         # Forbid retraining the model
         if self.trained:
             raise AlreadyTrainedError()
 
-        # Get a generator
-        dataset: t.Generator[Review] = training_dataset_func()
-
-        # Tokenize the dataset
-        dataset: t.Iterator[tuple[TokenBag, Category]] = map(self.__tokenize_review, dataset)
-
-        # Cleanly duplicate the dataset iterator
-        # Reduce average memory footprint, but not maximum
-        dataset_1, dataset_2 = itertools.tee(dataset, 2)
-        dataset_1: t.Iterator[tuple[TokenBag, Category]]
-        dataset_2: t.Iterator[tuple[TokenBag, Category]]
-
         # Add the feature extractors to the model
-        self._add_feature_extractors(dataset_1)
-        del dataset_1  # Delete exausted iterator
+        self._add_feature_extractors(training_dataset_func())
 
         # Extract features from the dataset
-        dataset_2: t.Iterator[tuple[Features, Category]] = map(self.__extract_features, dataset_2)
+        featureset: t.Iterator[tuple[Features, float]] = map(self.__extract_features, training_dataset_func())
 
         # Train the classifier with the extracted features and category
-        self.model.classifier = nltk.classify.NaiveBayesClassifier.train(dataset_2)
+        self.model.classifier = nltk.classify.NaiveBayesClassifier.train(featureset)
 
         # Toggle the trained flag
         self.trained = True
 
-    def use(self, text: Text) -> Category:
+    def use(self, text: str) -> float:
         # Require the model to be trained
         if not self.trained:
             raise NotTrainedError()
 
         # Tokenize the input
-        tokens = self.tokenizer.tokenize_and_split_plain(text)
+        tokens = self.tokenizer.tokenize(text)
 
         # Run the classification method
         return self.model.classify(instance=tokens)

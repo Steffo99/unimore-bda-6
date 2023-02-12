@@ -4,7 +4,7 @@ import abc
 import logging
 import dataclasses
 
-from ..database import Text, Category, CachedDatasetFunc
+from ..database import CachedDatasetFunc, TextReview, TokenizedReview
 from ..tokenizer import BaseTokenizer
 
 log = logging.getLogger(__name__)
@@ -15,12 +15,11 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
     Abstract base class for sentiment analyzers implemented in this project.
     """
 
-    # noinspection PyUnusedLocal
     def __init__(self, *, tokenizer: BaseTokenizer):
-        pass
+        self.tokenizer: BaseTokenizer = tokenizer
 
     def __repr__(self):
-        return f"<{self.__class__.__qualname__}>"
+        return f"<{self.__class__.__qualname__} with {self.tokenizer} tokenizer>"
 
     @abc.abstractmethod
     def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
@@ -30,34 +29,34 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def use(self, text: Text) -> Category:
+    def use(self, text: str) -> float:
         """
-        Run the model on the given input.
+        Run the model on the given input, and return the predicted rating.
         """
         raise NotImplementedError()
 
     def evaluate(self, evaluation_dataset_func: CachedDatasetFunc) -> EvaluationResults:
         """
         Perform a model evaluation by calling repeatedly `.use` on every text of the test dataset and by comparing its resulting category with the expected category.
-
-        Returns a tuple with the number of correct results and the number of evaluated results.
         """
 
         evaluated: int = 0
-        correct: int = 0
-        score: float = 0.0
+
+        perfect: int = 0
+
+        squared_error: float = 0.0
 
         for review in evaluation_dataset_func():
             resulting_category = self.use(review.text)
-            log.debug("Evaluation step: expected %d, received %d, review was %s", review.category, resulting_category, review.text[:80])
+            log.debug("Evaluation step: %d for %s", resulting_category, review)
             evaluated += 1
             try:
-                correct += 1 if resulting_category == review.category else 0
-                score += 1 - (abs(resulting_category - review.category) / 4)
+                perfect += 1 if resulting_category == review.rating else 0
+                squared_error += (resulting_category - review.rating) ** 2
             except ValueError:
                 log.warning("Model execution on %s resulted in a NaN value: %s", review, resulting_category)
 
-        return EvaluationResults(correct=correct, evaluated=evaluated, score=score)
+        return EvaluationResults(perfect=perfect, evaluated=evaluated, mse=squared_error / evaluated)
 
 
 @dataclasses.dataclass
@@ -66,15 +65,26 @@ class EvaluationResults:
     Container for the results of a dataset evaluation.
     """
 
-    correct: int
     evaluated: int
-    score: float
+    """
+    The number of reviews that were evaluated.
+    """
+
+    perfect: int
+    """
+    The number of reviews for which the model returned the correct rating.
+    """
+
+    mse: float
+    """
+    Mean squared error
+    """
 
     def __repr__(self):
         return f"<EvaluationResults: {self!s}>"
 
     def __str__(self):
-        return f"{self.evaluated} evaluated, {self.correct} correct, {self.correct / self.evaluated:.2%} accuracy, {self.score:.2f} score, {self.score / self.evaluated:.2%} scoreaccuracy"
+        return f"Evaluation results:\t{self.evaluated}\tevaluated\t{self.perfect}\tperfect\t{self.perfect / self.evaluated:.2%}\taccuracy\t{self.mse / self.evaluated:.2%}\tmean squared error"
 
 
 class AlreadyTrainedError(Exception):

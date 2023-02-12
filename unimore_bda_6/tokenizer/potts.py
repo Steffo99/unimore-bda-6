@@ -1,4 +1,3 @@
-import tensorflow
 import re
 import html.entities
 import typing as t
@@ -11,7 +10,7 @@ class PottsTokenizer(BaseTokenizer):
     """
     Tokenizer based on `Christopher Potts' tokenizer <http://sentiment.christopherpotts.net/tokenizing.html>`_, released in 2011.
 
-    This module is released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License: https://creativecommons.org/licenses/by-nc-sa/3.0/ .
+    This class is released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License: https://creativecommons.org/licenses/by-nc-sa/3.0/ .
     """
 
     # noinspection RegExpRepeatedSpace
@@ -76,7 +75,7 @@ class PottsTokenizer(BaseTokenizer):
     amp = "&amp;"
 
     @classmethod
-    def __html2string(cls, s: str) -> str:
+    def html_entities_to_chr(cls, s: str) -> str:
         """
         Internal metod that seeks to replace all the HTML entities in s with their corresponding characters.
         """
@@ -102,24 +101,41 @@ class PottsTokenizer(BaseTokenizer):
             s = s.replace(cls.amp, " and ")
         return s
 
-    def tokenize_plain(self, text: str) -> str:
+    @classmethod
+    def lower_but_preserve_emoticons(cls, word):
+        """
+        Internal method which lowercases the word if it does not match `.emoticon_re`.
+        """
+        if cls.emoticon_re.search(word):
+            return word
+        else:
+            return word.lower()
+
+    def tokenize(self, text: str) -> t.Iterator[str]:
         # Fix HTML character entitites
-        s = self.__html2string(text)
+        text = self.html_entities_to_chr(text)
         # Tokenize
-        words = self.words_re.findall(s)
+        tokens = self.words_re.findall(text)
         # Possible alter the case, but avoid changing emoticons like :D into :d:
-        words = list(map(lambda x: x if self.emoticon_re.search(x) else x.lower(), words))
-        # Re-join words
-        result = " ".join(words)
+        tokens = map(self.lower_but_preserve_emoticons, tokens)
         # Return the result
-        return result
+        return tokens
 
 
 class PottsTokenizerWithNegation(PottsTokenizer):
-    def tokenize_plain(self, text: str) -> str:
-        words = super().tokenize_plain(text).split()
+    """
+    Version of `.PottsTokenizer` which after tokenizing applies `nltk.sentiment.util.mark_negation`.
+    """
+
+    def tokenize(self, text: str) -> str:
+        # Apply the base tokenization
+        words = super().tokenize(text)
+        # Convert to a list (sigh) the iterator
+        words = list(words)
+        # Use nltk to mark negation
         nltk.sentiment.util.mark_negation(words, shallow=True)
-        return " ".join(words)
+        # Return the result
+        return words
 
 
 __all__ = (

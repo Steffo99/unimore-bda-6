@@ -1,17 +1,14 @@
-import tensorflow
+import typing as t
 
 from .base import BaseTokenizer
 
 
 class LowercaseTokenizer(BaseTokenizer):
     """
-    Tokenizer which converts the words to lowercase before splitting them via spaces.
+    Tokenizer which converts the words to lowercase before splitting them with `str.split`.
     """
 
-    def tokenize_plain(self, text: str) -> str:
+    def tokenize(self, text: str) -> t.Iterator[str]:
         text = text.lower()
-        return text
-
-    def tokenize_tensorflow(self, text: tensorflow.Tensor) -> tensorflow.Tensor:
-        text = tensorflow.strings.lower(text)
-        return text
+        tokens = text.split()
+        return tokens

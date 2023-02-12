@@ -6,7 +6,7 @@ install_general_log_handlers()
 
 from .config import config
 from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
-from .analysis import NLTKSentimentAnalyzer, TensorflowCategorySentimentAnalyzer, TensorflowPolarSentimentAnalyzer
+from .analysis import NLTKSentimentAnalyzer, TensorflowCategorySentimentAnalyzer, TensorflowPolarSentimentAnalyzer, ThreeCheat
 from .analysis.base import TrainingFailedError
 from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation, HuggingBertTokenizer
 from .gathering import Caches
@@ -32,25 +32,29 @@ def main():
 
         reviews = reviews_collection(db)
 
-        for sample_func in [sample_reviews_varied, sample_reviews_polar]:
+        for sample_func in [
+            sample_reviews_polar,
+            sample_reviews_varied,
+        ]:
 
             slog = logging.getLogger(f"{__name__}.{sample_func.__name__}")
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
+                # ThreeCheat,
                 TensorflowPolarSentimentAnalyzer,
                 TensorflowCategorySentimentAnalyzer,
-                # NLTKSentimentAnalyzer,
+                NLTKSentimentAnalyzer,
             ]:
 
                 slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
                 slog.debug("Selected SentimentAnalyzer: %s", SentimentAnalyzer.__name__)
 
                 for Tokenizer in [
-                    PottsTokenizerWithNegation,
                     PottsTokenizer,
-                    HuggingBertTokenizer,
                     PlainTokenizer,
+                    HuggingBertTokenizer,
+                    PottsTokenizerWithNegation,
                     LowercaseTokenizer,
                     NLTKWordTokenizer,
                 ]:

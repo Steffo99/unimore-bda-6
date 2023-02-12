@@ -5,7 +5,7 @@ import numpy
 import tensorflow
 import logging
 
-from ..database import Text, Category, CachedDatasetFunc, Review
+from ..database import CachedDatasetFunc, TextReview, TokenizedReview
 from ..config import TENSORFLOW_EMBEDDING_SIZE, TENSORFLOW_MAX_FEATURES, TENSORFLOW_EPOCHS
 from ..tokenizer import BaseTokenizer
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError, TrainingFailedError
@@ -19,31 +19,7 @@ else:
     log.debug("Tensorflow successfully found GPU acceleration!")
 
 
-ConversionFunc = t.Callable[[Review], tensorflow.Tensor | tuple]
-
-
-def build_dataset(dataset_func: CachedDatasetFunc, conversion_func: ConversionFunc, output_signature: tensorflow.TensorSpec | tuple) -> tensorflow.data.Dataset:
-    """
-    Convert a `CachedDatasetFunc` to a `tensorflow.data.Dataset`.
-    """
-
-    def dataset_generator():
-        for review in dataset_func():
-            yield conversion_func(review)
-
-    log.debug("Creating dataset...")
-    dataset = tensorflow.data.Dataset.from_generator(
-        dataset_generator,
-        output_signature=output_signature,
-    )
-
-    log.debug("Caching dataset...")
-    dataset = dataset.cache()
-
-    log.debug("Configuring dataset prefetch...")
-    dataset = dataset.prefetch(buffer_size=tensorflow.data.AUTOTUNE)
-
-    return dataset
+ConversionFunc = t.Callable[[TextReview], tensorflow.Tensor | tuple]
 
 
 class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
@@ -52,30 +28,14 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
     """
 
     def __init__(self, *, tokenizer: BaseTokenizer):
-        if not tokenizer.supports_tensorflow():
-            raise TypeError("Tokenizer does not support Tensorflow")
-
         super().__init__(tokenizer=tokenizer)
 
         self.trained: bool = False
         self.failed: bool = False
 
-        self.tokenizer: BaseTokenizer = tokenizer
-        self.text_vectorization_layer: tensorflow.keras.layers.TextVectorization = self._build_text_vectorization_layer()
+        self.string_lookup_layer: tensorflow.keras.layers.StringLookup = tensorflow.keras.layers.StringLookup(max_tokens=TENSORFLOW_MAX_FEATURES.__wrapped__)
         self.model: tensorflow.keras.Sequential = self._build_model()
         self.history: tensorflow.keras.callbacks.History | None = None
-
-    def _build_text_vectorization_layer(self) -> tensorflow.keras.layers.TextVectorization:
-        """
-        Create a `tensorflow`-compatible `TextVectorization` layer.
-        """
-        log.debug("Creating TextVectorization layer...")
-        layer = tensorflow.keras.layers.TextVectorization(
-            standardize=self.tokenizer.tokenize_tensorflow_and_expand_dims,
-            max_tokens=TENSORFLOW_MAX_FEATURES.__wrapped__
-        )
-        log.debug("Created TextVectorization layer: %s", layer)
-        return layer
 
     @abc.abstractmethod
     def _build_model(self) -> tensorflow.keras.Sequential:
@@ -84,33 +44,44 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
         """
         raise NotImplementedError()
 
-    @abc.abstractmethod
     def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
         """
         Create a `tensorflow.data.Dataset` from the given `CachedDatasetFunc`.
         """
-        raise NotImplementedError()
+
+        def dataset_generator():
+            for review in dataset_func():
+                review: TextReview
+                review: TokenizedReview = self.tokenizer.tokenize_review(review)
+                tokens: tensorflow.Tensor = self._tokens_to_tensor(review.tokens)
+                rating: tensorflow.Tensor = self._rating_to_input(review.rating)
+                yield tokens, rating
+
+        log.debug("Creating dataset...")
+        dataset = tensorflow.data.Dataset.from_generator(
+            dataset_generator,
+            output_signature=(
+                tensorflow.TensorSpec(shape=(1, None,), dtype=tensorflow.string, name="tokens"),
+                self._ratingtensor_shape(),
+            ),
+        )
+
+        log.debug("Caching dataset...")
+        dataset = dataset.cache()
+
+        log.debug("Configuring dataset prefetch...")
+        dataset = dataset.prefetch(buffer_size=tensorflow.data.AUTOTUNE)
+
+        return dataset
 
     def _adapt_textvectorization(self, dataset: tensorflow.data.Dataset) -> None:
         """
         Adapt the `.text_vectorization_layer` to the given dataset.
         """
-        log.debug("Preparing dataset to adapt %s...", self.text_vectorization_layer)
+        log.debug("Preparing dataset to adapt %s...", self.string_lookup_layer)
         dataset = dataset.map(lambda text, category: text)
-        log.debug("Adapting %s...", self.text_vectorization_layer)
-        self.text_vectorization_layer.adapt(dataset)
-
-    def _vectorize_dataset(self, dataset: tensorflow.data.Dataset) -> tensorflow.data.Dataset:
-        """
-        Apply the `.text_vectorization_layer` to the text in the dataset.
-        """
-        def vectorize_entry(text, category):
-            return self.text_vectorization_layer(text), category
-
-        log.debug("Vectorizing dataset: %s", dataset)
-        dataset = dataset.map(vectorize_entry)
-        log.debug("Vectorized dataset: %s", dataset)
-        return dataset
+        log.debug("Adapting %s...", self.string_lookup_layer)
+        self.string_lookup_layer.adapt(dataset)
 
     def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
         if self.failed:
@@ -120,13 +91,17 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
             log.error("Tried to train an already trained model.")
             raise AlreadyTrainedError("Cannot re-train an already trained model.")
 
+        log.debug("Building training dataset...")
         training_set = self._build_dataset(training_dataset_func)
+
+        log.debug("Building validation dataset...")
         validation_set = self._build_dataset(validation_dataset_func)
 
-        self._adapt_textvectorization(training_set)
+        log.debug("Building vocabulary...")
+        vocabulary = training_set.map(lambda tokens, rating: tokens)
 
-        training_set = self._vectorize_dataset(training_set)
-        validation_set = self._vectorize_dataset(validation_set)
+        log.debug("Adapting lookup layer to the vocabulary...")
+        self.string_lookup_layer.adapt(vocabulary)
 
         log.info("Training: %s", self.model)
         self.history: tensorflow.keras.callbacks.History | None  = self.model.fit(
@@ -146,25 +121,50 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
             log.info("Model %s training succeeded!", self.model)
             self.trained = True
 
-    @abc.abstractmethod
-    def _translate_prediction(self, a: numpy.array) -> Category:
+    @staticmethod
+    def _tokens_to_tensor(tokens: t.Iterator[str]) -> tensorflow.Tensor:
         """
-        Convert the results of `tensorflow.keras.Sequential.predict` into a `.Category`.
+        Convert an iterator of tokens to a `tensorflow.Tensor`.
+        """
+        tensor = tensorflow.convert_to_tensor(
+            [list(tokens)],
+            dtype=tensorflow.string,
+            name="tokens"
+        )
+        return tensor
+
+    def use(self, text: str) -> float:
+        if self.failed:
+            raise NotTrainedError("Cannot use a failed model.")
+        if not self.trained:
+            raise NotTrainedError("Cannot use a non-trained model.")
+
+        tokens = self.tokenizer.tokenize(text)
+        tokens = self._tokens_to_tensor(tokens)
+        prediction = self.model.predict(tokens, verbose=False)
+        prediction = self._prediction_to_rating(prediction)
+        return prediction
+
+    @abc.abstractmethod
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        """
+        Convert a review rating to a `tensorflow.Tensor`.
         """
         raise NotImplementedError()
 
-    def use(self, text: Text) -> Category:
-        if self.failed:
-            log.error("Tried to use a failed model.")
-            raise NotTrainedError("Cannot use a failed model.")
-        if not self.trained:
-            log.error("Tried to use a non-trained model.")
-            raise NotTrainedError("Cannot use a non-trained model.")
+    @abc.abstractmethod
+    def _ratingtensor_shape(self) -> tensorflow.TensorSpec:
+        """
+        Returns the shape of the tensor output by `._rating_to_tensor` and accepted as input by `._tensor_to_rating`.
+        """
+        raise NotImplementedError()
 
-        vector = self.text_vectorization_layer(text)
-        prediction = self.model.predict(vector, verbose=False)
-
-        return self._translate_prediction(prediction)
+    @abc.abstractmethod
+    def _prediction_to_rating(self, prediction: tensorflow.Tensor) -> float:
+        """
+        Convert the results of `tensorflow.keras.Sequential.predict` into a review rating.
+        """
+        raise NotImplementedError()
 
 
 class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
@@ -172,19 +172,10 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
     A `tensorflow`-based sentiment analyzer that considers each star rating as a separate category.
     """
 
-    def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
-        return build_dataset(
-            dataset_func=dataset_func,
-            conversion_func=Review.to_tensor_tuple_category,
-            output_signature=(
-                tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
-                tensorflow.TensorSpec(shape=(1, 5,), dtype=tensorflow.float32, name="category_one_hot"),
-            ),
-        )
-
     def _build_model(self) -> tensorflow.keras.Sequential:
         log.debug("Creating sequential categorizer model...")
         model = tensorflow.keras.Sequential([
+            self.string_lookup_layer,
             tensorflow.keras.layers.Embedding(
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
@@ -209,15 +200,35 @@ class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
         log.debug("Compiled model: %s", model)
         return model
 
-    def _translate_prediction(self, a: numpy.array) -> Category:
-        max_i = None
-        max_p = None
-        for i, p in enumerate(iter(a[0])):
-            if max_p is None or p > max_p:
-                max_i = i
-                max_p = p
-        result = float(max_i) + 1.0
-        return float(round(result))
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        tensor = tensorflow.convert_to_tensor(
+            [[
+                1.0 if rating == 1.0 else 0.0,
+                1.0 if rating == 2.0 else 0.0,
+                1.0 if rating == 3.0 else 0.0,
+                1.0 if rating == 4.0 else 0.0,
+                1.0 if rating == 5.0 else 0.0,
+            ]],
+            dtype=tensorflow.float32,
+            name="rating_one_hot"
+        )
+        return tensor
+
+    def _ratingtensor_shape(self) -> tensorflow.TensorSpec:
+        spec = tensorflow.TensorSpec(shape=(1, 5), dtype=tensorflow.float32, name="rating_one_hot")
+        return spec
+
+    def _prediction_to_rating(self, prediction: tensorflow.Tensor) -> float:
+        best_prediction = None
+        best_prediction_index = None
+
+        for index, prediction in enumerate(iter(prediction[0])):
+            if best_prediction is None or prediction > best_prediction:
+                best_prediction = prediction
+                best_prediction_index = index
+
+        result = float(best_prediction_index) + 1.0
+        return result
 
 
 class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
@@ -225,19 +236,10 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
     A `tensorflow`-based sentiment analyzer that uses the floating point value rating to get as close as possible to the correct category.
     """
 
-    def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
-        return build_dataset(
-            dataset_func=dataset_func,
-            conversion_func=Review.to_tensor_tuple_normvalue,
-            output_signature=(
-                tensorflow.TensorSpec(shape=(), dtype=tensorflow.string, name="text"),
-                tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.float32, name="category"),
-            ),
-        )
-
     def _build_model(self) -> tensorflow.keras.Sequential:
         log.debug("Creating sequential categorizer model...")
         model = tensorflow.keras.Sequential([
+            self.string_lookup_layer,
             tensorflow.keras.layers.Embedding(
                 input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
                 output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
@@ -245,7 +247,9 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
             tensorflow.keras.layers.Dropout(0.25),
             tensorflow.keras.layers.GlobalAveragePooling1D(),
             tensorflow.keras.layers.Dropout(0.25),
-            tensorflow.keras.layers.Dense(1, activation="sigmoid"),
+            tensorflow.keras.layers.Dense(8),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(1, activation=tensorflow.keras.activations.sigmoid),
         ])
 
         log.debug("Compiling model: %s", model)
@@ -257,11 +261,23 @@ class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
         log.debug("Compiled model: %s", model)
         return model
 
-    def _translate_prediction(self, a: numpy.array) -> Category:
-        a: float = a[0, 0]
-        a = a * 2 + 1
-        a = float(round(a))
-        return a
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        normalized_rating = (rating - 1) / 4
+        tensor = tensorflow.convert_to_tensor(
+            [normalized_rating],
+            dtype=tensorflow.float32,
+            name="rating_value"
+        )
+        return tensor
+
+    def _ratingtensor_shape(self) -> tensorflow.TensorSpec:
+        spec = tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.float32, name="rating_value")
+        return spec
+
+    def _prediction_to_rating(self, prediction: numpy.array) -> float:
+        rating: float = prediction[0, 0]
+        rating = 1.0 if rating < 0.5 else 5.0
+        return rating
 
 
 __all__ = (

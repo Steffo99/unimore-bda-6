@@ -1,15 +1,13 @@
-import tensorflow
+import typing as t
 
 from .base import BaseTokenizer
 
 
 class PlainTokenizer(BaseTokenizer):
     """
-    Tokenizer which just splits the text into tokens by separating them at whitespaces.
+    Tokenizer which just splits the text into tokens by separating them at whitespaces with `str.split`.
     """
 
-    def tokenize_plain(self, text: str) -> str:
-        return text
-
-    def tokenize_tensorflow(self, text: tensorflow.Tensor) -> tensorflow.Tensor:
-        return text
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        tokens = text.split()
+        return tokens

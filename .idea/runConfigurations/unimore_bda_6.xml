@@ -5,14 +5,14 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="CONFIRM_OVERWRITE" value="False" />
-      <env name="EVALUATION_SET_SIZE" value="100" />
+      <env name="EVALUATION_SET_SIZE" value="4000" />
       <env name="NLTK_DATA" value="./data/nltk" />
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="TENSORFLOW_EMBEDDING_SIZE" value="64" />
       <env name="TENSORFLOW_MAX_FEATURES" value="1000000" />
       <env name="TF_CPP_MIN_LOG_LEVEL" value="2" />
-      <env name="TRAINING_SET_SIZE" value="2000" />
-      <env name="VALIDATION_SET_SIZE" value="25" />
+      <env name="TRAINING_SET_SIZE" value="4000" />
+      <env name="VALIDATION_SET_SIZE" value="100" />
       <env name="WORKING_SET_SIZE" value="100000" />
       <env name="XLA_FLAGS" value="--xla_gpu_cuda_data_dir=/opt/cuda" />
     </envs>
