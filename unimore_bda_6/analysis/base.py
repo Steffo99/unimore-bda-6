@@ -40,6 +40,8 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         Perform a model evaluation by calling repeatedly `.use` on every text of the test dataset and by comparing its resulting category with the expected category.
         """
 
+        # TODO: Add precision and recall measures
+
         evaluated: int = 0
 
         perfect: int = 0
