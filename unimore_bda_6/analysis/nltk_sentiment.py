@@ -43,19 +43,19 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         """
         Register new feature extractors on the `.model`.
         """
-        # Tokenize the reviews
+        # Tokenize the reviews and collect the iterator to avoid breaking NLTK
         dataset: t.Iterator[TokenizedReview] = map(self.tokenizer.tokenize_review, dataset)
         # Add the unigrams feature
         self._add_feature_unigrams(dataset)
 
-    def __extract_features(self, review: TextReview) -> tuple[Features, float]:
+    def __extract_features(self, review: TextReview) -> tuple[Features, str]:
         """
         Convert a (TokenBag, Category) tuple to a (Features, Category) tuple.
 
         Does not use `SentimentAnalyzer.apply_features` due to unexpected behaviour when using iterators.
         """
         review: TokenizedReview = self.tokenizer.tokenize_review(review)
-        return self.model.extract_features(review.tokens), review.rating
+        return self.model.extract_features(review.tokens), str(review.rating)
 
     def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
         # Forbid retraining the model
@@ -66,7 +66,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         self._add_feature_extractors(training_dataset_func())
 
         # Extract features from the dataset
-        featureset: t.Iterator[tuple[Features, float]] = map(self.__extract_features, training_dataset_func())
+        featureset: t.Iterator[tuple[Features, str]] = map(self.__extract_features, training_dataset_func())
 
         # Train the classifier with the extracted features and category
         self.model.classifier = nltk.classify.NaiveBayesClassifier.train(featureset)
@@ -83,7 +83,12 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         tokens = self.tokenizer.tokenize(text)
 
         # Run the classification method
-        return self.model.classify(instance=tokens)
+        rating = self.model.classify(instance=tokens)
+
+        # Convert the class back into a float
+        rating = float(rating)
+
+        return rating
 
 
 __all__ = (

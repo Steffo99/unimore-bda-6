@@ -118,6 +118,8 @@ class PottsTokenizer(BaseTokenizer):
         tokens = self.words_re.findall(text)
         # Possible alter the case, but avoid changing emoticons like :D into :d:
         tokens = map(self.lower_but_preserve_emoticons, tokens)
+        # Convert to a list (sigh) the iterator
+        tokens = list(tokens)
         # Return the result
         return tokens
 
@@ -129,13 +131,11 @@ class PottsTokenizerWithNegation(PottsTokenizer):
 
     def tokenize(self, text: str) -> t.Iterator[str]:
         # Apply the base tokenization
-        words = super().tokenize(text)
-        # Convert to a list (sigh) the iterator
-        words = list(words)
+        tokens = super().tokenize(text)
         # Use nltk to mark negation
-        nltk.sentiment.util.mark_negation(words, shallow=True)
+        nltk.sentiment.util.mark_negation(tokens, shallow=True)
         # Return the result
-        return words
+        return tokens
 
 
 __all__ = (
