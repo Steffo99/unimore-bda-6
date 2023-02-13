@@ -4,11 +4,9 @@ import nltk.sentiment
 import nltk.sentiment.util
 import logging
 import typing as t
-import itertools
 
 from ..database import TextReview, CachedDatasetFunc, TokenizedReview
 from .base import BaseSentimentAnalyzer, AlreadyTrainedError, NotTrainedError
-from ..log import count_passage
 from ..tokenizer import BaseTokenizer
 
 log = logging.getLogger(__name__)

@@ -3,7 +3,6 @@ import pymongo
 import typing as t
 
 from ..config import WORKING_SET_SIZE
-from .collections import MongoReview
 from .datatypes import TextReview
 
 log = logging.getLogger(__name__)
