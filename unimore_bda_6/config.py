@@ -34,10 +34,10 @@ def WORKING_SET_SIZE(val: str | None) -> int:
     The number of reviews to consider from the database.
     Set this to a low number to prevent slowness due to the dataset's huge size.
 
-    Defaults to `10000`.
+    Defaults to `1000000`.
     """
     if val is None:
-        return 10000
+        return 1000000
     try:
         return int(val)
     except ValueError:
@@ -49,10 +49,10 @@ def TRAINING_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the training dataset.
 
-    Defaults to `5000`.
+    Defaults to `4000`.
     """
     if val is None:
-        return 5000
+        return 4000
     try:
         return int(val)
     except ValueError:
@@ -94,10 +94,10 @@ def TENSORFLOW_MAX_FEATURES(val: str | None) -> int:
     """
     The maximum number of features to use in Tensorflow models.
 
-    Defaults to `30000`.
+    Defaults to `300000`.
     """
     if val is None:
-        return 30000
+        return 300000
     try:
         return int(val)
     except ValueError:
