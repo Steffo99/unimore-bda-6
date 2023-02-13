@@ -84,7 +84,7 @@ class EvaluationResults:
         return f"<EvaluationResults: {self!s}>"
 
     def __str__(self):
-        return f"Evaluation results:\t{self.evaluated}\tevaluated\t{self.perfect}\tperfect\t{self.perfect / self.evaluated:.2%}\taccuracy\t{self.mse / self.evaluated:.2%}\tmean squared error"
+        return f"Evaluation results:\t{self.evaluated}\tevaluated\t{self.perfect}\tperfect\t{self.perfect / self.evaluated:.2%}\taccuracy\t{self.mse / self.evaluated:.2}\tmean squared error"
 
 
 class AlreadyTrainedError(Exception):
