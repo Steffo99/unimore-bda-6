@@ -127,7 +127,7 @@ class PottsTokenizerWithNegation(PottsTokenizer):
     Version of `.PottsTokenizer` which after tokenizing applies `nltk.sentiment.util.mark_negation`.
     """
 
-    def tokenize(self, text: str) -> str:
+    def tokenize(self, text: str) -> t.Iterator[str]:
         # Apply the base tokenization
         words = super().tokenize(text)
         # Convert to a list (sigh) the iterator
