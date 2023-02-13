@@ -4,7 +4,7 @@ import abc
 import logging
 import dataclasses
 
-from ..database import CachedDatasetFunc, TextReview, TokenizedReview
+from ..database import CachedDatasetFunc
 from ..tokenizer import BaseTokenizer
 
 log = logging.getLogger(__name__)
