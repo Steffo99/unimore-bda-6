@@ -36,7 +36,7 @@ In questo progetto si è realizzato una struttura che permettesse di mettere a c
 
 Il codice dell'attività è incluso come package Python 3.10 compatibile con PEP518.
 
-> **Warning:**
+> **Warning**
 >
 > Il progetto non supporta Python 3.11 per via del mancato supporto di Tensorflow a quest'ultimo.
 
@@ -83,7 +83,7 @@ $ python3.10 -m unimore_bda_6
 
 Il codice dell'attività richiede la connessione a un server MongoDB 6 contenente la collezione di recensioni Amazon fornita a lezione.
 
-> **Warning:**
+> **Warning**
 >
 > La collezione non è inclusa con il repository, in quanto occupa 21 GB!
 
@@ -113,7 +113,14 @@ Per creare indici MongoDB potenzialmente utili al funzionamento efficiente del c
 $ mongosh < ./data/scripts/index-db.js
 ```
 
-## Struttura per il confronto
+## Introduzione
+
+
+
+## Costruzione di una struttura per il confronto
+
+Al fine di effettuare i confronti richiesti dalla consegna dell'attività, si è deciso di realizzare un modulo Python che permettesse di confrontare vari modelli di Sentiment Analysis tra loro, con tokenizer, training set e test set diversi tra loro.
+
 ### Configurazione ambiente e iperparametri - `.config`
 ### Recupero dati dal database - `.database`
 ### Tokenizzatore astratto - `.tokenizer.base`
