@@ -48,7 +48,7 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
 
         for review in evaluation_dataset_func():
             resulting_category = self.use(review.text)
-            log.debug("Evaluation step: %d for %s", resulting_category, review)
+            log.debug("Evaluation step: %.1d* for %s", resulting_category, review)
             evaluated += 1
             try:
                 perfect += 1 if resulting_category == review.rating else 0
