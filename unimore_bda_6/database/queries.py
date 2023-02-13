@@ -77,7 +77,6 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
 
     log.debug("Getting a sample of %d varied reviews...", category_amount * 5)
 
-    # Wow, this is ugly.
     cursor = collection.aggregate([
         {"$limit": WORKING_SET_SIZE.__wrapped__},
         {"$match": {"overall": 1.0}},
