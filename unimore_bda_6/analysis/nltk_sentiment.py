@@ -33,7 +33,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
         Register the `nltk.sentiment.util.extract_unigram_feats` feature extrator on the model.
         """
         # Ignore the category and only access the tokens
-        tokenbags = map(lambda r: r.rating, dataset)
+        tokenbags = map(lambda r: r.tokens, dataset)
         # Get all words in the documents
         all_words = self.model.all_words(tokenbags, labeled=False)
         # Create unigram `contains(*)` features from the previously gathered words
