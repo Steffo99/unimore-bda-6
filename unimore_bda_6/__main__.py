@@ -1,5 +1,6 @@
 import logging
 import pymongo.errors
+import gc
 from .log import install_general_log_handlers
 
 install_general_log_handlers()
@@ -58,6 +59,10 @@ def main():
                     PottsTokenizerWithNegation,
                     HuggingBertTokenizer,
                 ]:
+
+                    log.debug("Running garbage collection...")
+                    garbage_count = gc.collect()
+                    log.debug("Collected %d pieces of garbage!", garbage_count)
 
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
                     slog.debug("Selected Tokenizer: %s", Tokenizer.__name__)
