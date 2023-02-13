@@ -7,7 +7,6 @@ config = cfig.Configuration()
 def MONGO_HOST(val: str | None) -> str:
     """
     The hostname of the MongoDB database to connect to.
-
     Defaults to `"127.0.0.1"`.
     """
     return val or "127.0.0.1"
@@ -17,7 +16,6 @@ def MONGO_HOST(val: str | None) -> str:
 def MONGO_PORT(val: str | None) -> int:
     """
     The port of the MongoDB database to connect to.
-
     Defaults to `27017`.
     """
     if val is None:
@@ -33,7 +31,6 @@ def WORKING_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews to consider from the database.
     Set this to a low number to prevent slowness due to the dataset's huge size.
-
     Defaults to `1000000`.
     """
     if val is None:
@@ -48,7 +45,6 @@ def WORKING_SET_SIZE(val: str | None) -> int:
 def TRAINING_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the training dataset.
-
     Defaults to `4000`.
     """
     if val is None:
@@ -63,7 +59,6 @@ def TRAINING_SET_SIZE(val: str | None) -> int:
 def VALIDATION_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the training dataset.
-
     Defaults to `400`.
     """
     if val is None:
@@ -78,7 +73,6 @@ def VALIDATION_SET_SIZE(val: str | None) -> int:
 def EVALUATION_SET_SIZE(val: str | None) -> int:
     """
     The number of reviews from each category to fetch for the evaluation dataset.
-
     Defaults to `1000`.
     """
     if val is None:
@@ -93,7 +87,6 @@ def EVALUATION_SET_SIZE(val: str | None) -> int:
 def TENSORFLOW_MAX_FEATURES(val: str | None) -> int:
     """
     The maximum number of features to use in Tensorflow models.
-
     Defaults to `300000`.
     """
     if val is None:
@@ -108,7 +101,6 @@ def TENSORFLOW_MAX_FEATURES(val: str | None) -> int:
 def TENSORFLOW_EMBEDDING_SIZE(val: str | None) -> int:
     """
     The size of the embeddings tensor to use in Tensorflow models.
-
     Defaults to `12`.
     """
     if val is None:
@@ -123,7 +115,6 @@ def TENSORFLOW_EMBEDDING_SIZE(val: str | None) -> int:
 def TENSORFLOW_EPOCHS(val: str | None) -> int:
     """
     The number of epochs to train Tensorflow models for.
-
     Defaults to `3`.
     """
     if val is None:
