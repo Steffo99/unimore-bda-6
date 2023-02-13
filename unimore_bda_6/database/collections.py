@@ -26,7 +26,7 @@ class MongoReview(t.TypedDict):
 
 def reviews_collection(db: pymongo.MongoClient) -> pymongo.collection.Collection[MongoReview]:
     """
-    Create a new MongoDB client, access the ``reviews`` collection in the ``reviews`` database, and yield it.
+    Create a new MongoDB client, access the ``reviews`` collection in the ``reviews`` database, and return it.
     """
     log.debug("Accessing the reviews collection...")
     collection: pymongo.collection.Collection[MongoReview] = db.reviews.reviews
