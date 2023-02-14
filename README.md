@@ -36,13 +36,15 @@ In questo progetto si è realizzato una struttura che permettesse di mettere a c
 
 Il codice dell'attività è incluso come package Python 3.10 compatibile con PEP518.
 
+> **Note**
+>
+> In questo documento sono riportate parti del codice: in esse, è stato rimosso il codice superfluo come comandi di logging, docstring e commenti, in modo da accorciare la relazione e per mantenere l'attenzione sull'argomento della rispettiva sezione.
+>
+> Nel titolo di ciascuna sezione è evidenziato il file da cui gli spezzoni di codice provengono: se si necessitano sapere più dettagli sul funzionamento di esso, si consiglia di andare a vedere i file sorgente allegati, che contengono la documentazione necessaria.
+
 > **Warning**
 >
 > Il progetto non supporta Python 3.11 per via del mancato supporto di Tensorflow a quest'ultimo.
-
-> **Note**
->
-> In questo documento sono riportate parti del codice: in esse, è stato rimosso il codice superfluo come comandi di logging, docstring e commenti, in modo da mantenere l'attenzione sull'argomento della rispettiva sezione.
 
 #### Installazione del package
 
@@ -520,20 +522,214 @@ if __name__ == "__main__":
 
 Le valutazioni di efficacia vengono effettuate fino al raggiungimento di `TARGET_RUNS` addestramenti e valutazioni riuscite, o fino al raggiungimento di `MAXIMUM_RUNS` valutazioni totali (come descritto più avanti, l'addestramento di alcuni modelli potrebbe fallire e dover essere ripetuto).
 
-## Ri-implementazione dell'esercizio con NLTK - `.analysis.nltk_sentiment`
+## Ri-implementazione dell'esercizio con NLTK
+
+Come prima cosa, si è ricreato l'esempio di sentiment analysis realizzato a lezione all'interno del package `unimore_bda_6`.
 
 ### Wrapping del tokenizzatore di NLTK - `.tokenizer.nltk_word_tokenize`
-### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
-### Problemi di memoria
 
-## Ottimizzazione di memoria
-### Caching - `.database.cache` e `.gathering`
+Si è creata una nuova sottoclasse di `BaseTokenizer`, `NLTKWordTokenizer`, che usa la tokenizzazione inclusa con NLTK.
+
+Per separare le parole in token, essa chiama [`nltk.word_tokenize`], funzione built-in che sfrutta i tokenizer [Punkt] e [Treebank] per dividere rispettivamente in frasi e parole la stringa passata come input.
+
+La lista di tokens viene poi passata a [`nltk.sentiment.util.mark_negation`], che aggiunge il suffisso `_NEG` a tutti i token che si trovano tra una negazione e un segno di punteggiatura, in modo che la loro semantica venga preservata anche all'interno di un contesto *bag of words*, in cui le posizioni dei token vengono ignorate.
+
+(È considerato negazione qualsiasi token che finisce con `n't`, oppure uno dei seguenti token: `never`, `no`, `nothing`, `nowhere`, `noone`, `none`, `not`, `havent`, `hasnt`, `hadnt`, `cant`, `couldnt`, `shouldnt`, `wont`, `wouldnt`, `dont`, `doesnt`, `didnt`, `isnt`, `arent`, `aint`.)
+
+```python
+class NLTKWordTokenizer(BaseTokenizer):
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        tokens = nltk.word_tokenize(text)
+        nltk.sentiment.util.mark_negation(tokens, shallow=True)
+        return tokens
+```
+
+### Costruzione del modello - `.analysis.nltk_sentiment`
+
+Si è creata anche una sottoclasse di `BaseSentimentAnalyzer`, `NLTKSentimentAnalyzer`, che utilizza per la classificazione un modello di tipo [`nltk.sentiment.SentimentAnalyzer`].
+
+```python
+class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
+    def __init__(self, *, tokenizer: BaseTokenizer) -> None:
+        super().__init__(tokenizer=tokenizer)
+        self.model: nltk.sentiment.SentimentAnalyzer = nltk.sentiment.SentimentAnalyzer()
+        self.trained: bool = False
+
+    ...
+```
+
+Esattamente come il modello realizzato a lezione, in fase di addestramento esso:
+
+1. Prende il testo di ogni recensione del training set
+2. Lo converte in una lista di token
+3. Conta le occorrenze totali di ogni token della precedente lista per determinare quelli che compaiono in almeno 4 recensioni diverse
+4. Utilizza questi token frequenti per identificare le caratteristiche ("features") da usare per effettuare la classificazione
+
+Successivamente:
+
+5. Identifica la presenza delle caratteristiche in ciascun elemento del training set
+6. Addestra un classificatore Bayesiano semplice ("naive Bayes") perchè determini la probabilità che data una certa feature, una recensione abbia un certo numero di stelle
+
+```python
+    ...
+
+    def _add_feature_unigrams(self, dataset: t.Iterator[TokenizedReview]) -> None:
+        "Register the `nltk.sentiment.util.extract_unigram_feats` feature extrator on the model."
+        tokenbags = map(lambda r: r.tokens, dataset)
+        all_words = self.model.all_words(tokenbags, labeled=False)
+        unigrams = self.model.unigram_word_feats(words=all_words, min_freq=4)
+        self.model.add_feat_extractor(nltk.sentiment.util.extract_unigram_feats, unigrams=unigrams)
+
+    def _add_feature_extractors(self, dataset: t.Iterator[TextReview]):
+        "Register new feature extractors on the `.model`."
+        dataset: t.Iterator[TokenizedReview] = map(self.tokenizer.tokenize_review, dataset)
+        self._add_feature_unigrams(dataset)
+
+    def __extract_features(self, review: TextReview) -> tuple[Features, str]:
+        "Convert a TextReview to a (Features, str) tuple. Does not use `SentimentAnalyzer.apply_features` due to unexpected behaviour when using iterators."
+        review: TokenizedReview = self.tokenizer.tokenize_review(review)
+        return self.model.extract_features(review.tokens), str(review.rating)
+
+    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+        if self.trained:
+            raise AlreadyTrainedError()
+        self._add_feature_extractors(training_dataset_func())
+        featureset: t.Iterator[tuple[Features, str]] = map(self.__extract_features, training_dataset_func())
+        self.model.classifier = nltk.classify.NaiveBayesClassifier.train(featureset)
+        self.trained = True
+
+    ...
+```
+
+Infine, implementa la funzione `use`, che:
+
+1. tokenizza la stringa ottenuta in input
+2. utilizza il modello precedentemente addestrato per determinare la categoria ("rating") di appartenenza
+
+```python
+    ...
+
+    def use(self, text: str) -> float:
+        if not self.trained:
+            raise NotTrainedError()
+        tokens = self.tokenizer.tokenize(text)
+        rating = self.model.classify(instance=tokens)
+        rating = float(rating)
+        return rating
+```
+
+#### Problemi di RAM
+
+L'approccio utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare a dimensioni molto grandi di training set: i suoi metodi non gestiscono correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati, e richiedono invece che l'intero training set sia caricato contemporaneamente in memoria in una [`list`].
+
+Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impostare la dimensione predefinita del training set a `4000` documenti.
+
+### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
+
+> 1. Utilizzare come tokenizer il “sentiment tokenizer” di Christopher Potts (link disponibile nelle slide del corso);
+
+Per realizzare il punto 1 della consegna, si sono creati due nuovi tokenizer, `PottsTokenizer` e `PottsTokenizerWithNegation`, che implementano il [tokenizer di Christopher Potts] rispettivamente senza marcare e marcando le negazioni sui token attraverso [`ntlk.sentiment.util.mark_negation`].
+
+Essendo il tokenizer originale scritto per Python 2, e non direttamente immediatamente compatibile con `BaseTokenizer`, si è scelto di studiare il codice originale e ricrearlo in un formato più adatto a questo progetto.
+
+Prima di effettuare la tokenizzazione, il tokenizer normalizza l'input:
+
+1. convertendo tutte le entità HTML come `&lt;` nel loro corrispondente unicode `<`
+2. convertendo il carattere `&` nel token `and`
+
+Il tokenizer effettua poi la tokenizzazione usando espressioni regolari definite in `words_re_string` per catturare token di diversi tipi, in ordine:
+
+* emoticon testuali `:)`
+* numeri di telefono statunitensi `+1 123 456 7890`
+* tag HTML `<b>`
+* username stile Twitter `@steffo`
+* hashtag stile Twitter `#Big_Data_Analytics`
+* parole con apostrofi `i'm`
+* numeri `-9000`
+* parole senza apostrofi `data`
+* ellissi `. . .`
+* gruppi di caratteri non-whitespace `🇮🇹`
+
+Dopo aver tokenizzato, il tokenizer processa il risultato:
+
+1. convertendo il testo a lowercase, facendo attenzione però a non cambiare la capitalizzazione delle emoticon per non cambiare il loro significato (`:D` è diverso da `:d`)
+
+Il codice riassunto del tokenizer è dunque:
+
+```python
+class PottsTokenizer(BaseTokenizer):
+    emoticon_re_string = r"""[<>]?[:;=8][\-o*']?[)\](\[dDpP/:}{@|\\]"""
+    emoticon_re = re.compile(emoticon_re_string)
+
+    words_re_string = "(" + "|".join([
+        emoticon_re_string,
+        r"""(?:[+]?[01][\s.-]*)?(?:[(]?\d{3}[\s.)-]*)?\d{3}[\-\s.]*\d{4}""",
+        r"""<[^>]+>""",
+        r"""@[\w_]+""",
+        r"""#+[\w_]+[\w'_-]*[\w_]+""",
+        r"""[a-z][a-z'_-]+[a-z]""",
+        r"""[+-]?\d+(?:[,/.:-]\d+)?""",
+        r"""[\w_]+""",
+        r"""[.](?:\s*[.])+""",
+        r"""\S+""",
+    ]) + ")"
+
+    words_re = re.compile(words_re_string, re.I)
+
+    digit_re_string = r"&#\d+;"
+    digit_re = re.compile(digit_re_string)
+
+    alpha_re_string = r"&\w+;"
+    alpha_re = re.compile(alpha_re_string)
+
+    amp = "&amp;"
+
+    @classmethod
+    def html_entities_to_chr(cls, s: str) -> str:
+        "Internal metod that seeks to replace all the HTML entities in s with their corresponding characters."
+        # First the digits:
+        ents = set(cls.digit_re.findall(s))
+        if len(ents) > 0:
+            for ent in ents:
+                entnum = ent[2:-1]
+                try:
+                    entnum = int(entnum)
+                    s = s.replace(ent, chr(entnum))
+                except (ValueError, KeyError):
+                    pass
+        # Now the alpha versions:
+        ents = set(cls.alpha_re.findall(s))
+        ents = filter((lambda x: x != cls.amp), ents)
+        for ent in ents:
+            entname = ent[1:-1]
+            try:
+                s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
+            except (ValueError, KeyError):
+                pass
+            s = s.replace(cls.amp, " and ")
+        return s
+
+    @classmethod
+    def lower_but_preserve_emoticons(cls, word):
+        "Internal method which lowercases the word if it does not match `.emoticon_re`."
+        if cls.emoticon_re.search(word):
+            return word
+        else:
+            return word.lower()
+
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        text = self.html_entities_to_chr(text)
+        tokens = self.words_re.findall(text)
+        tokens = map(self.lower_but_preserve_emoticons, tokens)
+        tokens = list(tokens)
+        return tokens
+```
 
 ## Implementazione di modelli con Tensorflow - `.analysis.tf_text`
-### Creazione di tokenizzatori compatibili con Tensorflow - `.tokenizer.plain` e `.tokenizer.lower`
+### Caching - `.database.cache` e `.gathering`
 ### Creazione di un modello di regressione - `.analysis.tf_text.TensorflowPolarSentimentAnalyzer`
 ### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
-#### Esplosione del gradiente
+### Esplosione del gradiente
 
 ## Implementazione di tokenizzatori di HuggingFace - `.tokenizer.hugging`
 
@@ -550,3 +746,10 @@ Le valutazioni di efficacia vengono effettuate fino al raggiungimento di `TARGET
 [`__debug__`]: https://docs.python.org/3/library/constants.html#debug__
 [`-O`]: https://docs.python.org/3/using/cmdline.html#cmdoption-O
 [`str.split`]: https://docs.python.org/3/library/stdtypes.html?highlight=str%20split#str.split
+[`nltk.tokenize.word_tokenize`]: https://www.nltk.org/api/nltk.tokenize.word_tokenize.html?highlight=word_tokenize#nltk.tokenize.word_tokenize
+[Punkt]: https://www.nltk.org/api/nltk.tokenize.PunktSentenceTokenizer.html#nltk.tokenize.PunktSentenceTokenizer
+[Treebank]: https://www.nltk.org/api/nltk.tokenize.TreebankWordTokenizer.html#nltk.tokenize.TreebankWordTokenizer
+[`nltk.sentiment.util.mark_negation`]: https://www.nltk.org/api/nltk.sentiment.util.html?highlight=nltk+sentiment+util+mark_negation#nltk.sentiment.util.mark_negation
+[`nltk.sentiment.SentimentAnalyzer`]: https://www.nltk.org/api/nltk.sentiment.sentiment_analyzer.html?highlight=nltk+sentiment+sentimentanalyzer#nltk.sentiment.sentiment_analyzer.SentimentAnalyzer
+[`list`]: https://docs.python.org/3/library/stdtypes.html?highlight=list#list
+[tokenizer di Christopher Potts]: http://sentiment.christopherpotts.net/tokenizing.html
