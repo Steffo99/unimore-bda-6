@@ -3,6 +3,9 @@ import logging
 import coloredlogs
 import pathlib
 
+logging.addLevelName(11, "SUCCESS")
+logging.addLevelName(12, "FAILURE")
+
 this_log = logging.getLogger(__name__)
 
 
@@ -34,9 +37,11 @@ def install_general_log_handlers():
             level_styles=dict(
                 debug=dict(color="white"),
                 info=dict(color="cyan"),
-                warning=dict(color="yellow"),
-                error=dict(color="red"),
+                warning=dict(color="yellow", bold=True),
+                error=dict(color="red", bold=True),
                 critical=dict(color="black", background="red", bold=True),
+                success=dict(color="green"),
+                failure=dict(color="yellow"),
             ),
             field_styles=dict(
                 asctime=dict(color='magenta'),

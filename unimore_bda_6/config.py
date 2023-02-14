@@ -125,6 +125,35 @@ def TENSORFLOW_EPOCHS(val: str | None) -> int:
         raise cfig.InvalidValueError("Not an int.")
 
 
+@config.optional()
+def TARGET_RUNS(val: str | None) -> int:
+    """
+    The amount of successful runs to perform on a sample-model-tokenizer combination.
+    Defaults to `1`.
+    """
+    if val is None:
+        return 1
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+@config.optional()
+def MAXIMUM_RUNS(val: str | None) -> int:
+    """
+    The maximum amount of runs to perform on a sample-model-tokenizer combination before skipping it.
+    Defaults to `25`.
+    """
+    if val is None:
+        return 25
+    try:
+        return int(val)
+    except ValueError:
+        raise cfig.InvalidValueError("Not an int.")
+
+
+
 __all__ = (
     "config",
     "MONGO_HOST",

@@ -5,10 +5,10 @@ from .log import install_general_log_handlers
 
 install_general_log_handlers()
 
-from .config import config
+from .config import config, TARGET_RUNS, MAXIMUM_RUNS
 from .database import mongo_client_from_config, reviews_collection, sample_reviews_polar, sample_reviews_varied
 from .analysis import NLTKSentimentAnalyzer, TensorflowCategorySentimentAnalyzer, TensorflowPolarSentimentAnalyzer, ThreeCheat
-from .analysis.base import TrainingFailedError
+from .analysis.base import TrainingFailedError, EvaluationResults
 from .tokenizer import PlainTokenizer, LowercaseTokenizer, NLTKWordTokenizer, PottsTokenizer, PottsTokenizerWithNegation, HuggingBertTokenizer
 from .gathering import Caches
 
@@ -42,7 +42,7 @@ def main():
             slog.debug("Selected sample_func: %s", sample_func.__name__)
 
             for SentimentAnalyzer in [
-                ThreeCheat,
+                # ThreeCheat,
                 NLTKSentimentAnalyzer,
                 TensorflowPolarSentimentAnalyzer,
                 TensorflowCategorySentimentAnalyzer,
@@ -67,17 +67,25 @@ def main():
                     slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
                     slog.debug("Selected Tokenizer: %s", Tokenizer.__name__)
 
-                    run_counter = 0
+                    runs = 0
+                    successful_runs = 0
+                    cumulative_evaluation_results = EvaluationResults()
 
                     while True:
 
-                        slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}.{run_counter}")
-                        run_counter += 1
-                        slog.debug("Run #%d", run_counter)
+                        slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}")
 
-                        if run_counter >= 100:
-                            slog.fatal("Exceeded 100 runs, giving up and exiting...")
-                            exit(2)
+                        if successful_runs >= TARGET_RUNS.__wrapped__:
+                            slog.info("Reached target of %d runs, moving on...", TARGET_RUNS.__wrapped__)
+                            break
+
+                        if runs >= MAXIMUM_RUNS.__wrapped__:
+                            slog.fatal("Exceeded %d runs, giving up and exiting...", MAXIMUM_RUNS.__wrapped__)
+                            break
+
+                        runs += 1
+                        slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}.{Tokenizer.__name__}.{runs}")
+                        slog.debug("Run #%d", runs)
 
                         try:
                             slog.debug("Instantiating %s with %s...", SentimentAnalyzer.__name__, Tokenizer.__name__)
@@ -97,11 +105,14 @@ def main():
 
                             else:
                                 slog.info("Training succeeded!")
-
                                 slog.info("Evaluating sentiment analyzer: %s", sa)
                                 evaluation_results = sa.evaluate(evaluation_dataset_func=datasets.evaluation)
                                 slog.info("Evaluation results: %s", evaluation_results)
+                                successful_runs += 1
+                                cumulative_evaluation_results += evaluation_results
                                 break
+
+                    slog.info("Cumulative evaluation results: %s", cumulative_evaluation_results)
 
 
 if __name__ == "__main__":
