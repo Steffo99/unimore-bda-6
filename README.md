@@ -167,43 +167,11 @@ L'esecuzione del modulo `unimore_bda_6.config`, senza variabili d'ambiente defin
 ```console
 $ python -m unimore_bda_6.config
 ===== Configuration =====
-
-MONGO_HOST                = '127.0.0.1'
-The hostname of the MongoDB database to connect to.
-Defaults to `"127.0.0.1"`.
-
-MONGO_PORT                = 27017
-The port of the MongoDB database to connect to.
-Defaults to `27017`.
-
-WORKING_SET_SIZE          = 1000000
-The number of reviews to consider from the database.
-Set this to a low number to prevent slowness due to the dataset's huge size.
-
+...
 TRAINING_SET_SIZE         = 4000
 The number of reviews from each category to fetch for the training dataset.
 Defaults to `4000`.
-
-VALIDATION_SET_SIZE       = 400
-The number of reviews from each category to fetch for the training dataset.
-Defaults to `400`.
-
-EVALUATION_SET_SIZE       = 1000
-The number of reviews from each category to fetch for the evaluation dataset.
-Defaults to `1000`.
-
-TENSORFLOW_MAX_FEATURES   = 300000
-The maximum number of features to use in Tensorflow models.
-Defaults to `300000`.
-
-TENSORFLOW_EMBEDDING_SIZE = 12
-The size of the embeddings tensor to use in Tensorflow models.
-Defaults to `12`.
-
-TENSORFLOW_EPOCHS         = 3
-The number of epochs to train Tensorflow models for.
-Defaults to `3`.
-
+...
 ===== End =====
 ```
 
@@ -380,7 +348,7 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
     return cursor
 ```
 
-### Tokenizzatore astratto - `.tokenizer.base`
+### Tokenizzatore astratto - `.tokenizer.base` e `.tokenizer.plain`
 
 Si è realizzata una classe astratta che rappresentasse un tokenizer qualcunque, in modo da avere la stessa interfaccia a livello di codice indipendentemente dal package di tokenizzazione utilizzato:
 
@@ -396,6 +364,21 @@ class BaseTokenizer(metaclass=abc.ABCMeta):
         "Apply `.tokenize` to the text of a `TextReview`, converting it in a `TokenizedReview`."
         tokens = self.tokenize(review.text)
         return TokenizedReview(rating=review.rating, tokens=tokens)
+```
+
+Si sono poi realizzate due classi di esempio che implementassero i metodi astratti della precedente: `PlainTokenizer` e `LowerTokenizer`, che semplicemente separano il testo in tokens attraverso la funzione builtin [`str.split`] di Python, rispettivamente mantenendo e rimuovendo la capitalizzazione del testo.
+
+```python
+class PlainTokenizer(BaseTokenizer):
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        tokens = text.split()
+        return tokens
+
+class LowercaseTokenizer(BaseTokenizer):
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        text = text.lower()
+        tokens = text.split()
+        return tokens
 ```
 
 ### Analizzatore astratto - `.analysis.base`
@@ -415,31 +398,130 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     def evaluate(self, evaluation_dataset_func: CachedDatasetFunc) -> EvaluationResults:
-        "Perform a model evaluation by calling repeatedly `.use` on every text of the test dataset and by comparing its resulting category with the expected category."
-        ...  # Descritta successivamente
+        """
+        Perform a model evaluation by calling repeatedly `.use` on every text of the test dataset and by comparing its resulting category with the expected category.
+        """
+        er = EvaluationResults()
+        for review in evaluation_dataset_func():
+            er.add(expected=review.rating, predicted=self.use(review.text))
+        return er
+```
+
+Si può notare che il metodo `evaluate` inserisce i risultati di ciascuna predizione effettuata in un oggetto di tipo `EvaluationResults`.
+
+Esso tiene traccia della matrice di confusione per la valutazione, e da essa è in grado di ricavarne i valori di richiamo e precisione per ciascuna categoria implementata dal modello; inoltre, calcola l'errore medio assoluto e quadrato tra previsioni e valori effettivi:
+
+```python
+class EvaluationResults:
+    def __init__(self):
+        self.confusion_matrix: dict[float, dict[float, int]] = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
+        "Confusion matrix of the evaluation. First key is the expected rating, second key is the output label."
+
+        self.absolute_error_total: float = 0.0
+        "Sum of the absolute errors committed in the evaluation."
+
+        self.squared_error_total: float = 0.0
+        "Sum of the squared errors committed in the evaluation."
+
+    def keys(self) -> set[float]:
+        "Return all processed categories."
+        keys: set[float] = set()
+        for expected, value in self.confusion_matrix.items():
+            keys.add(expected)
+            for predicted, _ in value.items():
+                keys.add(predicted)
+        return keys
+
+    def evaluated_count(self) -> int:
+        "Return the total number of evaluated reviews."
+        total: int = 0
+        for row in self.confusion_matrix.values():
+            for el in row.values():
+                total += el
+        return total
+
+    def perfect_count(self) -> int:
+        """
+        Return the total number of perfect reviews.
+        """
+        total: int = 0
+        for key in self.keys():
+            total += self.confusion_matrix[key][key]
+        return total
+
+    def recall_count(self, rating: float) -> int:
+        "Return the number of reviews processed with the given rating."
+        total: int = 0
+        for el in self.confusion_matrix[rating].values():
+            total += el
+        return total
+
+    def precision_count(self, rating: float) -> int:
+        "Return the number of reviews for which the model returned the given rating."
+        total: int = 0
+        for col in self.confusion_matrix.values():
+            total += col[rating]
+        return total
+
+    def recall(self, rating: float) -> float:
+        "Return the recall for a given rating."
+        try:
+            return self.confusion_matrix[rating][rating] / self.recall_count(rating)
+        except ZeroDivisionError:
+            return float("inf")
+
+    def precision(self, rating: float) -> float:
+        "Return the precision for a given rating."
+        try:
+            return self.confusion_matrix[rating][rating] / self.precision_count(rating)
+        except ZeroDivisionError:
+            return float("inf")
+
+    def add(self, expected: float, predicted: float) -> None:
+        "Count a new prediction."
+        self.confusion_matrix[expected][predicted] += 1
+```
+
+Si è inoltre realizzata un'implementazione di esempio della classe astratta, `ThreeCheat`, che "prevede" che tutte le recensioni siano di 3.0*, in modo da verificare facilmente la correttezza della precedente classe:
+
+```python
+class ThreeCheat(BaseSentimentAnalyzer):
+    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+        pass
+
+    def use(self, text: str) -> float:
+        return 3.0
 ```
 
 ### Logging - `.log`
 
-Si è configurato il modulo [`logging`] di Python affinchè esso scrivesse sia su console sia sul file `./data/logs/last_run.tsv` le operazioni eseguite dal programma.
+Si è configurato il modulo [`logging`] di Python affinchè esso scrivesse report sull'esecuzione:
 
-Il livello di logging viene regolato attraverso la costante magica [`__debug__`] di Python, il cui valore cambia in base alla presenza dell'opzione di ottimizzazione [`-O`] dell'interprete Python.
+- nello stream stderr della console, in formato colorato e user-friendly
+- sul file `./data/logs/last_run.tsv`, in formato machine-readable
+
+Il livello di logging viene regolato attraverso la costante magica [`__debug__`] di Python, il cui valore cambia in base alla presenza dell'opzione di ottimizzazione [`-O`] dell'interprete Python; senza quest'ultima, i log stampati su console saranno molto più dettagliati.
 
 ### Tester - `.__main__`
 
-Infine, si è preparato un tester che effettuasse una valutazione di efficacia per ogni combinazione di funzione di campionamento, tokenizzatore, e modello di Sentiment Analysis:
+Infine, si è preparato un tester che effettuasse ripetute valutazioni di efficacia per ogni combinazione di funzione di campionamento, tokenizzatore, e modello di Sentiment Analysis, con una struttura simile alla seguente:
 
 ```python
-
+# Pseudo-codice non corrispondente al main finale
 if __name__ == "__main__":
-    ...
-    for sample_func in [...]:
-        for SentimentAnalyzer in [...]:
-            for Tokenizer in [...]:
-                ...
+    for sample_func in [sample_reviews_polar, sample_reviews_varied]:
+        for SentimentAnalyzer in [ThreeCheat, ...]:
+            for Tokenizer in [PlainTokenizer, LowercaseTokenizer, ...]:
+                for run in range(TARGET_RUNS):
+                    model = SentimentAnalyzer(tokenizer=Tokenizer())
+                    model.train(training_set=sample_func(amount=TRAINING_SET_SIZE), validation_set_func=sample_func(amount=VALIDATION_SET_SIZE))
+                    model.evaluate(evaluation_set_func=sample_func(amount=EVALUATION_SET_SIZE))
 ```
 
+Le valutazioni di efficacia vengono effettuate fino al raggiungimento di `TARGET_RUNS` addestramenti e valutazioni riuscite, o fino al raggiungimento di `MAXIMUM_RUNS` valutazioni totali (come descritto più avanti, l'addestramento di alcuni modelli potrebbe fallire e dover essere ripetuto).
+
 ## Ri-implementazione dell'esercizio con NLTK - `.analysis.nltk_sentiment`
+
 ### Wrapping del tokenizzatore di NLTK - `.tokenizer.nltk_word_tokenize`
 ### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
 ### Problemi di memoria
@@ -467,3 +549,4 @@ if __name__ == "__main__":
 [`$rand`]: https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/rand/
 [`__debug__`]: https://docs.python.org/3/library/constants.html#debug__
 [`-O`]: https://docs.python.org/3/using/cmdline.html#cmdoption-O
+[`str.split`]: https://docs.python.org/3/library/stdtypes.html?highlight=str%20split#str.split
