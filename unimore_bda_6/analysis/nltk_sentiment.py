@@ -50,7 +50,7 @@ class NLTKSentimentAnalyzer(BaseSentimentAnalyzer):
 
     def __extract_features(self, review: TextReview) -> tuple[Features, str]:
         """
-        Convert a (TokenBag, Category) tuple to a (Features, Category) tuple.
+        Convert a TextReview to a (Features, str) tuple.
 
         Does not use `SentimentAnalyzer.apply_features` due to unexpected behaviour when using iterators.
         """
