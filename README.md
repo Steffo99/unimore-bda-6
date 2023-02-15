@@ -924,13 +924,116 @@ Attraverso di essi, la classe è in grado di costruire il [`tensorflow.data.Data
 
 #### Lookup delle stringhe
 
+I modelli di deep learning di Tensorflow non sono in grado di processare direttamente stringhe; esse devono essere prima convertite in formato numerico.
+
+All'inizializzazione, la struttura base crea un layer di tipo [`tensorflow.keras.layers.StringLookup`], che prende in input una lista di token e la converte in una lista di numeri interi, assegnando a ciascun token un numero diverso:
+
+```python
+    ...
+
+    def __init__(self, *, tokenizer: BaseTokenizer):
+        ...
+        self.string_lookup_layer = tensorflow.keras.layers.StringLookup(max_tokens=TENSORFLOW_MAX_FEATURES)
+        ...
+
+    ...
+```
+
+Prima dell'addestramento del modello, il layer deve essere adattato, ovvero deve costruire un vocabolario che associa ogni possibile termine ad un numero; qualsiasi token al di fuori da questo vocabolario verrà convertito in `0`.
+
+Per esempio, `["ciao", "come", "stai", "?"]` potrebbe essere convertito in `[1, 2, 0, 3]` se il modello non è stato adattato con il token `"stai"`.
+
 #### Addestramento
+
+La struttura base `TensorflowSentimentAnalyzer` uniforma la fase di addestramento per tutti i modelli realizzandola attraverso le seguenti fasi:
+
+1. Creazione di `tensorflow.data.Dataset` dalla cache del training set e del validation set
+2. Adattamento del layer di string lookup
+3. Fitting del modello per `TENSORFLOW_EPOCHS` epoche
+
+```python
+    ...
+
+    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+        training_set = self._build_dataset(training_dataset_func)
+        validation_set = self._build_dataset(validation_dataset_func)
+
+        vocabulary = training_set.map(lambda tokens, rating: tokens)
+        self.string_lookup_layer.adapt(vocabulary)
+
+        self.history: tensorflow.keras.callbacks.History | None  = self.model.fit(
+            training_set,
+            validation_data=validation_set,
+            epochs=TENSORFLOW_EPOCHS.__wrapped__,
+            callbacks=[
+                tensorflow.keras.callbacks.TerminateOnNaN()
+            ],
+        )
+
+        if len(self.history.epoch) < TENSORFLOW_EPOCHS.__wrapped__:
+            self.failed = True
+            raise TrainingFailedError()
+        else:
+            self.trained = True
+
+    ...
+```
+
+##### Esplosione del gradiente
+
+Il metodo `train` si occupa anche di gestire una situazione particolare: quella in cui l'errore del modello sul training set diventi `NaN` per via del fenomeno di [esplosione del gradiente].
+
+Grazie al callback `tensorflow.keras.callbacks.TerminateOnNaN`, nel momento in cui viene riconosciuto che l'errore è diventato `NaN`, l'addestramento viene interrotto, e viene sollevato un `TrainingFailedError`.
+
+Si è quindi aggiornato il main per gestire l'eccezione e ricominciare l'addestramento da capo qualora essa si verificasse:
+
+```python
+# Pseudo-codice non corrispondente al main finale
+if __name__ == "__main__":
+    for sample_func in [sample_reviews_polar, sample_reviews_varied]:
+        for SentimentAnalyzer in [ThreeCheat, NLTKSentimentAnalyzer, ...]:
+            for Tokenizer in [PlainTokenizer, LowercaseTokenizer, PottsTokenizer, PottsTokenizerWithNegation, ...]:
+                runs = 0
+                successful_runs = 0
+                while True:
+                    if runs >= MAXIMUM_RUNS or successful_runs >= TARGET_RUNS:
+                        break
+                    runs += 1
+                    model = SentimentAnalyzer(tokenizer=Tokenizer())
+                    try:
+                        model.train(training_set=sample_func(amount=TRAINING_SET_SIZE), validation_set=sample_func(amount=VALIDATION_SET_SIZE))
+                    except TrainingFailedError:
+                        continue
+                    model.evaluate(evaluation_set=sample_func(amount=EVALUATION_SET_SIZE))
+                    successful_runs += 1
+```
 
 #### Utilizzo
 
+Anche l'utilizzo del modello è uniformato da `TensorflowSentimentAnalyzer`:
+
+```python
+    ...
+
+    def use(self, text: str) -> float:
+        tokens = self.tokenizer.tokenize(text)
+        tokens = self._tokens_to_tensor(tokens)
+        prediction = self.model.predict(tokens, verbose=False)
+        prediction = self._prediction_to_rating(prediction)
+        return prediction
+
+    ...
+```
+
+1. Il testo passato in input viene tokenizzato dal tokenizzatore selezionato;
+2. i token vengono trasformati in un tensore di stringhe;
+3. il tensore di stringhe viene passato al modello, il primo layer del quale effettua string lookup;
+4. il modello emette un output in forma di tensore;
+5. il tensore viene convertito nel numero di stelle predetto.
+
 ### Creazione di un modello di regressione - `.analysis.tf_text.TensorflowPolarSentimentAnalyzer`
+
 ### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
-### Esplosione del gradiente
 
 ## Implementazione di tokenizzatori di HuggingFace - `.tokenizer.hugging`
 
@@ -958,3 +1061,5 @@ Attraverso di essi, la classe è in grado di costruire il [`tensorflow.data.Data
 [`tensorflow.data.Dataset`]: https://www.tensorflow.org/api_docs/python/tf/data/Dataset
 [Keras]: https://www.tensorflow.org/api_docs/python/tf/keras
 [`tensorflow.Tensor`]: https://www.tensorflow.org/api_docs/python/tf/Tensor
+[`tensorflow.keras.layers.StringLookup`]: https://www.tensorflow.org/api_docs/python/tf/keras/layers/StringLookup
+[esplosione del gradiente]: https://towardsdatascience.com/the-vanishing-exploding-gradient-problem-in-deep-neural-networks-191358470c11
