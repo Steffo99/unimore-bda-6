@@ -1234,6 +1234,7 @@ class HuggingBertTokenizer(HuggingTokenizer):
 
 
 [`cfig`]: https://cfig.readthedocs.io
+[`cfig.Configuration`]: https://cfig.readthedocs.io/en/latest/reference.html#cfig.config.Configuration
 [MongoDB]: https://www.mongodb.com
 [`$sample`]: https://www.mongodb.com/docs/manual/reference/operator/aggregation/sample/
 [`$rand`]: https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/rand/
