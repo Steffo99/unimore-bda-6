@@ -14,6 +14,7 @@ class HuggingTokenizer(BaseTokenizer, metaclass=abc.ABCMeta):
         super().__init__()
         self.hug: tokenizers.Tokenizer = self._build_hugging_tokenizer()
 
+    @abc.abstractmethod
     def _build_hugging_tokenizer(self) -> tokenizers.Tokenizer:
         raise NotImplementedError()
 

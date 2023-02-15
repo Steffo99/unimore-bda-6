@@ -1033,9 +1033,199 @@ Anche l'utilizzo del modello è uniformato da `TensorflowSentimentAnalyzer`:
 
 ### Creazione di un modello di regressione - `.analysis.tf_text.TensorflowPolarSentimentAnalyzer`
 
+Uno dei due tipi di modello di deep learning realizzati è un modello di regressione, ovvero un modello che dà in output un singolo valore a virgola mobile `0 < y < 1` rappresentante la confidenza che la recensione data sia positiva, il cui complementare `z = 1 - y` rappresenta la confidenza che la recensione data sia negativa:
+
+```python
+class TensorflowPolarSentimentAnalyzer(TensorflowSentimentAnalyzer):
+    def _ratingtensor_shape(self) -> tensorflow.TensorSpec:
+        spec = tensorflow.TensorSpec(shape=(1,), dtype=tensorflow.float32, name="rating_value")
+        return spec
+
+    ...
+```
+
+Si considera valida la predizione in cui il modello ha più confidenza: positiva, o 5.0*, se `y >= 0.5`, oppure negativa, o 1.0*, se `y < 0.5`:
+
+```python
+    ...
+
+    def _prediction_to_rating(self, prediction: numpy.array) -> float:
+        rating: float = prediction[0, 0]
+        rating = 1.0 if rating < 0.5 else 5.0
+        return rating
+
+    ...
+```
+
+Seguendo le best practices per i modelli di questo tipo, si normalizza il valore in input a un numero `0.0 < x < 1.0`:
+
+
+```python
+    ...
+
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        normalized_rating = (rating - 1) / 4
+        tensor = tensorflow.convert_to_tensor(
+            [normalized_rating],
+            dtype=tensorflow.float32,
+            name="rating_value"
+        )
+        return tensor
+
+    ...
+```
+
+Infine, si costruiscono i layer del modello di deep learning:
+
+1. il primo layer, [`tensorflow.keras.layers.Embedding`], impara a convertire i tensori di interi di dimensione variabile che riceve in input in tensori di numeri a virgola mobile di dimensione fissa in cui ciascun valore rappresenta un significato delle parole;
+
+2. il secondo (e quarto e sesto) layer, [`tensorflow.keras.layers.Dropout`], imposta casualmente a `0.0` il 25% dei valori contenuti nei tensori che riceve in input, rendendo "più indipendenti" le correlazioni apprese dallo strato precedente di neuroni e così evitando l'overfitting;
+
+3. il terzo layer, [`tensorflow.keras.layers.GlobalAveragePooling1D`], calcola l'influenza media di ciascun significato sulla confidenza del modello relativamente a una determinata recensione
+
+4. il quinto (e sesto) layer, [`tensorflow.keras.layers.Dense`], sono strati di neuroni interconnessi in grado di apprendere semplici collegamenti tra significati e sentimenti
+
+```python
+    ...
+
+    def _build_model(self) -> tensorflow.keras.Sequential:
+        model = tensorflow.keras.Sequential([
+            self.string_lookup_layer,
+            tensorflow.keras.layers.Embedding(
+                input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
+                output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
+            ),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.GlobalAveragePooling1D(),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(8),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(1, activation=tensorflow.keras.activations.sigmoid),
+        ])
+
+        model.compile(
+            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=1.0),
+            loss=tensorflow.keras.losses.MeanAbsoluteError(),
+        )
+
+        log.debug("Compiled model: %s", model)
+        return model
+```
+
 ### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
 
+L'altro tipo di modello realizzato è invece un modello di categorizzazione, ovvero un modello che dà in output cinque diversi valori a virgola mobile, ciascuno rappresentante la confidenza che la data recensione appartenga a ciascuna delle date categorie:
+
+```python
+class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
+    def _ratingtensor_shape(self) -> tensorflow.TensorSpec:
+        spec = tensorflow.TensorSpec(shape=(1, 5), dtype=tensorflow.float32, name="rating_one_hot")
+        return spec
+
+    ...
+```
+
+Si considera valida la predizione nella quale il modello ha confidenza più alta:
+
+```python
+    ...
+
+    def _prediction_to_rating(self, prediction: tensorflow.Tensor) -> float:
+        best_prediction = None
+        best_prediction_index = None
+
+        for index, prediction in enumerate(iter(prediction[0])):
+            if best_prediction is None or prediction > best_prediction:
+                best_prediction = prediction
+                best_prediction_index = index
+
+        result = float(best_prediction_index) + 1.0
+        return result
+
+    ...
+```
+
+Questa volta, si utilizza l'encoding *one-hot* per gli input del modello in modo da creare una separazione netta tra le cinque possibili categorie in cui una recensione potrebbe cadere (1.0*, 2.0*, 3.0*, 4.0*, 5.0*).
+
+Esso consiste nel creare un tensore di cinque elementi, ciascuno rappresentante una categoria, e di impostarlo a 1.0 se la recensione appartiene a una categoria o a 0.0 se essa non vi appartiene.
+
+```python
+    ...
+
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        tensor = tensorflow.convert_to_tensor(
+            [[
+                1.0 if rating == 1.0 else 0.0,
+                1.0 if rating == 2.0 else 0.0,
+                1.0 if rating == 3.0 else 0.0,
+                1.0 if rating == 4.0 else 0.0,
+                1.0 if rating == 5.0 else 0.0,
+            ]],
+            dtype=tensorflow.float32,
+            name="rating_one_hot"
+        )
+        return tensor
+
+    ...
+```
+
+Infine, si costruisce un modello molto simile al precedente, ma con 5 neuroni in output, il cui valore viene normalizzato attraverso la funzione *softmax*:
+
+```python
+    ...
+
+    def _build_model(self) -> tensorflow.keras.Sequential:
+        model = tensorflow.keras.Sequential([
+            self.string_lookup_layer,
+            tensorflow.keras.layers.Embedding(
+                input_dim=TENSORFLOW_MAX_FEATURES.__wrapped__ + 1,
+                output_dim=TENSORFLOW_EMBEDDING_SIZE.__wrapped__,
+            ),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.GlobalAveragePooling1D(),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(8),
+            tensorflow.keras.layers.Dropout(0.25),
+            tensorflow.keras.layers.Dense(5, activation="softmax"),
+        ])
+
+        model.compile(
+            optimizer=tensorflow.keras.optimizers.Adam(clipnorm=1.0),
+            loss=tensorflow.keras.losses.CategoricalCrossentropy(),
+            metrics=[
+                tensorflow.keras.metrics.CategoricalAccuracy(),
+            ]
+        )
+
+        return model
+
+```
+
 ## Implementazione di tokenizzatori di HuggingFace - `.tokenizer.hugging`
+
+Come ultima funzionalità, si implementa la possibilità di importare tokenizzatori presenti su [HuggingFace] con la classe astratta `HuggingTokenizer`:
+
+```python
+class HuggingTokenizer(BaseTokenizer, metaclass=abc.ABCMeta):
+    def __init__(self):
+        super().__init__()
+        self.hug: tokenizers.Tokenizer = self._build_hugging_tokenizer()
+
+    @abc.abstractmethod
+    def _build_hugging_tokenizer(self) -> tokenizers.Tokenizer:
+        raise NotImplementedError()
+
+    def tokenize(self, text: str) -> t.Iterator[str]:
+        return self.hug.encode(text).tokens
+```
+
+Utilizzandola, si implementa il tokenizzatore [`bert-base-cased`] per testarne l'efficacia:
+
+```python
+class HuggingBertTokenizer(HuggingTokenizer):
+    def _build_hugging_tokenizer(self):
+        return tokenizers.Tokenizer.from_pretrained("bert-base-cased")
+```
 
 ## Confronto dei modelli
 
@@ -1063,3 +1253,8 @@ Anche l'utilizzo del modello è uniformato da `TensorflowSentimentAnalyzer`:
 [`tensorflow.Tensor`]: https://www.tensorflow.org/api_docs/python/tf/Tensor
 [`tensorflow.keras.layers.StringLookup`]: https://www.tensorflow.org/api_docs/python/tf/keras/layers/StringLookup
 [esplosione del gradiente]: https://towardsdatascience.com/the-vanishing-exploding-gradient-problem-in-deep-neural-networks-191358470c11
+[`tensorflow.keras.layers.Embedding`]: https://www.tensorflow.org/api_docs/python/tf/keras/layers/Embedding
+[`tensorflow.keras.layers.Dropout`]: https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout
+[`tensorflow.keras.layers.Dense`]: https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense
+[HuggingFace]: https://huggingface.co
+[`bert-base-cased`]: https://huggingface.co/bert-base-cased
