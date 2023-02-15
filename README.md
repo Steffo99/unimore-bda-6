@@ -121,7 +121,7 @@ $ mongosh < ./data/scripts/index-db.js
 
 ## Costruzione di una struttura per il confronto
 
-Al fine di effettuare i confronti richiesti dalla consegna dell'attività, si è deciso di realizzare un package Python che permettesse di confrontare vari modelli di Sentiment Analysis tra loro, con tokenizer, training set e test set diversi tra loro.
+Al fine di effettuare i confronti richiesti dalla consegna dell'attività, si è deciso di realizzare un package Python che permettesse di confrontare vari modelli di Sentiment Analysis tra loro, con tokenizer, training set e evaluation set (spesso detto *test set*) diversi tra loro.
 
 Il package, chiamato `unimore_bda_6`, è composto da vari moduli, ciascuno descritto nelle seguenti sezioni.
 
@@ -155,7 +155,7 @@ def TRAINING_SET_SIZE(val: str | None) -> int:
         raise cfig.InvalidValueError("Not an int.")
 ```
 
-> In gergo del machine learning / deep learning, queste variabili sono dette iperparametri, perchè configurano la creazione del modello, e non vengono configurati dall'addestramento del modello stesso!
+(Nel gergo del machine learning / deep learning, queste variabili sono dette iperparametri, perchè configurano la creazione del modello, e non vengono configurate dall'addestramento del modello stesso.)
 
 Infine, si aggiunge una chiamata al metodo `cli()` della configurazione, eseguita solo se il modulo viene eseguito come main, che mostra all'utente l'interfaccia precedentemente menzionata:
 
@@ -390,8 +390,8 @@ Allo stesso modo, si è realizzato una classe astratta per tutti i modelli di Se
 ```python
 class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
-        "Train the analyzer with the given training and validation datasets."
+    def train(self, training_dataset_func: CachedDatasetFunc) -> None:
+        "Train the analyzer with the given training dataset."
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -488,7 +488,7 @@ Si è inoltre realizzata un'implementazione di esempio della classe astratta, `T
 
 ```python
 class ThreeCheat(BaseSentimentAnalyzer):
-    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+    def train(self, training_dataset_func: CachedDatasetFunc) -> None:
         pass
 
     def use(self, text: str) -> float:
@@ -516,8 +516,8 @@ if __name__ == "__main__":
             for Tokenizer in [PlainTokenizer, LowercaseTokenizer, ...]:
                 for run in range(TARGET_RUNS):
                     model = SentimentAnalyzer(tokenizer=Tokenizer())
-                    model.train(training_set=sample_func(amount=TRAINING_SET_SIZE), validation_set_func=sample_func(amount=VALIDATION_SET_SIZE))
-                    model.evaluate(evaluation_set_func=sample_func(amount=EVALUATION_SET_SIZE))
+                    model.train(training_set=sample_func(amount=TRAINING_SET_SIZE))
+                    model.evaluate(evaluation_set=sample_func(amount=EVALUATION_SET_SIZE))
 ```
 
 Le valutazioni di efficacia vengono effettuate fino al raggiungimento di `TARGET_RUNS` addestramenti e valutazioni riuscite, o fino al raggiungimento di `MAXIMUM_RUNS` valutazioni totali (come descritto più avanti, l'addestramento di alcuni modelli potrebbe fallire e dover essere ripetuto).
@@ -590,7 +590,7 @@ Successivamente:
         review: TokenizedReview = self.tokenizer.tokenize_review(review)
         return self.model.extract_features(review.tokens), str(review.rating)
 
-    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+    def train(self, training_dataset_func: CachedDatasetFunc) -> None:
         if self.trained:
             raise AlreadyTrainedError()
         self._add_feature_extractors(training_dataset_func())
@@ -622,11 +622,9 @@ Infine, implementa la funzione `use`, che:
 
 L'approccio utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare a dimensioni molto grandi di training set: i suoi metodi non gestiscono correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati, e richiedono invece che l'intero training set sia caricato contemporaneamente in memoria in una [`list`].
 
-Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impostare la dimensione predefinita del training set a `4000` documenti.
+Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impostare la dimensione predefinita del training set a `4000` documenti; dimensioni maggiori richiederebbero una riscrittura completa dei metodi di NLTK, e ciò andrebbe fuori dallo scopo di questa attività.
 
 ### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
-
-> 1. Utilizzare come tokenizer il “sentiment tokenizer” di Christopher Potts (link disponibile nelle slide del corso);
 
 Per realizzare il punto 1 della consegna, si sono creati due nuovi tokenizer, `PottsTokenizer` e `PottsTokenizerWithNegation`, che implementano il [tokenizer di Christopher Potts] rispettivamente senza marcare e marcando le negazioni sui token attraverso [`ntlk.sentiment.util.mark_negation`].
 
@@ -650,9 +648,7 @@ Il tokenizer effettua poi la tokenizzazione usando espressioni regolari definite
 * ellissi `. . .`
 * gruppi di caratteri non-whitespace `🇮🇹`
 
-Dopo aver tokenizzato, il tokenizer processa il risultato:
-
-1. convertendo il testo a lowercase, facendo attenzione però a non cambiare la capitalizzazione delle emoticon per non cambiare il loro significato (`:D` è diverso da `:d`)
+Dopo aver tokenizzato, il tokenizer processa il risultato convertendo il testo a lowercase, facendo attenzione però a non cambiare la capitalizzazione delle emoticon per non cambiare il loro significato (`:D` è diverso da `:d`).
 
 Il codice riassunto del tokenizer è dunque:
 
@@ -725,8 +721,213 @@ class PottsTokenizer(BaseTokenizer):
         return tokens
 ```
 
-## Implementazione di modelli con Tensorflow - `.analysis.tf_text`
+## Implementazione di modelli con Tensorflow+Keras - `.analysis.tf_text`
+
+Visti i problemi riscontrati con NLTK, si è deciso di realizzare nuovi modelli utilizzando stavolta [Tensorflow], il package per il deep learning sviluppato da Google, unito a [Keras], API di Tensorflow che permette la definizione di modelli di deep learning attraverso un linguaggio ad alto livello.
+
+Tensorflow prende il nome dai *tensori*, le strutture matematiche su cui si basa, che consistono in una maggiore astrazione delle matrici o degli array, e che vengono implementate dalla libreria stessa nella classe [`tensorflow.Tensor`].
+
+### Aggiunta di un validation set
+
+La documentazione di Tensorflow suggerisce, in fase di addestramento di modello, di includere un *validation set*, un piccolo dataset su cui misurare le metriche del modello ad ogni epoca di addestramento, in modo da poter verificare in tempo reale che non si stia verificando underfitting o overfitting.
+
+Si è quindi deciso di includerlo come parametro di `BaseSentimentAnalyzer.train`:
+
+```python
+    ...
+
+    @abc.abstractmethod
+    def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
+        """
+        Train the analyzer with the given training and validation datasets.
+        """
+        raise NotImplementedError()
+
+    ...
+```
+
+Si è anche aggiornato il `.__main__` e la `.config` per supportare questa nuova funzionalità:
+
+```python
+# Pseudo-codice non corrispondente al main finale
+if __name__ == "__main__":
+    for sample_func in [sample_reviews_polar, sample_reviews_varied]:
+        for SentimentAnalyzer in [ThreeCheat, NLTKSentimentAnalyzer, ...]:
+            for Tokenizer in [PlainTokenizer, LowercaseTokenizer, PottsTokenizer, PottsTokenizerWithNegation, ...]:
+                for run in range(TARGET_RUNS):
+                    model = SentimentAnalyzer(tokenizer=Tokenizer())
+                    model.train(training_set=sample_func(amount=TRAINING_SET_SIZE), validation_set=sample_func(amount=VALIDATION_SET_SIZE))
+                    model.evaluate(evaluation_set=sample_func(amount=EVALUATION_SET_SIZE))
+```
+
 ### Caching - `.database.cache` e `.gathering`
+
+Per essere efficienti, i modelli di Tensorflow richiedono che i dati vengano inseriti in un formato molto specifico: un'istanza della classe [`tensorflow.data.Dataset`].
+
+I dataset, per essere creati, richiedono però che gli venga dato in input un *generatore* (funzione che crea un iteratore quando chiamata), e non un *iteratore* (oggetto con un puntatore al successivo) come quello restituito dalle query di MongoDB, in quanto Tensorflow necessita di ricominciare l'iterazione da capo dopo ogni epoca di addestramento.
+
+Un modo semplice per ovviare al problema sarebbe stato raccogliere in una [`list`] l'iteratore creato da MongoDB, ma ciò caricherebbe l'intero dataset contemporaneamente in memoria, ricreando il problema riscontrato con NLTK.
+
+Si è allora adottata una soluzione alternativa: creare una cache su disco composta un file per ciascun documento recuperato da MongoDB, in modo che quando Tensorflow necessita di ritornare al primo documento, possa farlo ritornando semplicemente al primo file.
+
+```python
+def store_cache(reviews: t.Iterator[TextReview], path: str | pathlib.Path) -> None:
+    "Store the contents of the given `Review` iterator to different files in a directory at the given path."
+    path = pathlib.Path(path)
+    path.mkdir(parents=True)
+    for index, document in enumerate(reviews):
+        document_path = path.joinpath(f"{index}.pickle")
+        with open(document_path, "wb") as file:
+            pickle.dump(document, file)
+
+def load_cache(path: str | pathlib.Path) -> CachedDatasetFunc:
+    "Load the contents of a directory into a `Review` generator."
+    path = pathlib.Path(path)
+
+    def data_cache_loader():
+        document_paths = path.iterdir()
+        for document_path in document_paths:
+            document_path = pathlib.Path(document_path)
+            with open(document_path, "rb") as file:
+                result: TextReview = pickle.load(file)
+                yield result
+
+    return data_cache_loader
+
+def delete_cache(path: str | pathlib.Path) -> None:
+    "Delete the given cache directory."
+    path = pathlib.Path(path)
+    shutil.rmtree(path)
+```
+
+Si è poi creata una classe `Caches` che si occupa di creare, gestire, ed eliminare le cache dei tre dataset nelle cartelle `./data/training`, `./data/validation` e `./data/evaluation`:
+
+```python
+@dataclasses.dataclass
+class Caches:
+    """
+    Container for the three generators that can create datasets.
+    """
+
+    training: CachedDatasetFunc
+    validation: CachedDatasetFunc
+    evaluation: CachedDatasetFunc
+
+    @classmethod
+    @contextlib.contextmanager
+    def from_database_samples(cls, collection: pymongo.collection.Collection, sample_func: SampleFunc) -> t.ContextManager["Caches"]:
+        "Create a new caches object from a database collection and a sampling function."
+
+        reviews_training = sample_func(collection, TRAINING_SET_SIZE.__wrapped__)
+        reviews_validation = sample_func(collection, VALIDATION_SET_SIZE.__wrapped__)
+        reviews_evaluation = sample_func(collection, EVALUATION_SET_SIZE.__wrapped__)
+
+        store_cache(reviews_training, "./data/training")
+        store_cache(reviews_validation, "./data/validation")
+        store_cache(reviews_evaluation, "./data/evaluation")
+
+        training_cache = load_cache("./data/training")
+        validation_cache = load_cache("./data/validation")
+        evaluation_cache = load_cache("./data/evaluation")
+
+        yield Caches(training=training_cache, validation=validation_cache, evaluation=evaluation_cache)
+
+        delete_cache("./data/training")
+        delete_cache("./data/validation")
+        delete_cache("./data/evaluation")
+
+    ...
+```
+
+### Creazione del modello base - `.analysis.tf_text.Tensorflow
+
+Si è determinata una struttura comune che potesse essere usata per tutti i tipi di Sentiment Analyzer realizzati con Tensorflow:
+
+```python
+class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
+    ...
+```
+
+#### Formato del modello
+
+Essa richiede che le sottoclassi usino un modello `tensorflow.keras.Sequential`, ovvero con un solo layer di neuroni in input e un solo layer di neuroni in output:
+
+```python
+    ...
+
+    @abc.abstractmethod
+    def _build_model(self) -> tensorflow.keras.Sequential:
+        "Create the `tensorflow.keras.Sequential` model that should be executed by this sentiment analyzer."
+        raise NotImplementedError()
+
+    ...
+```
+
+#### Conversione da-a tensori
+
+Dato che i modelli di Tensorflow richiedono che ciascun dato fornito in input o emesso in output sia un'istanza di `tensorflow.Tensor`, le sottoclassi devono anche definire metodi per convertire le stelle delle recensioni in un equivalente `tensorflow.Tensor` e viceversa:
+
+```python
+    ...
+
+    @abc.abstractmethod
+    def _rating_to_input(self, rating: float) -> tensorflow.Tensor:
+        "Convert a review rating to a `tensorflow.Tensor`."
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def _prediction_to_rating(self, prediction: tensorflow.Tensor) -> float:
+        "Convert the results of `tensorflow.keras.Sequential.predict` into a review rating."
+        raise NotImplementedError()
+
+    ...
+```
+
+Attraverso di essi, la classe è in grado di costruire il [`tensorflow.data.Dataset`] necessario al modello:
+
+```python
+    ...
+
+    @staticmethod
+    def _tokens_to_tensor(tokens: t.Iterator[str]) -> tensorflow.Tensor:
+        "Convert an iterator of tokens to a `tensorflow.Tensor`."
+        tensor = tensorflow.convert_to_tensor(
+            [list(tokens)],
+            dtype=tensorflow.string,
+            name="tokens"
+        )
+        return tensor
+
+    def _build_dataset(self, dataset_func: CachedDatasetFunc) -> tensorflow.data.Dataset:
+        "Create a `tensorflow.data.Dataset` from the given `CachedDatasetFunc`."
+        def dataset_generator():
+            for review in dataset_func():
+                review: TextReview
+                review: TokenizedReview = self.tokenizer.tokenize_review(review)
+                tokens: tensorflow.Tensor = self._tokens_to_tensor(review.tokens)
+                rating: tensorflow.Tensor = self._rating_to_input(review.rating)
+                yield tokens, rating
+
+        dataset = tensorflow.data.Dataset.from_generator(
+            dataset_generator,
+            output_signature=(
+                tensorflow.TensorSpec(shape=(1, None,), dtype=tensorflow.string, name="tokens"),
+                self._ratingtensor_shape(),
+            ),
+        )
+        dataset = dataset.cache()
+        dataset = dataset.prefetch(buffer_size=tensorflow.data.AUTOTUNE)
+        return dataset
+
+    ...
+```
+
+#### Lookup delle stringhe
+
+#### Addestramento
+
+#### Utilizzo
+
 ### Creazione di un modello di regressione - `.analysis.tf_text.TensorflowPolarSentimentAnalyzer`
 ### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
 ### Esplosione del gradiente
@@ -753,3 +954,7 @@ class PottsTokenizer(BaseTokenizer):
 [`nltk.sentiment.SentimentAnalyzer`]: https://www.nltk.org/api/nltk.sentiment.sentiment_analyzer.html?highlight=nltk+sentiment+sentimentanalyzer#nltk.sentiment.sentiment_analyzer.SentimentAnalyzer
 [`list`]: https://docs.python.org/3/library/stdtypes.html?highlight=list#list
 [tokenizer di Christopher Potts]: http://sentiment.christopherpotts.net/tokenizing.html
+[Tensorflow]: https://www.tensorflow.org
+[`tensorflow.data.Dataset`]: https://www.tensorflow.org/api_docs/python/tf/data/Dataset
+[Keras]: https://www.tensorflow.org/api_docs/python/tf/keras
+[`tensorflow.Tensor`]: https://www.tensorflow.org/api_docs/python/tf/Tensor

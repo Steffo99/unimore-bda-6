@@ -74,9 +74,9 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
 
         return dataset
 
-    def _adapt_textvectorization(self, dataset: tensorflow.data.Dataset) -> None:
+    def _adapt_string_lookup_layer(self, dataset: tensorflow.data.Dataset) -> None:
         """
-        Adapt the `.text_vectorization_layer` to the given dataset.
+        Adapt the `.string_lookup_layer` to the given dataset.
         """
         log.debug("Preparing dataset to adapt %s...", self.string_lookup_layer)
         dataset = dataset.map(lambda text, category: text)

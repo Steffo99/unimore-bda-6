@@ -36,7 +36,7 @@ def store_cache(reviews: t.Iterator[TextReview], path: str | pathlib.Path) -> No
 
 def load_cache(path: str | pathlib.Path) -> CachedDatasetFunc:
     """
-    Load the contents of a directory into a `Review` iterator.
+    Load the contents of a directory into a `Review` generator.
     """
     path = pathlib.Path(path)
 
