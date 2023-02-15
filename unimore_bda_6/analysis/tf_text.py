@@ -74,15 +74,6 @@ class TensorflowSentimentAnalyzer(BaseSentimentAnalyzer, metaclass=abc.ABCMeta):
 
         return dataset
 
-    def _adapt_string_lookup_layer(self, dataset: tensorflow.data.Dataset) -> None:
-        """
-        Adapt the `.string_lookup_layer` to the given dataset.
-        """
-        log.debug("Preparing dataset to adapt %s...", self.string_lookup_layer)
-        dataset = dataset.map(lambda text, category: text)
-        log.debug("Adapting %s...", self.string_lookup_layer)
-        self.string_lookup_layer.adapt(dataset)
-
     def train(self, training_dataset_func: CachedDatasetFunc, validation_dataset_func: CachedDatasetFunc) -> None:
         if self.failed:
             log.error("Tried to train a failed model.")
