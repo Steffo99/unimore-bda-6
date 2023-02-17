@@ -1227,6 +1227,8 @@ class HuggingBertTokenizer(HuggingTokenizer):
         return tokenizers.Tokenizer.from_pretrained("bert-base-cased")
 ```
 
+## Sperimentazione e regolazione degli iperparametri
+
 ## Confronto dei modelli
 
 ## Conclusione
