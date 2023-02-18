@@ -41,9 +41,9 @@ def main():
 
         for SentimentAnalyzer in [
             # ThreeCheat,
-            NLTKSentimentAnalyzer,
             TensorflowPolarSentimentAnalyzer,
             TensorflowCategorySentimentAnalyzer,
+            NLTKSentimentAnalyzer,
         ]:
 
             slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
@@ -116,7 +116,7 @@ def main():
                             cumulative_evaluation_results += evaluation_results
                             break
                     finally:
-                        datasets_cm.__exit__()
+                        datasets_cm.__exit__(None, None, None)
 
                 slog.info("Cumulative evaluation results: %s", cumulative_evaluation_results)
 
