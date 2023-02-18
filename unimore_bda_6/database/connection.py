@@ -23,7 +23,7 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
 
     yield client
 
-    log.info("Closing connection to MongoDB...")
+    log.debug("Closing connection to MongoDB...")
     client.close()
     log.debug("Closed connection to MongoDB!")
 
