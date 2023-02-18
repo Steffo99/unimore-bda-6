@@ -41,9 +41,9 @@ def main():
 
         for SentimentAnalyzer in [
             # ThreeCheat,
+            NLTKSentimentAnalyzer,
             TensorflowPolarSentimentAnalyzer,
             TensorflowCategorySentimentAnalyzer,
-            NLTKSentimentAnalyzer,
         ]:
 
             slog = logging.getLogger(f"{__name__}.{sample_func.__name__}.{SentimentAnalyzer.__name__}")
