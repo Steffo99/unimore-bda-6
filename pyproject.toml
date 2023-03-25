@@ -136,7 +136,7 @@ pymongo = "^4.3.3"
 nltk = "^3.8.1"
 cfig = {extras = ["cli"], version = "^0.3.0"}
 coloredlogs = "^15.0.1"
-tensorflow = "^2.11.0"
+tensorflow = "^2.11.1"
 tokenizers = "^0.13.2"
 
 
