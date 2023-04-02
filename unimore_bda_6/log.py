@@ -57,14 +57,14 @@ def install_general_log_handlers():
         logger.setLevel("INFO")
         this_log.debug("Silenced: %s", logger)
 
-    log_file_path = pathlib.Path("./data/logs/last_run.tsv")
+    log_file_path = pathlib.Path("./data/logs/run.tsv")
     log_directory_path = log_file_path.parent
     this_log.debug("Ensuring %s exists...", log_directory_path)
     log_directory_path.mkdir(parents=True, exist_ok=True)
     this_log.debug("Ensuring %s exists...", log_file_path)
     open(log_file_path, "w").close()
     this_log.debug("Installing FileHandler for the __main__ logger at %s...", log_file_path)
-    file_handler = logging.FileHandler(log_file_path, mode="w")
+    file_handler = logging.FileHandler(log_file_path, mode="a")
     file_handler.formatter = logging.Formatter("{asctime}\t{name}\t{levelname}\t{message}", style="{")
     main_logger.addHandler(file_handler)
     this_log.debug("Installed FileHandler for the __main__ logger at %s!", log_file_path)
