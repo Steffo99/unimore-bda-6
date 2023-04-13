@@ -81,6 +81,8 @@ class EvaluationResults:
 
     def __add__(self, other: EvaluationResults) -> EvaluationResults:
         new = self.__class__()
+        new.absolute_error_total = self.absolute_error_total + other.absolute_error_total
+        new.squared_error_total = self.squared_error_total + other.squared_error_total
         for expected, value in self.confusion_matrix.items():
             for predicted, amount in value.items():
                 new.confusion_matrix[expected][predicted] += amount
