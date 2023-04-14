@@ -64,18 +64,6 @@ NLTK richiede dipendenze aggiuntive per funzionare, che possono essere scaricate
 $ ./scripts/download-nltk.sh
 ```
 
-##### Tensorflow
-
-L'accelerazione hardware di Tensorflow richiede che una scheda grafica NVIDIA con supporto a CUDA sia disponibile sul dispositivo, e che gli strumenti di sviluppo di CUDA siano installati sul sistema operativo.
-
-Per indicare a Tensorflow il percorso degli strumenti di sviluppo di CUDA, è necessario impostare la seguente variabile d'ambiente, sostituendo a `/opt/cuda` il percorso in cui gli strumenti sono installati sul dispositivo:
-
-```console
-$ export XLA_FLAGS=--xla_gpu_cuda_data_dir\=/opt/cuda
-```
-
-Per più informazioni, si suggerisce di consultare la pagina [Install Tensorflow 2](https://www.tensorflow.org/install) della documentazione di Tensorflow.
-
 #### Esecuzione del programma
 
 Per eseguire il programma principale, è possibile eseguire i seguenti comandi dall'interno della directory del progetto:

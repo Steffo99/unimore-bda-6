@@ -12,7 +12,6 @@
             "justMyCode": false,
             "env": {
                 "NLTK_DATA": "./data/nltk",
-                "XLA_FLAGS": "--xla_gpu_cuda_data_dir=/opt/cuda"
             },
             "cwd": "${workspaceFolder}",
         }
