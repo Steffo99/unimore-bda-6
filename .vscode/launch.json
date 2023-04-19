@@ -5,13 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: unimore_bda_6",
+            "name": "Test run",
             "type": "python",
             "request": "launch",
             "module": "unimore_bda_6",
             "justMyCode": false,
             "env": {
                 "NLTK_DATA": "./data/nltk",
+            },
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "name": "Full run",
+            "type": "python",
+            "request": "launch",
+            "module": "unimore_bda_6",
+            "justMyCode": false,
+            "env": {
+                "NLTK_DATA": "./data/nltk",
+                "WORKING_SET_SIZE": "30000000",
+                "TARGET_RUNS": "10",
+                "MAXIMUM_RUNS": "100",
             },
             "cwd": "${workspaceFolder}",
         }
