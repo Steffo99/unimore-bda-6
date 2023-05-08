@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Turbo test run",
+            "type": "python",
+            "request": "launch",
+            "module": "unimore_bda_6",
+            "justMyCode": false,
+            "env": {
+                "WORKING_SET_SIZE": "1000",
+                "TRAINING_SET_SIZE": "100",
+                "VALIDATION_SET_SIZE": "50",
+                "EVALUATION_SET_SIZE": "50",
+                "NLTK_DATA": "./data/nltk",
+            },
+            "cwd": "${workspaceFolder}",
+        },
+        {
             "name": "Test run",
             "type": "python",
             "request": "launch",
