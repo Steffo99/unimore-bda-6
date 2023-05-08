@@ -147,6 +147,8 @@ class EvaluationResults:
         """
         try:
             return self.confusion_matrix[rating][rating] / self.recall_count(rating)
+        except KeyError:
+            return float("NaN")
         except ZeroDivisionError:
             return float("inf")
 
@@ -156,6 +158,8 @@ class EvaluationResults:
         """
         try:
             return self.confusion_matrix[rating][rating] / self.precision_count(rating)
+        except KeyError:
+            return float("NaN")
         except ZeroDivisionError:
             return float("inf")
 
