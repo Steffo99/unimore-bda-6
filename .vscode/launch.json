@@ -38,7 +38,7 @@
             "justMyCode": false,
             "env": {
                 "NLTK_DATA": "./data/nltk",
-                "WORKING_SET_SIZE": "30000000",
+                "WORKING_SET_SIZE": "5000000",
                 "TARGET_RUNS": "10",
                 "MAXIMUM_RUNS": "100",
             },
