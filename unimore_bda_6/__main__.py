@@ -40,7 +40,7 @@ def main():
         slog.debug("Selected sample_func: %s", sample_func.__name__)
 
         for SentimentAnalyzer in [
-            # ThreeCheat,
+                ThreeCheat,
             NLTKSentimentAnalyzer,
             TensorflowPolarSentimentAnalyzer,
             TensorflowCategorySentimentAnalyzer,
