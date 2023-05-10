@@ -122,10 +122,8 @@ def main():
                                 file.write(f"{sample_func.__name__}\t{SentimentAnalyzer.__name__}\t{Tokenizer.__name__}\t{runs}\t{evaluation_results.mean_absolute_error()}\t{evaluation_results.mean_squared_error()}\t{evaluation_results.perfect_count()}\t{evaluation_results.recall(1.0)}\t{evaluation_results.recall(2.0)}\t{evaluation_results.recall(3.0)}\t{evaluation_results.recall(4.0)}\t{evaluation_results.recall(5.0)}\t{evaluation_results.precision(1.0)}\t{evaluation_results.precision(2.0)}\t{evaluation_results.precision(3.0)}\t{evaluation_results.precision(4.0)}\t{evaluation_results.precision(5.0)}\n")
                                 file.flush()
 
-
                                 successful_runs += 1
                                 cumulative_evaluation_results += evaluation_results
-                                break
                         finally:
                             datasets_cm.__exit__(None, None, None)
 
