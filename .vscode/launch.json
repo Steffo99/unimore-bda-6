@@ -36,7 +36,7 @@
             "request": "launch",
             "module": "unimore_bda_6",
             "justMyCode": false,
-            "pythonArgs": ["-OO"],
+            "pythonArgs": ["-O"],
             "env": {
                 "NLTK_DATA": "./data/nltk",
                 "WORKING_SET_SIZE": "5000000",
