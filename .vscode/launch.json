@@ -39,7 +39,7 @@
             "env": {
                 "NLTK_DATA": "./data/nltk",
                 "WORKING_SET_SIZE": "5000000",
-                "TARGET_RUNS": "10",
+                "TARGET_RUNS": "1",
                 "MAXIMUM_RUNS": "100",
             },
             "cwd": "${workspaceFolder}",
