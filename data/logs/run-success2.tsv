@@ -1,0 +1,525 @@
+2023-05-08 04:23:54,262	__main__	INFO	Started unimore-bda-6 in DEBUG mode!
+2023-05-08 04:23:54,262	__main__	DEBUG	Validating configuration...
+2023-05-08 04:23:54,263	__main__	DEBUG	Ensuring there are no leftover caches...
+2023-05-08 04:23:54,288	__main__.sample_reviews_polar	DEBUG	Selected sample_func: sample_reviews_polar
+2023-05-08 04:23:54,288	__main__.sample_reviews_polar.ThreeCheat	DEBUG	Selected SentimentAnalyzer: ThreeCheat
+2023-05-08 04:23:54,289	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:23:54,380	__main__	DEBUG	Collected 10 pieces of garbage!
+2023-05-08 04:23:54,381	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 04:23:54,381	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 04:23:54,381	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	DEBUG	Instantiating ThreeCheat with PlainTokenizer...
+2023-05-08 04:25:04,655	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <PlainTokenizer> tokenizer>
+2023-05-08 04:25:04,656	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:25:04,656	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PlainTokenizer> tokenizer>
+2023-05-08 04:25:04,883	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:25:05,032	__main__.sample_reviews_polar.ThreeCheat.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:25:05,033	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:25:05,131	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:25:05,132	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 04:25:05,132	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 04:25:05,132	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	DEBUG	Instantiating ThreeCheat with LowercaseTokenizer...
+2023-05-08 04:26:13,787	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <LowercaseTokenizer> tokenizer>
+2023-05-08 04:26:13,787	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:26:13,787	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <LowercaseTokenizer> tokenizer>
+2023-05-08 04:26:13,968	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:26:14,099	__main__.sample_reviews_polar.ThreeCheat.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:26:14,099	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:26:14,188	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:26:14,188	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 04:26:14,188	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 04:26:14,188	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	DEBUG	Instantiating ThreeCheat with NLTKWordTokenizer...
+2023-05-08 04:27:23,968	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <NLTKWordTokenizer> tokenizer>
+2023-05-08 04:27:23,968	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:27:23,968	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <NLTKWordTokenizer> tokenizer>
+2023-05-08 04:27:24,167	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:27:24,301	__main__.sample_reviews_polar.ThreeCheat.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:27:24,302	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:27:24,391	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:27:24,392	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 04:27:24,392	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 04:27:24,392	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	DEBUG	Instantiating ThreeCheat with PottsTokenizer...
+2023-05-08 04:28:33,262	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <PottsTokenizer> tokenizer>
+2023-05-08 04:28:33,263	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:28:33,263	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PottsTokenizer> tokenizer>
+2023-05-08 04:28:33,455	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:28:33,587	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:28:33,587	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:28:33,675	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:28:33,675	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 04:28:33,675	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 04:28:33,676	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	DEBUG	Instantiating ThreeCheat with PottsTokenizerWithNegation...
+2023-05-08 04:29:44,684	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <ThreeCheat with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 04:29:44,684	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 04:29:44,684	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 04:29:44,900	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:29:45,029	__main__.sample_reviews_polar.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:29:45,030	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:29:45,123	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:29:45,123	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 04:29:45,123	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 04:29:45,124	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	DEBUG	Instantiating ThreeCheat with HuggingBertTokenizer...
+2023-05-08 04:30:52,115	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <HuggingBertTokenizer> tokenizer>
+2023-05-08 04:30:52,115	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:30:52,115	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <HuggingBertTokenizer> tokenizer>
+2023-05-08 04:30:52,292	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 3.0, 0.0 precision of 3.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:30:52,420	__main__.sample_reviews_polar.ThreeCheat.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 2.0 mean absolute error, 4.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, 0.0 precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 0 perfect matches.
+2023-05-08 04:30:52,421	__main__.sample_reviews_polar.NLTKSentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: NLTKSentimentAnalyzer
+2023-05-08 04:30:52,421	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:30:52,511	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:30:52,512	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 04:30:52,512	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 04:30:52,512	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PlainTokenizer...
+2023-05-08 04:32:03,680	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 04:34:28,687	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:34:28,691	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 04:35:34,362	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.864 mean absolute error, 3.456 mean squared error, 0.694 recall of 1.0, 0.8463414634146341 precision of 1.0, 0.874 recall of 5.0, 0.7406779661016949 precision of 5.0, 784 perfect matches.
+2023-05-08 04:35:34,488	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.864 mean absolute error, 3.456 mean squared error, 0.694 recall of 1.0, 0.8463414634146341 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.874 recall of 5.0, 0.7406779661016949 precision of 5.0, 784 perfect matches.
+2023-05-08 04:35:34,489	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:35:34,594	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:35:34,594	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 04:35:34,595	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 04:35:34,595	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 04:36:55,269	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 04:39:11,292	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:39:11,292	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 04:40:14,312	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.088 mean absolute error, 4.352 mean squared error, 0.614 recall of 1.0, 0.7953367875647669 precision of 1.0, 0.842 recall of 5.0, 0.6856677524429967 precision of 5.0, 728 perfect matches.
+2023-05-08 04:40:14,580	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.088 mean absolute error, 4.352 mean squared error, 0.614 recall of 1.0, 0.7953367875647669 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.842 recall of 5.0, 0.6856677524429967 precision of 5.0, 728 perfect matches.
+2023-05-08 04:40:14,581	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:40:14,683	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:40:14,684	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 04:40:14,684	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 04:40:14,684	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 04:41:55,343	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 04:44:45,773	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:44:45,773	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 04:45:58,036	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.064 mean absolute error, 4.256 mean squared error, 0.624 recall of 1.0, 0.8 precision of 1.0, 0.844 recall of 5.0, 0.6918032786885245 precision of 5.0, 734 perfect matches.
+2023-05-08 04:45:58,182	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.064 mean absolute error, 4.256 mean squared error, 0.624 recall of 1.0, 0.8 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.844 recall of 5.0, 0.6918032786885245 precision of 5.0, 734 perfect matches.
+2023-05-08 04:45:58,183	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:45:58,276	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:45:58,277	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 04:45:58,277	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 04:45:58,277	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PottsTokenizer...
+2023-05-08 04:47:08,242	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 04:49:27,045	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:49:27,046	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 04:50:29,370	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.884 mean absolute error, 3.536 mean squared error, 0.69 recall of 1.0, 0.8394160583941606 precision of 1.0, 0.868 recall of 5.0, 0.7368421052631579 precision of 5.0, 779 perfect matches.
+2023-05-08 04:50:29,496	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.884 mean absolute error, 3.536 mean squared error, 0.69 recall of 1.0, 0.8394160583941606 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.868 recall of 5.0, 0.7368421052631579 precision of 5.0, 779 perfect matches.
+2023-05-08 04:50:29,497	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:50:29,597	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:50:29,597	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 04:50:29,597	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 04:50:29,597	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 04:51:40,426	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 04:54:22,506	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 04:54:22,524	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 04:55:34,897	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.076 mean absolute error, 4.304 mean squared error, 0.598 recall of 1.0, 0.8147138964577657 precision of 1.0, 0.864 recall of 5.0, 0.6824644549763034 precision of 5.0, 731 perfect matches.
+2023-05-08 04:55:35,024	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.076 mean absolute error, 4.304 mean squared error, 0.598 recall of 1.0, 0.8147138964577657 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.864 recall of 5.0, 0.6824644549763034 precision of 5.0, 731 perfect matches.
+2023-05-08 04:55:35,025	__main__	DEBUG	Running garbage collection...
+2023-05-08 04:55:35,134	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 04:55:35,134	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 04:55:35,134	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 04:55:35,134	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 04:56:44,543	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 04:59:53,350	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 04:59:53,355	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 05:01:14,390	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.976 mean absolute error, 3.904 mean squared error, 0.662 recall of 1.0, 0.8152709359605911 precision of 1.0, 0.85 recall of 5.0, 0.7154882154882155 precision of 5.0, 756 perfect matches.
+2023-05-08 05:01:14,516	__main__.sample_reviews_polar.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.976 mean absolute error, 3.904 mean squared error, 0.662 recall of 1.0, 0.8152709359605911 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.85 recall of 5.0, 0.7154882154882155 precision of 5.0, 756 perfect matches.
+2023-05-08 05:01:14,516	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: TensorflowPolarSentimentAnalyzer
+2023-05-08 05:01:14,517	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:01:14,617	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 05:01:14,617	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 05:01:14,618	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 05:01:14,618	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PlainTokenizer...
+2023-05-08 05:02:29,026	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 05:08:30,280	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 05:08:30,291	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 05:09:36,879	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.66 mean absolute error, 2.64 mean squared error, 0.818 recall of 1.0, 0.8467908902691511 precision of 1.0, 0.852 recall of 5.0, 0.8239845261121856 precision of 5.0, 835 perfect matches.
+2023-05-08 05:09:37,030	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.66 mean absolute error, 2.64 mean squared error, 0.818 recall of 1.0, 0.8467908902691511 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.852 recall of 5.0, 0.8239845261121856 precision of 5.0, 835 perfect matches.
+2023-05-08 05:09:37,030	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:09:37,137	__main__	DEBUG	Collected 16645 pieces of garbage!
+2023-05-08 05:09:37,141	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 05:09:37,141	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 05:09:37,141	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 05:10:52,022	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 05:16:52,775	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 05:16:52,778	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 05:17:57,470	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.512 mean absolute error, 2.048 mean squared error, 0.868 recall of 1.0, 0.875 precision of 1.0, 0.876 recall of 5.0, 0.8690476190476191 precision of 5.0, 872 perfect matches.
+2023-05-08 05:17:57,826	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.512 mean absolute error, 2.048 mean squared error, 0.868 recall of 1.0, 0.875 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.876 recall of 5.0, 0.8690476190476191 precision of 5.0, 872 perfect matches.
+2023-05-08 05:17:57,827	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:17:57,994	__main__	DEBUG	Collected 53604 pieces of garbage!
+2023-05-08 05:17:58,002	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 05:17:58,007	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 05:17:58,007	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 05:19:11,926	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 05:25:26,859	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 05:25:26,860	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 05:26:33,810	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.552 mean absolute error, 2.208 mean squared error, 0.864 recall of 1.0, 0.8605577689243028 precision of 1.0, 0.86 recall of 5.0, 0.8634538152610441 precision of 5.0, 862 perfect matches.
+2023-05-08 05:26:33,939	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.552 mean absolute error, 2.208 mean squared error, 0.864 recall of 1.0, 0.8605577689243028 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.86 recall of 5.0, 0.8634538152610441 precision of 5.0, 862 perfect matches.
+2023-05-08 05:26:33,940	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:26:34,099	__main__	DEBUG	Collected 47800 pieces of garbage!
+2023-05-08 05:26:34,113	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 05:26:34,116	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 05:26:34,117	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PottsTokenizer...
+2023-05-08 05:27:41,090	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 05:28:28,707	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 05:28:28,837	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	DEBUG	Run #2
+2023-05-08 05:28:28,837	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PottsTokenizer...
+2023-05-08 05:29:35,277	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 05:35:48,049	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	INFO	Training succeeded!
+2023-05-08 05:35:48,049	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 05:36:53,031	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.536 mean absolute error, 2.144 mean squared error, 0.896 recall of 1.0, 0.8452830188679246 precision of 1.0, 0.836 recall of 5.0, 0.8893617021276595 precision of 5.0, 866 perfect matches.
+2023-05-08 05:36:53,156	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizer.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.536 mean absolute error, 2.144 mean squared error, 0.896 recall of 1.0, 0.8452830188679246 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.836 recall of 5.0, 0.8893617021276595 precision of 5.0, 866 perfect matches.
+2023-05-08 05:36:53,157	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:36:53,341	__main__	DEBUG	Collected 64471 pieces of garbage!
+2023-05-08 05:36:53,359	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 05:36:53,364	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 05:36:53,367	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 05:38:02,478	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 05:43:55,485	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 05:43:55,485	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 05:45:00,933	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.46 mean absolute error, 1.84 mean squared error, 0.93 recall of 1.0, 0.8532110091743119 precision of 1.0, 0.84 recall of 5.0, 0.9230769230769231 precision of 5.0, 885 perfect matches.
+2023-05-08 05:45:01,093	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.46 mean absolute error, 1.84 mean squared error, 0.93 recall of 1.0, 0.8532110091743119 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.84 recall of 5.0, 0.9230769230769231 precision of 5.0, 885 perfect matches.
+2023-05-08 05:45:01,094	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:45:01,253	__main__	DEBUG	Collected 41289 pieces of garbage!
+2023-05-08 05:45:01,263	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 05:45:01,266	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 05:45:01,267	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 05:46:09,330	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 05:52:00,364	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 05:52:00,364	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 05:53:05,830	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.504 mean absolute error, 2.016 mean squared error, 0.892 recall of 1.0, 0.861003861003861 precision of 1.0, 0.856 recall of 5.0, 0.8879668049792531 precision of 5.0, 874 perfect matches.
+2023-05-08 05:53:05,953	__main__.sample_reviews_polar.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.504 mean absolute error, 2.016 mean squared error, 0.892 recall of 1.0, 0.861003861003861 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.856 recall of 5.0, 0.8879668049792531 precision of 5.0, 874 perfect matches.
+2023-05-08 05:53:05,954	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: TensorflowCategorySentimentAnalyzer
+2023-05-08 05:53:05,954	__main__	DEBUG	Running garbage collection...
+2023-05-08 05:53:06,126	__main__	DEBUG	Collected 38369 pieces of garbage!
+2023-05-08 05:53:06,134	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 05:53:06,135	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 05:53:06,135	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PlainTokenizer...
+2023-05-08 05:54:14,119	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 05:54:33,790	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 05:54:33,920	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	DEBUG	Run #2
+2023-05-08 05:54:33,920	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PlainTokenizer...
+2023-05-08 05:55:41,501	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 06:01:24,114	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	INFO	Training succeeded!
+2023-05-08 06:01:24,114	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 06:02:28,791	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.54 mean absolute error, 2.16 mean squared error, 0.91 recall of 1.0, 0.8348623853211009 precision of 1.0, 0.82 recall of 5.0, 0.9010989010989011 precision of 5.0, 865 perfect matches.
+2023-05-08 06:02:28,918	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PlainTokenizer.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.54 mean absolute error, 2.16 mean squared error, 0.91 recall of 1.0, 0.8348623853211009 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.82 recall of 5.0, 0.9010989010989011 precision of 5.0, 865 perfect matches.
+2023-05-08 06:02:28,919	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:02:29,125	__main__	DEBUG	Collected 62312 pieces of garbage!
+2023-05-08 06:02:29,141	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 06:02:29,147	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 06:02:29,150	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 06:03:35,550	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 06:09:36,303	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:09:36,325	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 06:10:41,166	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.5 mean absolute error, 2.0 mean squared error, 0.888 recall of 1.0, 0.8654970760233918 precision of 1.0, 0.862 recall of 5.0, 0.8850102669404517 precision of 5.0, 875 perfect matches.
+2023-05-08 06:10:41,463	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.5 mean absolute error, 2.0 mean squared error, 0.888 recall of 1.0, 0.8654970760233918 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.862 recall of 5.0, 0.8850102669404517 precision of 5.0, 875 perfect matches.
+2023-05-08 06:10:41,463	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:10:41,638	__main__	DEBUG	Collected 36931 pieces of garbage!
+2023-05-08 06:10:41,649	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 06:10:41,651	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 06:10:41,651	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 06:11:54,499	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 06:18:16,274	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:18:16,289	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 06:19:23,560	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.524 mean absolute error, 2.096 mean squared error, 0.922 recall of 1.0, 0.833634719710669 precision of 1.0, 0.816 recall of 5.0, 0.912751677852349 precision of 5.0, 869 perfect matches.
+2023-05-08 06:19:23,846	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.524 mean absolute error, 2.096 mean squared error, 0.922 recall of 1.0, 0.833634719710669 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.816 recall of 5.0, 0.912751677852349 precision of 5.0, 869 perfect matches.
+2023-05-08 06:19:23,847	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:19:24,044	__main__	DEBUG	Collected 34748 pieces of garbage!
+2023-05-08 06:19:24,054	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 06:19:24,055	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 06:19:24,056	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizer...
+2023-05-08 06:20:34,231	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 06:22:40,728	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 06:22:40,862	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	DEBUG	Run #2
+2023-05-08 06:22:40,862	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizer...
+2023-05-08 06:23:47,409	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 06:29:58,970	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	INFO	Training succeeded!
+2023-05-08 06:29:58,971	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 06:31:04,040	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.532 mean absolute error, 2.128 mean squared error, 0.862 recall of 1.0, 0.8707070707070707 precision of 1.0, 0.872 recall of 5.0, 0.8633663366336634 precision of 5.0, 867 perfect matches.
+2023-05-08 06:31:04,166	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizer.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.532 mean absolute error, 2.128 mean squared error, 0.862 recall of 1.0, 0.8707070707070707 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.872 recall of 5.0, 0.8633663366336634 precision of 5.0, 867 perfect matches.
+2023-05-08 06:31:04,166	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:31:04,394	__main__	DEBUG	Collected 53578 pieces of garbage!
+2023-05-08 06:31:04,410	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 06:31:04,414	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 06:31:04,414	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 06:32:11,689	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 06:38:46,938	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 06:38:46,939	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 06:39:52,676	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.52 mean absolute error, 2.08 mean squared error, 0.842 recall of 1.0, 0.8919491525423728 precision of 1.0, 0.898 recall of 5.0, 0.8503787878787878 precision of 5.0, 870 perfect matches.
+2023-05-08 06:39:52,802	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.52 mean absolute error, 2.08 mean squared error, 0.842 recall of 1.0, 0.8919491525423728 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.898 recall of 5.0, 0.8503787878787878 precision of 5.0, 870 perfect matches.
+2023-05-08 06:39:52,802	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:39:53,016	__main__	DEBUG	Collected 28249 pieces of garbage!
+2023-05-08 06:39:53,020	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 06:39:53,021	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 06:39:53,021	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 06:40:58,643	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 06:47:32,701	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:47:32,717	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 06:48:40,112	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.456 mean absolute error, 1.824 mean squared error, 0.878 recall of 1.0, 0.8922764227642277 precision of 1.0, 0.894 recall of 5.0, 0.8799212598425197 precision of 5.0, 886 perfect matches.
+2023-05-08 06:48:40,632	__main__.sample_reviews_polar.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.456 mean absolute error, 1.824 mean squared error, 0.878 recall of 1.0, 0.8922764227642277 precision of 1.0, inf recall of 2.0, inf precision of 2.0, inf recall of 3.0, inf precision of 3.0, inf recall of 4.0, inf precision of 4.0, 0.894 recall of 5.0, 0.8799212598425197 precision of 5.0, 886 perfect matches.
+2023-05-08 06:48:40,633	__main__.sample_reviews_varied	DEBUG	Selected sample_func: sample_reviews_varied
+2023-05-08 06:48:40,633	__main__.sample_reviews_varied.ThreeCheat	DEBUG	Selected SentimentAnalyzer: ThreeCheat
+2023-05-08 06:48:40,633	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:48:40,831	__main__	DEBUG	Collected 25349 pieces of garbage!
+2023-05-08 06:48:40,835	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 06:48:40,836	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 06:48:40,836	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	DEBUG	Instantiating ThreeCheat with PlainTokenizer...
+2023-05-08 06:51:28,962	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <PlainTokenizer> tokenizer>
+2023-05-08 06:51:28,962	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:51:28,962	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PlainTokenizer> tokenizer>
+2023-05-08 06:51:29,148	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:51:29,277	__main__.sample_reviews_varied.ThreeCheat.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:51:29,278	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:51:29,452	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 06:51:29,453	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 06:51:29,453	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 06:51:29,453	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	DEBUG	Instantiating ThreeCheat with LowercaseTokenizer...
+2023-05-08 06:54:14,359	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <LowercaseTokenizer> tokenizer>
+2023-05-08 06:54:14,359	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:54:14,359	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <LowercaseTokenizer> tokenizer>
+2023-05-08 06:54:14,546	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:54:14,682	__main__.sample_reviews_varied.ThreeCheat.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:54:14,683	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:54:14,854	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 06:54:14,855	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 06:54:14,855	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 06:54:14,855	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	DEBUG	Instantiating ThreeCheat with NLTKWordTokenizer...
+2023-05-08 06:57:04,762	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <NLTKWordTokenizer> tokenizer>
+2023-05-08 06:57:04,762	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:57:04,762	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <NLTKWordTokenizer> tokenizer>
+2023-05-08 06:57:04,974	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:57:05,108	__main__.sample_reviews_varied.ThreeCheat.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:57:05,108	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:57:05,314	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 06:57:05,314	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 06:57:05,315	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 06:57:05,315	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	DEBUG	Instantiating ThreeCheat with PottsTokenizer...
+2023-05-08 06:59:57,541	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <PottsTokenizer> tokenizer>
+2023-05-08 06:59:57,541	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 06:59:57,541	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PottsTokenizer> tokenizer>
+2023-05-08 06:59:57,747	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:59:57,878	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 06:59:57,878	__main__	DEBUG	Running garbage collection...
+2023-05-08 06:59:58,051	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 06:59:58,052	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 06:59:58,053	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 06:59:58,053	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	DEBUG	Instantiating ThreeCheat with PottsTokenizerWithNegation...
+2023-05-08 07:02:45,377	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <ThreeCheat with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 07:02:45,377	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 07:02:45,377	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 07:02:45,560	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 07:02:45,691	__main__.sample_reviews_varied.ThreeCheat.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 07:02:45,692	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:02:45,864	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:02:45,865	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 07:02:45,865	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 07:02:45,866	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	DEBUG	Instantiating ThreeCheat with HuggingBertTokenizer...
+2023-05-08 07:05:31,644	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <ThreeCheat with <HuggingBertTokenizer> tokenizer>
+2023-05-08 07:05:31,644	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:05:31,644	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <ThreeCheat with <HuggingBertTokenizer> tokenizer>
+2023-05-08 07:05:31,852	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 07:05:31,992	__main__.sample_reviews_varied.ThreeCheat.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.2 mean absolute error, 2.0 mean squared error, 0.0 recall of 1.0, inf precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 1.0 recall of 3.0, 0.2 precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.0 recall of 5.0, inf precision of 5.0, 200 perfect matches.
+2023-05-08 07:05:31,993	__main__.sample_reviews_varied.NLTKSentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: NLTKSentimentAnalyzer
+2023-05-08 07:05:31,993	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:05:32,169	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:05:32,170	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 07:05:32,170	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 07:05:32,170	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PlainTokenizer...
+2023-05-08 07:08:21,231	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 07:11:30,820	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:11:30,821	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 07:14:09,034	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.341 mean absolute error, 3.443 mean squared error, 0.345 recall of 1.0, 0.5227272727272727 precision of 1.0, 0.31 recall of 2.0, 0.32460732984293195 precision of 2.0, 0.185 recall of 3.0, 0.3557692307692308 precision of 3.0, 0.1 recall of 4.0, 0.3225806451612903 precision of 4.0, 0.7 recall of 5.0, 0.273972602739726 precision of 5.0, 328 perfect matches.
+2023-05-08 07:14:09,162	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.341 mean absolute error, 3.443 mean squared error, 0.345 recall of 1.0, 0.5227272727272727 precision of 1.0, 0.31 recall of 2.0, 0.32460732984293195 precision of 2.0, 0.185 recall of 3.0, 0.3557692307692308 precision of 3.0, 0.1 recall of 4.0, 0.3225806451612903 precision of 4.0, 0.7 recall of 5.0, 0.273972602739726 precision of 5.0, 328 perfect matches.
+2023-05-08 07:14:09,162	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:14:09,366	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:14:09,367	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 07:14:09,367	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 07:14:09,367	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 07:17:00,709	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 07:19:56,507	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:19:56,614	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 07:22:24,654	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.221 mean absolute error, 2.967 mean squared error, 0.45 recall of 1.0, 0.5521472392638037 precision of 1.0, 0.21 recall of 2.0, 0.2876712328767123 precision of 2.0, 0.235 recall of 3.0, 0.36153846153846153 precision of 3.0, 0.135 recall of 4.0, 0.36 precision of 4.0, 0.72 recall of 5.0, 0.2962962962962963 precision of 5.0, 350 perfect matches.
+2023-05-08 07:22:24,984	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.LowercaseTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.221 mean absolute error, 2.967 mean squared error, 0.45 recall of 1.0, 0.5521472392638037 precision of 1.0, 0.21 recall of 2.0, 0.2876712328767123 precision of 2.0, 0.235 recall of 3.0, 0.36153846153846153 precision of 3.0, 0.135 recall of 4.0, 0.36 precision of 4.0, 0.72 recall of 5.0, 0.2962962962962963 precision of 5.0, 350 perfect matches.
+2023-05-08 07:22:24,985	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:22:27,264	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:22:27,264	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 07:22:27,265	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 07:22:27,265	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 07:25:27,783	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 07:29:06,012	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:29:06,012	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 07:31:53,663	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.281 mean absolute error, 3.281 mean squared error, 0.365 recall of 1.0, 0.5069444444444444 precision of 1.0, 0.315 recall of 2.0, 0.38650306748466257 precision of 2.0, 0.215 recall of 3.0, 0.33076923076923076 precision of 3.0, 0.125 recall of 4.0, 0.32894736842105265 precision of 4.0, 0.715 recall of 5.0, 0.2936344969199179 precision of 5.0, 347 perfect matches.
+2023-05-08 07:31:53,798	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.281 mean absolute error, 3.281 mean squared error, 0.365 recall of 1.0, 0.5069444444444444 precision of 1.0, 0.315 recall of 2.0, 0.38650306748466257 precision of 2.0, 0.215 recall of 3.0, 0.33076923076923076 precision of 3.0, 0.125 recall of 4.0, 0.32894736842105265 precision of 4.0, 0.715 recall of 5.0, 0.2936344969199179 precision of 5.0, 347 perfect matches.
+2023-05-08 07:31:53,799	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:31:53,994	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:31:53,994	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 07:31:53,994	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 07:31:53,994	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PottsTokenizer...
+2023-05-08 07:34:43,429	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 07:37:43,383	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:37:43,384	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 07:40:07,837	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.244 mean absolute error, 3.022 mean squared error, 0.44 recall of 1.0, 0.5116279069767442 precision of 1.0, 0.255 recall of 2.0, 0.2463768115942029 precision of 2.0, 0.11 recall of 3.0, 0.24175824175824176 precision of 3.0, 0.14 recall of 4.0, 0.4745762711864407 precision of 4.0, 0.745 recall of 5.0, 0.31634819532908703 precision of 5.0, 338 perfect matches.
+2023-05-08 07:40:07,966	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.244 mean absolute error, 3.022 mean squared error, 0.44 recall of 1.0, 0.5116279069767442 precision of 1.0, 0.255 recall of 2.0, 0.2463768115942029 precision of 2.0, 0.11 recall of 3.0, 0.24175824175824176 precision of 3.0, 0.14 recall of 4.0, 0.4745762711864407 precision of 4.0, 0.745 recall of 5.0, 0.31634819532908703 precision of 5.0, 338 perfect matches.
+2023-05-08 07:40:07,967	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:40:08,164	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:40:08,164	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 07:40:08,165	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 07:40:08,165	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating NLTKSentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 07:42:58,809	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 07:46:29,497	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 07:46:29,497	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 07:49:17,219	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.252 mean absolute error, 3.024 mean squared error, 0.38 recall of 1.0, 0.4 precision of 1.0, 0.255 recall of 2.0, 0.3493150684931507 precision of 2.0, 0.19 recall of 3.0, 0.2550335570469799 precision of 3.0, 0.085 recall of 4.0, 0.3148148148148148 precision of 4.0, 0.725 recall of 5.0, 0.31453362255965295 precision of 5.0, 327 perfect matches.
+2023-05-08 07:49:17,343	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.252 mean absolute error, 3.024 mean squared error, 0.38 recall of 1.0, 0.4 precision of 1.0, 0.255 recall of 2.0, 0.3493150684931507 precision of 2.0, 0.19 recall of 3.0, 0.2550335570469799 precision of 3.0, 0.085 recall of 4.0, 0.3148148148148148 precision of 4.0, 0.725 recall of 5.0, 0.31453362255965295 precision of 5.0, 327 perfect matches.
+2023-05-08 07:49:17,344	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:49:17,545	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:49:17,545	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 07:49:17,545	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 07:49:17,545	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating NLTKSentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 07:52:13,697	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <NLTKSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 07:56:21,760	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 07:56:21,760	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <NLTKSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 07:59:30,673	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.37 mean absolute error, 3.612 mean squared error, 0.285 recall of 1.0, 0.5277777777777778 precision of 1.0, 0.275 recall of 2.0, 0.30726256983240224 precision of 2.0, 0.14 recall of 3.0, 0.4 precision of 3.0, 0.225 recall of 4.0, 0.41284403669724773 precision of 4.0, 0.695 recall of 5.0, 0.2602996254681648 precision of 5.0, 324 perfect matches.
+2023-05-08 07:59:31,016	__main__.sample_reviews_varied.NLTKSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.37 mean absolute error, 3.612 mean squared error, 0.285 recall of 1.0, 0.5277777777777778 precision of 1.0, 0.275 recall of 2.0, 0.30726256983240224 precision of 2.0, 0.14 recall of 3.0, 0.4 precision of 3.0, 0.225 recall of 4.0, 0.41284403669724773 precision of 4.0, 0.695 recall of 5.0, 0.2602996254681648 precision of 5.0, 324 perfect matches.
+2023-05-08 07:59:31,017	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: TensorflowPolarSentimentAnalyzer
+2023-05-08 07:59:31,017	__main__	DEBUG	Running garbage collection...
+2023-05-08 07:59:31,555	__main__	DEBUG	Collected 0 pieces of garbage!
+2023-05-08 07:59:31,556	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 07:59:31,556	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 07:59:31,556	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PlainTokenizer...
+2023-05-08 08:02:26,348	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 08:03:02,311	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 08:03:02,469	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	DEBUG	Run #2
+2023-05-08 08:03:02,470	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PlainTokenizer...
+2023-05-08 08:05:52,163	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 08:11:33,976	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	INFO	Training succeeded!
+2023-05-08 08:11:33,976	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 08:12:45,719	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.294 mean absolute error, 3.176 mean squared error, 0.81 recall of 1.0, 0.34394904458598724 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.86 recall of 5.0, 0.32514177693761814 precision of 5.0, 334 perfect matches.
+2023-05-08 08:12:45,845	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PlainTokenizer.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.294 mean absolute error, 3.176 mean squared error, 0.81 recall of 1.0, 0.34394904458598724 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.86 recall of 5.0, 0.32514177693761814 precision of 5.0, 334 perfect matches.
+2023-05-08 08:12:45,846	__main__	DEBUG	Running garbage collection...
+2023-05-08 08:12:46,065	__main__	DEBUG	Collected 18828 pieces of garbage!
+2023-05-08 08:12:46,070	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 08:12:46,070	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 08:12:46,070	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 08:15:33,272	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 08:16:12,961	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 08:16:13,088	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.2	DEBUG	Run #2
+2023-05-08 08:16:13,088	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.2	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 08:18:56,420	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.2	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 08:20:44,929	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.2	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 08:20:45,449	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	DEBUG	Run #3
+2023-05-08 08:20:45,450	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 08:23:26,828	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 08:29:01,065	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	INFO	Training succeeded!
+2023-05-08 08:29:01,065	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 08:30:08,213	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.28 mean absolute error, 3.12 mean squared error, 0.84 recall of 1.0, 0.3421588594704684 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.815 recall of 5.0, 0.32023575638506874 precision of 5.0, 331 perfect matches.
+2023-05-08 08:30:08,342	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.LowercaseTokenizer.3	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.28 mean absolute error, 3.12 mean squared error, 0.84 recall of 1.0, 0.3421588594704684 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.815 recall of 5.0, 0.32023575638506874 precision of 5.0, 331 perfect matches.
+2023-05-08 08:30:08,342	__main__	DEBUG	Running garbage collection...
+2023-05-08 08:30:08,593	__main__	DEBUG	Collected 48511 pieces of garbage!
+2023-05-08 08:30:08,607	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 08:30:08,610	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 08:30:08,612	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 08:32:59,626	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 08:38:42,487	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 08:38:42,487	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 08:39:50,478	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.208 mean absolute error, 2.832 mean squared error, 0.825 recall of 1.0, 0.3900709219858156 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.92 recall of 5.0, 0.3188908145580589 precision of 5.0, 349 perfect matches.
+2023-05-08 08:39:50,680	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.208 mean absolute error, 2.832 mean squared error, 0.825 recall of 1.0, 0.3900709219858156 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.92 recall of 5.0, 0.3188908145580589 precision of 5.0, 349 perfect matches.
+2023-05-08 08:39:50,680	__main__	DEBUG	Running garbage collection...
+2023-05-08 08:39:50,885	__main__	DEBUG	Collected 5790 pieces of garbage!
+2023-05-08 08:39:50,887	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 08:39:50,887	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 08:39:50,887	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PottsTokenizer...
+2023-05-08 08:42:38,306	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 08:48:26,128	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 08:48:26,129	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 08:49:31,620	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.224 mean absolute error, 2.896 mean squared error, 0.9 recall of 1.0, 0.32786885245901637 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.78 recall of 5.0, 0.3458980044345898 precision of 5.0, 336 perfect matches.
+2023-05-08 08:49:31,913	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.224 mean absolute error, 2.896 mean squared error, 0.9 recall of 1.0, 0.32786885245901637 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.78 recall of 5.0, 0.3458980044345898 precision of 5.0, 336 perfect matches.
+2023-05-08 08:49:31,913	__main__	DEBUG	Running garbage collection...
+2023-05-08 08:49:32,241	__main__	DEBUG	Collected 85763 pieces of garbage!
+2023-05-08 08:49:32,250	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 08:49:32,257	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 08:49:32,261	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 08:52:32,731	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 08:58:22,412	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training succeeded!
+2023-05-08 08:58:22,424	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 08:59:32,565	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.172 mean absolute error, 2.688 mean squared error, 0.84 recall of 1.0, 0.37168141592920356 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.91 recall of 5.0, 0.33211678832116787 precision of 5.0, 350 perfect matches.
+2023-05-08 08:59:32,737	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.172 mean absolute error, 2.688 mean squared error, 0.84 recall of 1.0, 0.37168141592920356 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.91 recall of 5.0, 0.33211678832116787 precision of 5.0, 350 perfect matches.
+2023-05-08 08:59:32,737	__main__	DEBUG	Running garbage collection...
+2023-05-08 08:59:34,804	__main__	DEBUG	Collected 85747 pieces of garbage!
+2023-05-08 08:59:34,812	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 08:59:34,819	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 08:59:34,824	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating TensorflowPolarSentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 09:02:54,959	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 09:08:45,092	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 09:08:45,092	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowPolarSentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 09:09:52,755	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 1.258 mean absolute error, 3.032 mean squared error, 0.875 recall of 1.0, 0.3141831238779174 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.81 recall of 5.0, 0.3656884875846501 precision of 5.0, 337 perfect matches.
+2023-05-08 09:09:52,882	__main__.sample_reviews_varied.TensorflowPolarSentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 1.258 mean absolute error, 3.032 mean squared error, 0.875 recall of 1.0, 0.3141831238779174 precision of 1.0, 0.0 recall of 2.0, inf precision of 2.0, 0.0 recall of 3.0, inf precision of 3.0, 0.0 recall of 4.0, inf precision of 4.0, 0.81 recall of 5.0, 0.3656884875846501 precision of 5.0, 337 perfect matches.
+2023-05-08 09:09:52,882	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer	DEBUG	Selected SentimentAnalyzer: TensorflowCategorySentimentAnalyzer
+2023-05-08 09:09:52,882	__main__	DEBUG	Running garbage collection...
+2023-05-08 09:09:53,244	__main__	DEBUG	Collected 85741 pieces of garbage!
+2023-05-08 09:09:53,252	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer	DEBUG	Selected Tokenizer: PlainTokenizer
+2023-05-08 09:09:53,258	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	DEBUG	Run #1
+2023-05-08 09:09:53,263	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PlainTokenizer...
+2023-05-08 09:12:44,184	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 09:18:45,371	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Training succeeded!
+2023-05-08 09:18:45,379	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PlainTokenizer> tokenizer>
+2023-05-08 09:19:53,641	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.887 mean absolute error, 1.583 mean squared error, 0.27 recall of 1.0, 0.5346534653465347 precision of 1.0, 0.455 recall of 2.0, 0.2808641975308642 precision of 2.0, 0.585 recall of 3.0, 0.3103448275862069 precision of 3.0, 0.165 recall of 4.0, 0.38823529411764707 precision of 4.0, 0.355 recall of 5.0, 0.6283185840707964 precision of 5.0, 366 perfect matches.
+2023-05-08 09:19:54,023	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PlainTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.887 mean absolute error, 1.583 mean squared error, 0.27 recall of 1.0, 0.5346534653465347 precision of 1.0, 0.455 recall of 2.0, 0.2808641975308642 precision of 2.0, 0.585 recall of 3.0, 0.3103448275862069 precision of 3.0, 0.165 recall of 4.0, 0.38823529411764707 precision of 4.0, 0.355 recall of 5.0, 0.6283185840707964 precision of 5.0, 366 perfect matches.
+2023-05-08 09:19:54,024	__main__	DEBUG	Running garbage collection...
+2023-05-08 09:19:54,693	__main__	DEBUG	Collected 87195 pieces of garbage!
+2023-05-08 09:19:54,712	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer	DEBUG	Selected Tokenizer: LowercaseTokenizer
+2023-05-08 09:19:54,714	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Run #1
+2023-05-08 09:19:54,715	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 09:22:52,647	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 09:23:30,313	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 09:23:30,507	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	DEBUG	Run #2
+2023-05-08 09:23:30,508	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with LowercaseTokenizer...
+2023-05-08 09:27:36,963	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 09:33:35,954	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	INFO	Training succeeded!
+2023-05-08 09:33:35,961	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <LowercaseTokenizer> tokenizer>
+2023-05-08 09:34:47,990	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.803 mean absolute error, 1.467 mean squared error, 0.48 recall of 1.0, 0.5517241379310345 precision of 1.0, 0.56 recall of 2.0, 0.37966101694915255 precision of 2.0, 0.275 recall of 3.0, 0.3741496598639456 precision of 3.0, 0.425 recall of 4.0, 0.34274193548387094 precision of 4.0, 0.405 recall of 5.0, 0.5955882352941176 precision of 5.0, 429 perfect matches.
+2023-05-08 09:34:48,200	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.LowercaseTokenizer.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.803 mean absolute error, 1.467 mean squared error, 0.48 recall of 1.0, 0.5517241379310345 precision of 1.0, 0.56 recall of 2.0, 0.37966101694915255 precision of 2.0, 0.275 recall of 3.0, 0.3741496598639456 precision of 3.0, 0.425 recall of 4.0, 0.34274193548387094 precision of 4.0, 0.405 recall of 5.0, 0.5955882352941176 precision of 5.0, 429 perfect matches.
+2023-05-08 09:34:48,201	__main__	DEBUG	Running garbage collection...
+2023-05-08 09:34:48,460	__main__	DEBUG	Collected 21722 pieces of garbage!
+2023-05-08 09:34:48,464	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer	DEBUG	Selected Tokenizer: NLTKWordTokenizer
+2023-05-08 09:34:48,465	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Run #1
+2023-05-08 09:34:48,465	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with NLTKWordTokenizer...
+2023-05-08 09:37:43,553	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 09:43:52,626	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Training succeeded!
+2023-05-08 09:43:52,660	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <NLTKWordTokenizer> tokenizer>
+2023-05-08 09:45:02,535	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.813 mean absolute error, 1.373 mean squared error, 0.545 recall of 1.0, 0.5265700483091788 precision of 1.0, 0.3 recall of 2.0, 0.3821656050955414 precision of 2.0, 0.455 recall of 3.0, 0.3273381294964029 precision of 3.0, 0.32 recall of 4.0, 0.3333333333333333 precision of 4.0, 0.42 recall of 5.0, 0.5060240963855421 precision of 5.0, 408 perfect matches.
+2023-05-08 09:45:02,815	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.NLTKWordTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.813 mean absolute error, 1.373 mean squared error, 0.545 recall of 1.0, 0.5265700483091788 precision of 1.0, 0.3 recall of 2.0, 0.3821656050955414 precision of 2.0, 0.455 recall of 3.0, 0.3273381294964029 precision of 3.0, 0.32 recall of 4.0, 0.3333333333333333 precision of 4.0, 0.42 recall of 5.0, 0.5060240963855421 precision of 5.0, 408 perfect matches.
+2023-05-08 09:45:02,815	__main__	DEBUG	Running garbage collection...
+2023-05-08 09:45:03,154	__main__	DEBUG	Collected 87193 pieces of garbage!
+2023-05-08 09:45:03,172	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer	DEBUG	Selected Tokenizer: PottsTokenizer
+2023-05-08 09:45:03,175	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	DEBUG	Run #1
+2023-05-08 09:45:03,176	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizer...
+2023-05-08 09:47:52,098	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 09:54:06,325	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Training succeeded!
+2023-05-08 09:54:06,367	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizer> tokenizer>
+2023-05-08 09:55:15,552	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.779 mean absolute error, 1.527 mean squared error, 0.485 recall of 1.0, 0.563953488372093 precision of 1.0, 0.445 recall of 2.0, 0.43842364532019706 precision of 2.0, 0.51 recall of 3.0, 0.379182156133829 precision of 3.0, 0.41 recall of 4.0, 0.4880952380952381 precision of 4.0, 0.53 recall of 5.0, 0.5638297872340425 precision of 5.0, 476 perfect matches.
+2023-05-08 09:55:15,809	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.779 mean absolute error, 1.527 mean squared error, 0.485 recall of 1.0, 0.563953488372093 precision of 1.0, 0.445 recall of 2.0, 0.43842364532019706 precision of 2.0, 0.51 recall of 3.0, 0.379182156133829 precision of 3.0, 0.41 recall of 4.0, 0.4880952380952381 precision of 4.0, 0.53 recall of 5.0, 0.5638297872340425 precision of 5.0, 476 perfect matches.
+2023-05-08 09:55:15,810	__main__	DEBUG	Running garbage collection...
+2023-05-08 09:55:16,193	__main__	DEBUG	Collected 87179 pieces of garbage!
+2023-05-08 09:55:16,211	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation	DEBUG	Selected Tokenizer: PottsTokenizerWithNegation
+2023-05-08 09:55:16,215	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Run #1
+2023-05-08 09:55:16,216	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 09:58:25,111	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 10:00:21,074	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.1	ERROR	Training failed, trying again with a different dataset...
+2023-05-08 10:00:21,453	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	DEBUG	Run #2
+2023-05-08 10:00:21,453	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with PottsTokenizerWithNegation...
+2023-05-08 10:03:50,047	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 10:09:51,315	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	INFO	Training succeeded!
+2023-05-08 10:09:51,315	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <PottsTokenizerWithNegation> tokenizer>
+2023-05-08 10:11:03,766	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.831 mean absolute error, 1.417 mean squared error, 0.41 recall of 1.0, 0.6307692307692307 precision of 1.0, 0.34 recall of 2.0, 0.29310344827586204 precision of 2.0, 0.43 recall of 3.0, 0.3233082706766917 precision of 3.0, 0.355 recall of 4.0, 0.3271889400921659 precision of 4.0, 0.425 recall of 5.0, 0.5483870967741935 precision of 5.0, 392 perfect matches.
+2023-05-08 10:11:03,895	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.PottsTokenizerWithNegation.2	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.831 mean absolute error, 1.417 mean squared error, 0.41 recall of 1.0, 0.6307692307692307 precision of 1.0, 0.34 recall of 2.0, 0.29310344827586204 precision of 2.0, 0.43 recall of 3.0, 0.3233082706766917 precision of 3.0, 0.355 recall of 4.0, 0.3271889400921659 precision of 4.0, 0.425 recall of 5.0, 0.5483870967741935 precision of 5.0, 392 perfect matches.
+2023-05-08 10:11:03,896	__main__	DEBUG	Running garbage collection...
+2023-05-08 10:11:04,168	__main__	DEBUG	Collected 13027 pieces of garbage!
+2023-05-08 10:11:04,172	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer	DEBUG	Selected Tokenizer: HuggingBertTokenizer
+2023-05-08 10:11:04,172	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Run #1
+2023-05-08 10:11:04,172	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	DEBUG	Instantiating TensorflowCategorySentimentAnalyzer with HuggingBertTokenizer...
+2023-05-08 10:13:51,532	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 10:19:41,412	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Training succeeded!
+2023-05-08 10:19:41,413	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluating sentiment analyzer: <TensorflowCategorySentimentAnalyzer with <HuggingBertTokenizer> tokenizer>
+2023-05-08 10:20:50,241	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Evaluation results: Evaluation results: 1000 evaluated, 0.872 mean absolute error, 1.63 mean squared error, 0.545 recall of 1.0, 0.461864406779661 precision of 1.0, 0.275 recall of 2.0, 0.3055555555555556 precision of 2.0, 0.26 recall of 3.0, 0.2826086956521739 precision of 3.0, 0.45 recall of 4.0, 0.36 precision of 4.0, 0.465 recall of 5.0, 0.62 precision of 5.0, 399 perfect matches.
+2023-05-08 10:20:50,775	__main__.sample_reviews_varied.TensorflowCategorySentimentAnalyzer.HuggingBertTokenizer.1	INFO	Cumulative evaluation results: Evaluation results: 1000 evaluated, 0.872 mean absolute error, 1.63 mean squared error, 0.545 recall of 1.0, 0.461864406779661 precision of 1.0, 0.275 recall of 2.0, 0.3055555555555556 precision of 2.0, 0.26 recall of 3.0, 0.2826086956521739 precision of 3.0, 0.45 recall of 4.0, 0.36 precision of 4.0, 0.465 recall of 5.0, 0.62 precision of 5.0, 399 perfect matches.

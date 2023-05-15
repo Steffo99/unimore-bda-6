@@ -1,0 +1,63 @@
+function	analyzer	tokenizer	run no	mean absolute error	mean squared error	perfects	recall 1	recall 2	recall 3	recall 4	recall 5	precision 1	precision 2	precision 3	precision 4	precision 5
+sample_reviews_polar	ThreeCheat	PlainTokenizer	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	ThreeCheat	LowercaseTokenizer	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	ThreeCheat	NLTKWordTokenizer	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	ThreeCheat	PottsTokenizer	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	ThreeCheat	PottsTokenizerWithNegation	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	ThreeCheat	HuggingBertTokenizer	1	2.0	4.0	0	0.0	inf	inf	inf	0.0	inf	inf	0.0	inf	inf
+sample_reviews_polar	NLTKSentimentAnalyzer	PlainTokenizer	1	1.108	4.432	723	0.622	inf	inf	inf	0.824	0.7794486215538847	inf	inf	inf	0.6855241264559068
+sample_reviews_polar	NLTKSentimentAnalyzer	LowercaseTokenizer	1	0.928	3.712	768	0.67	inf	inf	inf	0.866	0.8333333333333334	inf	inf	inf	0.7240802675585284
+sample_reviews_polar	NLTKSentimentAnalyzer	NLTKWordTokenizer	1	1.032	4.128	742	0.636	inf	inf	inf	0.848	0.8071065989847716	inf	inf	inf	0.6996699669966997
+sample_reviews_polar	NLTKSentimentAnalyzer	PottsTokenizer	1	1.004	4.016	749	0.654	inf	inf	inf	0.844	0.8074074074074075	inf	inf	inf	0.7092436974789916
+sample_reviews_polar	NLTKSentimentAnalyzer	PottsTokenizerWithNegation	1	1.128	4.512	718	0.59	inf	inf	inf	0.846	0.793010752688172	inf	inf	inf	0.6735668789808917
+sample_reviews_polar	NLTKSentimentAnalyzer	HuggingBertTokenizer	1	1.224	4.896	694	0.554	inf	inf	inf	0.834	0.7694444444444445	inf	inf	inf	0.6515625
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PlainTokenizer	1													
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PlainTokenizer	2													
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PlainTokenizer	3	0.512	2.048	872	0.89	inf	inf	inf	0.854	0.859073359073359	inf	inf	inf	0.8858921161825726
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	LowercaseTokenizer	1	0.444	1.776	889	0.898	inf	inf	inf	0.88	0.8821218074656189	inf	inf	inf	0.8961303462321792
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	NLTKWordTokenizer	1	0.536	2.144	866	0.944	inf	inf	inf	0.788	0.8166089965397924	inf	inf	inf	0.933649289099526
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PottsTokenizer	1	0.468	1.872	883	0.942	inf	inf	inf	0.824	0.8425760286225402	inf	inf	inf	0.9342403628117913
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PottsTokenizerWithNegation	1													
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PottsTokenizerWithNegation	2													
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	PottsTokenizerWithNegation	3	0.448	1.792	888	0.91	inf	inf	inf	0.866	0.8716475095785441	inf	inf	inf	0.9058577405857741
+sample_reviews_polar	TensorflowPolarSentimentAnalyzer	HuggingBertTokenizer	1	0.512	2.048	872	0.852	inf	inf	inf	0.892	0.8875	inf	inf	inf	0.8576923076923076
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	PlainTokenizer	1	0.504	2.016	874	0.874	inf	inf	inf	0.874	0.874	inf	inf	inf	0.874
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	LowercaseTokenizer	1													
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	LowercaseTokenizer	2	0.488	1.952	878	0.894	inf	inf	inf	0.862	0.8662790697674418	inf	inf	inf	0.890495867768595
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	NLTKWordTokenizer	1	0.564	2.256	859	0.844	inf	inf	inf	0.874	0.8701030927835052	inf	inf	inf	0.8485436893203884
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	PottsTokenizer	1	0.432	1.728	892	0.924	inf	inf	inf	0.86	0.868421052631579	inf	inf	inf	0.9188034188034188
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	PottsTokenizerWithNegation	1	0.48	1.92	880	0.862	inf	inf	inf	0.898	0.8941908713692946	inf	inf	inf	0.8667953667953668
+sample_reviews_polar	TensorflowCategorySentimentAnalyzer	HuggingBertTokenizer	1	0.488	1.952	878	0.908	inf	inf	inf	0.848	0.8566037735849057	inf	inf	inf	0.902127659574468
+sample_reviews_varied	ThreeCheat	PlainTokenizer	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	ThreeCheat	LowercaseTokenizer	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	ThreeCheat	NLTKWordTokenizer	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	ThreeCheat	PottsTokenizer	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	ThreeCheat	PottsTokenizerWithNegation	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	ThreeCheat	HuggingBertTokenizer	1	1.2	2.0	200	0.0	0.0	1.0	0.0	0.0	inf	inf	0.2	inf	inf
+sample_reviews_varied	NLTKSentimentAnalyzer	PlainTokenizer	1	1.301	3.171	308	0.36	0.31	0.075	0.095	0.7	0.496551724137931	0.2616033755274262	0.19480519480519481	0.3064516129032258	0.29227557411273486
+sample_reviews_varied	NLTKSentimentAnalyzer	LowercaseTokenizer	1	1.285	3.297	352	0.385	0.285	0.18	0.19	0.72	0.4666666666666667	0.2835820895522388	0.3564356435643564	0.5135135135135135	0.3137254901960784
+sample_reviews_varied	NLTKSentimentAnalyzer	NLTKWordTokenizer	1	1.242	3.052	335	0.405	0.225	0.175	0.11	0.76	0.4308510638297872	0.2631578947368421	0.35714285714285715	0.36065573770491804	0.3153526970954357
+sample_reviews_varied	NLTKSentimentAnalyzer	PottsTokenizer	1	1.256	3.024	328	0.445	0.155	0.3	0.075	0.665	0.4734042553191489	0.31	0.2803738317757009	0.3125	0.29555555555555557
+sample_reviews_varied	NLTKSentimentAnalyzer	PottsTokenizerWithNegation	1	1.345	3.415	315	0.35	0.205	0.14	0.11	0.77	0.4268292682926829	0.23699421965317918	0.3010752688172043	0.3548387096774194	0.3031496062992126
+sample_reviews_varied	NLTKSentimentAnalyzer	HuggingBertTokenizer	1	1.263	3.127	334	0.36	0.24	0.2	0.1	0.77	0.4675324675324675	0.35555555555555557	0.26143790849673204	0.3125	0.3117408906882591
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PlainTokenizer	1													
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PlainTokenizer	2													
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PlainTokenizer	3	1.282	3.128	333	0.925	0.0	0.0	0.0	0.74	0.3140916808149406	inf	inf	inf	0.36009732360097324
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	LowercaseTokenizer	1	1.242	2.968	335	0.87	0.0	0.0	0.0	0.805	0.3246268656716418	inf	inf	inf	0.34698275862068967
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	NLTKWordTokenizer	1													
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	NLTKWordTokenizer	2													
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	NLTKWordTokenizer	3	1.198	2.792	347	0.84	0.0	0.0	0.0	0.895	0.3605150214592275	inf	inf	inf	0.3352059925093633
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PottsTokenizer	1													
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PottsTokenizer	2	1.224	2.896	342	0.8	0.0	0.0	0.0	0.91	0.3686635944700461	inf	inf	inf	0.3215547703180212
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	PottsTokenizerWithNegation	1	1.202	2.808	342	0.925	0.0	0.0	0.0	0.785	0.29983792544570503	inf	inf	inf	0.40992167101827676
+sample_reviews_varied	TensorflowPolarSentimentAnalyzer	HuggingBertTokenizer	1	1.186	2.744	353	0.865	0.0	0.0	0.0	0.9	0.36041666666666666	inf	inf	inf	0.34615384615384615
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PlainTokenizer	1	0.864	1.446	373	0.49	0.395	0.225	0.405	0.35	0.5798816568047337	0.30859375	0.22277227722772278	0.32661290322580644	0.56
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	LowercaseTokenizer	1													
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	LowercaseTokenizer	2	0.856	1.754	445	0.63	0.25	0.42	0.38	0.545	0.5185185185185185	0.44642857142857145	0.38009049773755654	0.3486238532110092	0.529126213592233
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	NLTKWordTokenizer	1	0.779	1.257	418	0.43	0.18	0.505	0.465	0.51	0.688	0.3076923076923077	0.2961876832844575	0.3576923076923077	0.6496815286624203
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PottsTokenizer	1													
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PottsTokenizer	2													
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PottsTokenizer	3	0.805	1.473	443	0.535	0.455	0.42	0.365	0.44	0.5846994535519126	0.4008810572687225	0.3514644351464435	0.3476190476190476	0.624113475177305
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PottsTokenizerWithNegation	1													
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	PottsTokenizerWithNegation	2	0.901	1.833	413	0.435	0.28	0.355	0.415	0.58	0.46774193548387094	0.3660130718954248	0.3776595744680851	0.33739837398373984	0.5110132158590308
+sample_reviews_varied	TensorflowCategorySentimentAnalyzer	HuggingBertTokenizer	1	0.817	1.453	425	0.535	0.34	0.4	0.31	0.54	0.5376884422110553	0.3333333333333333	0.32786885245901637	0.389937106918239	0.5567010309278351
