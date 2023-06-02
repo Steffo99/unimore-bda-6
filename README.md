@@ -58,7 +58,9 @@ $ pip install .
 
 ##### NLTK
 
-NLTK richiede dipendenze aggiuntive per funzionare, che possono essere scaricate eseguendo il seguente comando su console:
+NLTK ha dipendenze aggiuntive che non possono essere scaricate tramite `pip`.
+
+Esse possono essere scaricate eseguendo su un terminale lo script fornito assieme al progetto:
 
 ```console
 $ ./scripts/download-nltk.sh
@@ -85,15 +87,21 @@ Si forniscono alcuni script nella cartella `./data/scripts` per facilitare la co
 
 #### Esecuzione del database
 
-Per eseguire il database MongoDB come processo utente, salvando i dati nella cartella `./data/db`:
+Per eseguire il database MongoDB come processo utente, salvando i dati nella cartella `./data/db`, è possibile eseguire il seguente comando:
 
 ```console
 $ ./data/scripts/run-db.sh
 ```
 
+Se [`jq`] è installato sul sistema, è possibile sfruttarlo per ottenere logs più human-friendly con il seguente comando:
+
+```console
+$ ./data/scripts/run-db.sh | jq '.msg'
+```
+
 #### Importazione dei dati da JSON
 
-Per importare il dataset `./data/raw/reviewsexport.json` fornito a lezione nel database MongoDB:
+Per importare il dataset `./data/raw/reviewsexport.json` fornito a lezione nel database MongoDB è disponibile il seguente script:
 
 ```console
 $ ./data/scripts/import-db.sh
@@ -101,7 +109,7 @@ $ ./data/scripts/import-db.sh
 
 #### Creazione indici
 
-Per creare indici MongoDB potenzialmente utili al funzionamento efficiente del codice:
+Per creare indici MongoDB potenzialmente utili al funzionamento efficiente del database è possibile eseguire il seguente comando:
 
 ```console
 $ mongosh < ./data/scripts/index-db.js
@@ -115,7 +123,7 @@ Il package, chiamato `unimore_bda_6`, è composto da vari moduli, ciascuno descr
 
 ### Configurazione ambiente e iperparametri - `.config`
 
-Il primo modulo, `unimore_bda_6.config`, definisce le variabili configurabili del package usando [`cfig`], e, se eseguito, mostra all'utente un'interfaccia command-line che le descrive e ne mostra i valori attuali.
+Il primo modulo, `unimore_bda_6.config`, definisce le variabili configurabili del package usando la libreria [`cfig`], e, se eseguito, mostra all'utente un'interfaccia command-line che le descrive e ne mostra i valori attuali.
 
 Viene prima creato un oggetto [`cfig.Configuration`], che opera come contenitore per le variabili configurabili:
 
@@ -124,7 +132,7 @@ import cfig
 config = cfig.Configuration()
 ```
 
-In seguito, per ogni variabile configurabile viene definita una funzione, che elabora il valore ottenuto dalle variabili di ambiente del contesto in cui il programma è eseguito, convertendolo in un formato più facilmente utilizzabile dal programma.
+In seguito, viene definita una funzione per ogni variabile configurabile, che elabora il valore ottenuto dalle variabili di ambiente del contesto in cui il programma è eseguito, convertendolo in un formato più facilmente utilizzabile dal programma.
 
 Si fornisce un esempio di una di queste funzioni, che definisce la variabile per configurare la dimensione del training set:
 
@@ -143,16 +151,16 @@ def TRAINING_SET_SIZE(val: str | None) -> int:
         raise cfig.InvalidValueError("Not an int.")
 ```
 
-(Nel gergo del machine learning / deep learning, queste variabili sono dette iperparametri, perchè configurano la creazione del modello, e non vengono configurate dall'addestramento del modello stesso.)
+(Nel gergo del machine learning / deep learning, queste variabili sono dette iperparametri, perchè configurano il modello, e non vengono alterate nell'addestramento del modello stesso.)
 
-Infine, si aggiunge una chiamata al metodo `cli()` della configurazione, eseguita solo se il modulo viene eseguito come main, che mostra all'utente l'interfaccia precedentemente menzionata:
+Infine, si aggiunge una chiamata al metodo `cli()` della configurazione, eseguita solo se il modulo viene eseguito direttamente, che mostra all'utente l'interfaccia precedentemente menzionata:
 
 ```python
 if __name__ == "__main__":
     config.cli()
 ```
 
-L'esecuzione del modulo `unimore_bda_6.config`, senza variabili d'ambiente definite, dà quindi il seguente output:
+L'esecuzione del modulo `unimore_bda_6.config`, senza variabili d'ambiente definite, darà quindi il seguente output:
 
 ```console
 $ python -m unimore_bda_6.config
@@ -167,7 +175,7 @@ Defaults to `4000`.
 
 ### Recupero dati dal database - `.database`
 
-Il modulo `unimore_bda_6.database` si occupa della connessione al database [MongoDB] e la collezione contenente il dataset di partenza, del recupero dei documenti in modo bilanciato, della conversione di essi in un formato più facilmente leggibile da Python, e della creazione di cache su disco per permettere alle librerie che lo supportano di non caricare l'intero dataset in memoria durante l'addestramento di un modello.
+Il modulo `unimore_bda_6.database` si occupa della connessione al database [MongoDB], del recupero della collezione contenente il dataset di partenza, del recupero dei documenti nella corretta distribuzione, della conversione di essi in un formato più facilmente leggibile da Python, e della creazione di cache su disco per permettere alle librerie che lo supportano di non caricare l'intero dataset in memoria durante l'addestramento di un modello.
 
 #### Connessione al database - `.database.connection`
 
@@ -186,10 +194,10 @@ def mongo_client_from_config() -> t.ContextManager[pymongo.MongoClient]:
     client.close()
 ```
 
-Esso sarà poi utilizzato in questo modo:
+Esso è utilizzabile nel seguente modo:
 
 ```python
-with mongo_client_from_config as client:
+with mongo_client_from_config() as client:
     ...
 ```
 
@@ -205,7 +213,7 @@ def reviews_collection(db: pymongo.MongoClient) -> pymongo.collection.Collection
 
 #### Contenitori di dati - `.database.datatypes`
 
-Il modulo `unimore_bda_6.database.datatypes` contiene contenitori ottimizzati (attraverso l'attributo magico [`__slots__`]) per i dati recuperati dal database, che possono essere riassunti con:
+Il modulo `unimore_bda_6.database.datatypes` contiene contenitori ottimizzati (attraverso l'attributo magico [`__slots__`]) per i dati recuperati dal database, che possono essere riassunti con le seguenti classi circa equivalenti:
 
 ```python
 @dataclasses.dataclass
@@ -225,7 +233,7 @@ Il modulo `unimore_bda_6.database.queries` contiene alcune query pre-costruite u
 
 ##### Working set
 
-Essendo il dataset completo composto da 23 milioni, 831 mila e 908 documenti (23_831_908), effettuare campionamenti su di esso in fase di sviluppo risulterebbe eccessivamente lento e dispendioso, pertanto in ogni query il dataset viene rimpicciolito a un *working set* attraverso l'uso del seguente aggregation pipeline stage, dove `WORKING_SET_SIZE` è sostituito dal suo corrispondente valore nella configurazione (di default 1_000_000):
+Essendo il dataset completo composto da 23 milioni, 831 mila e 908 documenti (`23_831_908`), effettuare campionamenti su di esso in fase di sviluppo risulta eccessivamente lento e dispendioso, pertanto ad ogni query il dataset viene rimpicciolito ad un *working set* attraverso l'uso del seguente aggregation pipeline stage, dove `WORKING_SET_SIZE` è sostituito dal suo corrispondente valore nella configurazione (di default `1_000_000`):
 
 ```javascript
 {"$limit": WORKING_SET_SIZE},
@@ -233,7 +241,7 @@ Essendo il dataset completo composto da 23 milioni, 831 mila e 908 documenti (23
 
 ##### Dataset con solo recensioni 1* e 5* - `sample_reviews_polar`
 
-Per recuperare un dataset bilanciato di recensioni 1* e 5*, viene utilizzata la seguente funzione:
+Per recuperare un dataset bilanciato di recensioni 1* e 5*, viene utilizzata la seguente funzione con relativa query MongoDB:
 
 ```python
 def sample_reviews_polar(collection: pymongo.collection.Collection, amount: int) -> t.Iterator[TextReview]:
@@ -281,7 +289,7 @@ db.reviews.aggregate([
 // e poi mescolate
 ```
 
-##### Dataset bilanciato con recensioni 1*, 2*, 3*, 4* e 5*
+##### Dataset bilanciato con recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
 
 Lo stesso procedimento viene usato per ottenere un dataset bilanciato di recensioni con ogni numero possibile di stelle:
 
@@ -340,7 +348,7 @@ def sample_reviews_varied(collection: pymongo.collection.Collection, amount: int
 
 ### Tokenizzatore astratto - `.tokenizer.base` e `.tokenizer.plain`
 
-Si è realizzata una classe astratta che rappresentasse un tokenizer qualcunque, in modo da avere la stessa interfaccia a livello di codice indipendentemente dal package di tokenizzazione utilizzato:
+Si è realizzata una classe astratta che rappresentasse un tokenizer qualunque, in modo da avere la stessa interfaccia a livello di codice indipendentemente dal package di tokenizzazione utilizzato:
 
 ```python
 class BaseTokenizer(metaclass=abc.ABCMeta):
@@ -356,7 +364,7 @@ class BaseTokenizer(metaclass=abc.ABCMeta):
         return TokenizedReview(rating=review.rating, tokens=tokens)
 ```
 
-Si sono poi realizzate due classi di esempio che implementassero i metodi astratti della precedente: `PlainTokenizer` e `LowerTokenizer`, che semplicemente separano il testo in tokens attraverso la funzione builtin [`str.split`] di Python, rispettivamente mantenendo e rimuovendo la capitalizzazione del testo.
+Si sono poi realizzate due classi triviali che ne implementano i metodi astratti, `PlainTokenizer` e `LowercaseTokenizer`, che separano il testo in tokens attraverso la funzione builtin [`str.split`] di Python, rispettivamente mantenendo e rimuovendo la capitalizzazione del testo.
 
 ```python
 class PlainTokenizer(BaseTokenizer):
@@ -397,9 +405,9 @@ class BaseSentimentAnalyzer(metaclass=abc.ABCMeta):
         return er
 ```
 
-Si può notare che il metodo `evaluate` inserisce i risultati di ciascuna predizione effettuata in un oggetto di tipo `EvaluationResults`.
+Il metodo `evaluate` inserisce i risultati di ciascuna predizione effettuata in un oggetto di tipo `EvaluationResults`.
 
-Esso tiene traccia della matrice di confusione per la valutazione, e da essa è in grado di ricavarne i valori di richiamo e precisione per ciascuna categoria implementata dal modello; inoltre, calcola l'errore medio assoluto e quadrato tra previsioni e valori effettivi:
+Esso tiene traccia della matrice di confusione per un'iterazione di valutazione, e da essa è in grado di ricavare i valori di richiamo e precisione per ciascuna categoria supportata dal modello; inoltre, calcola l'errore medio assoluto e quadrato tra previsioni e valori effettivi:
 
 ```python
 class EvaluationResults:
@@ -472,7 +480,7 @@ class EvaluationResults:
         self.confusion_matrix[expected][predicted] += 1
 ```
 
-Si è inoltre realizzata un'implementazione di esempio della classe astratta, `ThreeCheat`, che "prevede" che tutte le recensioni siano di 3.0*, in modo da verificare facilmente la correttezza della precedente classe:
+Si è poi realizzata un'implementazione triviale della classe astratta, `ThreeCheat`, che identifica tutte le recensioni come aventi una valutazione di di 3.0*, in modo da verificare facilmente la correttezza della precedente classe:
 
 ```python
 class ThreeCheat(BaseSentimentAnalyzer):
@@ -509,6 +517,19 @@ if __name__ == "__main__":
 ```
 
 Le valutazioni di efficacia vengono effettuate fino al raggiungimento di `TARGET_RUNS` addestramenti e valutazioni riuscite, o fino al raggiungimento di `MAXIMUM_RUNS` valutazioni totali (come descritto più avanti, l'addestramento di alcuni modelli potrebbe fallire e dover essere ripetuto).
+
+Il tester inoltre genera il file `./data/logs/results.tsv`, a cui viene aggiunta una riga per ciascuna valutazione effettuata che ne contiene un riepilogo dei risultati:
+
+- la funzione di campionamento e costruzione dataset utilizzata
+- il sentiment analyzer utilizzato
+- il tokenizer utilizzato
+- il numero di run richieste per raggiungere quei risultati
+- lo scarto assoluto medio
+- lo scarto quadratico medio
+- il numero di valutazioni corrette effettuate
+- i valori di recall per le recensioni di 1*, 2*, 3*, 4*, e 5*
+- i valori di precision per le recensioni di 1*, 2*, 3*, 4*, e 5*
+
 
 ## Ri-implementazione dell'esercizio con NLTK
 
@@ -550,8 +571,8 @@ Esattamente come il modello realizzato a lezione, in fase di addestramento esso:
 
 1. Prende il testo di ogni recensione del training set
 2. Lo converte in una lista di token
-3. Conta le occorrenze totali di ogni token della precedente lista per determinare quelli che compaiono in almeno 4 recensioni diverse
-4. Utilizza questi token frequenti per identificare le caratteristiche ("features") da usare per effettuare la classificazione
+3. Conta le occorrenze totali di ogni token della precedente lista per selezionare quelli che compaiono in almeno 4 recensioni diverse
+4. Utilizza i token selezionati nel passo precedente per identificare le caratteristiche ("features") da usare per effettuare la classificazione
 
 Successivamente:
 
@@ -608,7 +629,7 @@ Infine, implementa la funzione `use`, che:
 
 #### Problemi di RAM
 
-L'approccio utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare a dimensioni molto grandi di training set: i suoi metodi non gestiscono correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati, e richiedono invece che l'intero training set sia caricato contemporaneamente in memoria in una [`list`].
+L'approccio utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare per dimensioni molto grandi di training set: i suoi metodi non gestiscono correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati, e richiedono invece che l'intero training set sia caricato contemporaneamente in memoria in una [`list`].
 
 Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impostare la dimensione predefinita del training set a `4000` documenti; dimensioni maggiori richiederebbero una riscrittura completa dei metodi di NLTK, e ciò andrebbe fuori dallo scopo di questa attività.
 
@@ -616,7 +637,7 @@ Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impos
 
 Per realizzare il punto 1 della consegna, si sono creati due nuovi tokenizer, `PottsTokenizer` e `PottsTokenizerWithNegation`, che implementano il [tokenizer di Christopher Potts] rispettivamente senza marcare e marcando le negazioni sui token attraverso [`ntlk.sentiment.util.mark_negation`].
 
-Essendo il tokenizer originale scritto per Python 2, e non direttamente immediatamente compatibile con `BaseTokenizer`, si è scelto di studiare il codice originale e ricrearlo in un formato più adatto a questo progetto.
+Essendo il tokenizer originale scritto per Python 2, e non immediatamente compatibile con `BaseTokenizer`, si è scelto di studiare il codice originale e ricrearlo in un formato più adatto a questo progetto.
 
 Prima di effettuare la tokenizzazione, il tokenizer normalizza l'input:
 
@@ -912,7 +933,7 @@ Attraverso di essi, la classe è in grado di costruire il [`tensorflow.data.Data
 
 #### Lookup delle stringhe
 
-I modelli di deep learning di Tensorflow non sono in grado di processare direttamente stringhe; esse devono essere prima convertite in formato numerico.
+I modelli di deep learning di Tensorflow non sono in grado di processare stringhe direttamente; esse devono essere prima convertite in formato numerico.
 
 All'inizializzazione, la struttura base crea un layer di tipo [`tensorflow.keras.layers.StringLookup`], che prende in input una lista di token e la converte in una lista di numeri interi, assegnando a ciascun token un numero diverso:
 
@@ -927,7 +948,7 @@ All'inizializzazione, la struttura base crea un layer di tipo [`tensorflow.keras
     ...
 ```
 
-Prima dell'addestramento del modello, il layer deve essere adattato, ovvero deve costruire un vocabolario che associa ogni possibile termine ad un numero; qualsiasi token al di fuori da questo vocabolario verrà convertito in `0`.
+Ciò comporta che, prima dell'addestramento del modello, il layer deve essere adattato, ovvero deve essere costruito un vocabolario che associa ogni possibile termine ad un numero; qualsiasi token al di fuori da questo vocabolario verrà convertito in `0`.
 
 Per esempio, `["ciao", "come", "stai", "?"]` potrebbe essere convertito in `[1, 2, 0, 3]` se il modello non è stato adattato con il token `"stai"`.
 
@@ -1133,7 +1154,7 @@ Si considera valida la predizione nella quale il modello ha confidenza più alta
     ...
 ```
 
-Questa volta, si utilizza l'encoding *one-hot* per gli input del modello in modo da creare una separazione netta tra le cinque possibili categorie in cui una recensione potrebbe cadere (1.0*, 2.0*, 3.0*, 4.0*, 5.0*).
+Questa volta, si utilizza l'encoding *one-hot* per gli input del modello in modo da creare una separazione netta tra le cinque possibili categorie in cui una recensione potrebbe cadere (1*, 2*, 3*, 4*, 5*).
 
 Esso consiste nel creare un tensore di cinque elementi, ciascuno rappresentante una categoria, e di impostarlo a 1.0 se la recensione appartiene a una categoria o a 0.0 se essa non vi appartiene.
 
@@ -1223,6 +1244,7 @@ class HuggingBertTokenizer(HuggingTokenizer):
 
 
 
+[`jq`]: https://jqlang.github.io/jq/
 [`cfig`]: https://cfig.readthedocs.io
 [`cfig.Configuration`]: https://cfig.readthedocs.io/en/latest/reference.html#cfig.config.Configuration
 [MongoDB]: https://www.mongodb.com
