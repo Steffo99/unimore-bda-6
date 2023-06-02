@@ -627,12 +627,6 @@ Infine, implementa la funzione `use`, che:
         return rating
 ```
 
-#### Problemi di RAM
-
-L'approccio utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare per dimensioni molto grandi di training set: i suoi metodi non gestiscono correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati, e richiedono invece che l'intero training set sia caricato contemporaneamente in memoria in una [`list`].
-
-Per permetterne l'esecuzione su computer con 16 GB di RAM, si è deciso di impostare la dimensione predefinita del training set a `4000` documenti; dimensioni maggiori richiederebbero una riscrittura completa dei metodi di NLTK, e ciò andrebbe fuori dallo scopo di questa attività.
-
 ### Ri-creazione del tokenizer di Christopher Potts - `.tokenizer.potts`
 
 Per realizzare il punto 1 della consegna, si sono creati due nuovi tokenizer, `PottsTokenizer` e `PottsTokenizerWithNegation`, che implementano il [tokenizer di Christopher Potts] rispettivamente senza marcare e marcando le negazioni sui token attraverso [`ntlk.sentiment.util.mark_negation`].
@@ -1236,7 +1230,61 @@ class HuggingBertTokenizer(HuggingTokenizer):
         return tokenizers.Tokenizer.from_pretrained("bert-base-cased")
 ```
 
-## Sperimentazione e regolazione degli iperparametri
+## Regolazione degli iperparametri
+
+Il tester è stato eseguito alcune volte con diverse configurazioni di parametri per verificarne il corretto funzionamento e determinare empiricamente gli iperparametri migliori da utilizzare durante la run vera e propria.
+
+Si riportano i parametri regolati assieme ai valori a cui essi sono stati impostati.
+
+### `TRAINING_SET_SIZE`
+
+> Il numero di recensioni di ogni categoria da recuperare per formare il training set.
+
+L'approccio all'addestramento utilizzato da [`nltk.sentiment.SentimentAnalyzer`] si è rivelato problematico, in quanto non in grado di scalare per dimensioni molto grandi di training set: i suoi metodi non sembrano gestire correttamente gli iteratori, meccanismo attraverso il quale Python può realizzare lazy-loading di dati.
+
+Inoltre, si è notato che il problema di [esplosione del gradiente](#esplosione-del-gradiente) si verifica tanto più di frequente quanto è grande il training set.
+
+Per questi due motivi si è deciso di limitare la dimensione del training set a `4_000` documenti per categoria.
+
+### `VALIDATION_SET_SIZE`
+
+> Il numero di recensioni di ogni categoria da recuperare per formare il validation set.
+
+Si è scelto di creare un validation set della dimensione di un decimo del training set, ovvero di `400` documenti per categoria.
+
+### `EVALUATION_SET_SIZE`
+
+> Il numero di recensioni di ogni categoria da recuperare per formare il test set.
+
+Durante la sperimentazione manuale, si è notato che i risultati della valutazione del test set giungevano a convergenza dopo l'elaborazione di circa `1_000` documenti, pertanto si è impostato l'iperparametro a quel numero.
+
+### `WORKING_SET_SIZE`
+
+> Il numero di recensioni del database da considerare.
+> 
+> Si suggerisce di impostarlo a un numero basso per evitare rallentamenti nell'esecuzione delle query.
+
+Si è determinato che `5_000_000` fosse un buon numero che permettesse di avere ottima casualità nel dataset senza comportare tempi di campionamento troppo lunghi.
+
+### `TENSORFLOW_EMBEDDING_SIZE`
+
+> La dimensione del tensore degli embeddings da usare nei modelli Tensorflow.
+
+Si sono testati vari valori per questo iperparametro, e non sono state notate differenze significative nei risultati ottenuti; perciò, l'iperparametro è stato impostato a un valore di `12`, leggermente superiore a quello minimo di `8` suggerito dalla documentazione di Tensorflow.
+
+### `TENSORFLOW_MAX_FEATURES`
+
+> Il numero massimo di features da usare nei modelli Tensorflow.
+
+Come per il parametro precedente, non si sono notate particolari differenze, quindi si è scelto di rimanere sul sicuro permettendo fino a `300_000` token diversi di essere appresi.
+
+### `TENSORFLOW_EPOCHS`
+
+> Il numero di epoche per cui addestrare i modelli Tensorflow.
+
+Si è notato che qualsiasi addestramento successivo alla terza epoca risultava in un aumento nella loss dei modelli, probabilmente dovuta all'occorrenza di overfitting in essi.
+
+Per prevenire il fenomeno si è allora deciso di impostare il numero massimo di epoche a `3`.
 
 ## Confronto dei modelli
 
