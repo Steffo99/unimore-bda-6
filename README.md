@@ -28,7 +28,7 @@
 
 ## Sinossi
 
-In questo progetto si è realizzato una struttura che permettesse di mettere a confronto diversi modi per effettuare sentiment analysis, e poi si sono realizzati su di essa alcuni modelli di sentiment analysis con caratteristiche diverse per confrontarli.
+In questo progetto si è realizzata una struttura che permettesse di mettere a confronto diversi modi per effettuare sentiment analysis, e poi si sono realizzati su di essa alcuni modelli di sentiment analysis con caratteristiche diverse, al fine di confrontarli.
 
 ## Premessa
 
@@ -1117,7 +1117,7 @@ Infine, si costruiscono i layer del modello di deep learning:
 
 ### Creazione di un modello di categorizzazione - `.analysis.tf_text.TensorflowCategorySentimentAnalyzer`
 
-L'altro tipo di modello realizzato è invece un modello di categorizzazione, ovvero un modello che dà in output cinque diversi valori a virgola mobile, ciascuno rappresentante la confidenza che la data recensione appartenga a ciascuna delle date categorie:
+L'altro tipo di modello realizzato è invece un modello di categorizzazione one-of, ovvero un modello che dà in output cinque diversi valori a virgola mobile, ciascuno rappresentante la confidenza che la data recensione appartenga a ciascuna delle date categorie:
 
 ```python
 class TensorflowCategorySentimentAnalyzer(TensorflowSentimentAnalyzer):
@@ -1288,9 +1288,324 @@ Per prevenire il fenomeno si è allora deciso di impostare il numero massimo di 
 
 ## Confronto dei modelli
 
-## Conclusione
+Si sono effettuate 5 esecuzioni del tester, totalizzando 245 run dei modelli.
+
+I risultati grezzi ottenuti sono disponibili all'interno dei file `./data/logs/results-success2.tsv`,  `./data/logs/results-success3.tsv`,  `./data/logs/results-success4.tsv`,  `./data/logs/results-success5.tsv`, e `./data/logs/results-success6.tsv`. 
+
+Si riportano invece direttamente all'interno di questa relazione i risultati cumulativi ottenuti, ottenuti effettuando la media tra i risultati ottenuti nelle cinque esecuzioni.
+
+### Scarto
+
+#### Recensioni 1* e 5* - `sample_reviews_polar`
+
+| Analyzer | Tokenizer | Scarto assoluto medio | Scarto quadratico medio |
+|---|---|--:|--:|
+| `ThreeCheat` | `PlainTokenizer` | 2.000 | 4.000 |
+| `ThreeCheat` | `LowercaseTokenizer` | 2.000 | 4.000 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 2.000 | 4.000 |
+| `ThreeCheat` | `PottsTokenizer` | 2.000 | 4.000 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 2.000 | 4.000 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 2.000 | 4.000 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 1.015 | 4.061 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.981 | 3.923 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 1.086 | 4.346 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.985 | 3.939 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 1.107 | 4.429 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 1.118 | 4.474 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.573 | 2.291 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.522 | 2.086 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.534 | 2.134 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.502 | 2.010 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.465 | 1.859 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.526 | 2.106 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.503 | 2.013 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.514 | 2.058 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.506 | 2.026 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.490 | 1.958 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.513 | 2.051 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.530 | 2.118 |
+
+#### Recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
+
+| Analyzer | Tokenizer | Scarto assoluto medio | Scarto quadratico medio |
+|---|---|--:|--:|
+| `ThreeCheat` | `PlainTokenizer` | 1.200 | 2.000 |
+| `ThreeCheat` | `LowercaseTokenizer` | 1.200 | 2.000 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 1.200 | 2.000 |
+| `ThreeCheat` | `PottsTokenizer` | 1.200 | 2.000 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 1.200 | 2.000 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 1.200 | 2.000 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 1.254 | 3.096 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 1.274 | 3.188 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 1.267 | 3.116 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 1.263 | 3.128 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 1.280 | 3.164 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 1.340 | 3.441 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 1.287 | 3.149 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 1.261 | 3.045 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 1.252 | 3.006 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 1.218 | 2.870 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 1.229 | 2.915 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 1.208 | 2.834 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.866 | 1.583 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.821 | 1.523 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.813 | 1.446 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.792 | 1.441 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.839 | 1.516 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.821 | 1.513 |
+
+### Accuracy
+
+#### Recensioni 1* e 5* - `sample_reviews_polar`
+
+| Analyzer | Tokenizer | Accuracy |
+|---|---|---:|
+| `ThreeCheat` | `PlainTokenizer` | 0.000 |
+| `ThreeCheat` | `LowercaseTokenizer` | 0.000 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 0.000 |
+| `ThreeCheat` | `PottsTokenizer` | 0.000 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 0.000 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 0.000 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.746 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.755 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.728 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.754 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.723 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.720 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.857 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.870 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.867 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.874 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.884 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.868 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.874 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.871 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.873 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.878 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.872 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.868 |
+
+#### Recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
+
+| Analyzer | Tokenizer | Accuracy |
+|---|---|---:|
+| `ThreeCheat` | `PlainTokenizer` | 0.200 |
+| `ThreeCheat` | `LowercaseTokenizer` | 0.200 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 0.200 |
+| `ThreeCheat` | `PottsTokenizer` | 0.200 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 0.200 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 0.200 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.340 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.335 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.329 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.339 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.326 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.321 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.332 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.337 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.339 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.343 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.339 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.346 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.398 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.428 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.427 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.444 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.414 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.427 |
+
+### Recall
+
+#### Recensioni 1* e 5* - `sample_reviews_polar`
+
+| Analyzer | Tokenizer | Recall 1* | Recall 5* | Recall Avg |
+|---|---|---:|---:|---|
+| `ThreeCheat` | `PlainTokenizer` | 0.000 | 0.000 | 0.000 |
+| `ThreeCheat` | `LowercaseTokenizer` | 0.000 | 0.000 | 0.000 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 0.000 | 0.000 | 0.000 |
+| `ThreeCheat` | `PottsTokenizer` | 0.000 | 0.000 | 0.000 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 0.000 | 0.000 | 0.000 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 0.000 | 0.000 | 0.000 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.646 | 0.847 | 0.746 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.660 | 0.849 | 0.755 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.615 | 0.842 | 0.728 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.648 | 0.860 | 0.754 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.600 | 0.846 | 0.723 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.601 | 0.840 | 0.720 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.874 | 0.840 | 0.857 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.879 | 0.860 | 0.870 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.871 | 0.862 | 0.867 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.884 | 0.865 | 0.874 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.898 | 0.870 | 0.884 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.882 | 0.854 | 0.868 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.891 | 0.857 | 0.874 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.879 | 0.864 | 0.871 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.880 | 0.867 | 0.873 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.890 | 0.865 | 0.878 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.858 | 0.886 | 0.872 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.872 | 0.863 | 0.868 |
+
+#### Recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
+
+| Analyzer | Tokenizer | Recall 1* | Recall 2* | Recall 3* | Recall 4* | Recall 5* | Recall Avg |
+|---|---|---:|---:|---:|---:|---:|--:|
+| `ThreeCheat` | `PlainTokenizer` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `ThreeCheat` | `LowercaseTokenizer` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `ThreeCheat` | `PottsTokenizer` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.200 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.384 | 0.302 | 0.182 | 0.121 | 0.710 | 0.340 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.376 | 0.239 | 0.200 | 0.146 | 0.713 | 0.335 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.386 | 0.245 | 0.170 | 0.131 | 0.713 | 0.329 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.406 | 0.251 | 0.196 | 0.127 | 0.714 | 0.339 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.361 | 0.203 | 0.207 | 0.111 | 0.749 | 0.326 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.304 | 0.271 | 0.176 | 0.131 | 0.725 | 0.321 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.840 | 0.000 | 0.000 | 0.000 | 0.820 | 0.332 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.858 | 0.000 | 0.000 | 0.000 | 0.828 | 0.337 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.816 | 0.000 | 0.000 | 0.000 | 0.881 | 0.339 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.870 | 0.000 | 0.000 | 0.000 | 0.845 | 0.343 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.839 | 0.000 | 0.000 | 0.000 | 0.858 | 0.339 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.858 | 0.000 | 0.000 | 0.000 | 0.870 | 0.346 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.431 | 0.366 | 0.402 | 0.347 | 0.443 | 0.398 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.522 | 0.332 | 0.385 | 0.447 | 0.456 | 0.428 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.531 | 0.307 | 0.403 | 0.400 | 0.493 | 0.427 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.514 | 0.405 | 0.408 | 0.384 | 0.511 | 0.444 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.520 | 0.326 | 0.381 | 0.344 | 0.497 | 0.414 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.488 | 0.311 | 0.379 | 0.414 | 0.543 | 0.427 |
+
+### Precision
+
+#### Recensioni 1* e 5* - `sample_reviews_polar`
+
+| Analyzer | Tokenizer | Precision 1* | Precision 5* | Precision Avg |
+|---|---|---:|---:|---|
+| `ThreeCheat` | `PlainTokenizer` | - | - | - |
+| `ThreeCheat` | `LowercaseTokenizer` | - | - | - |
+| `ThreeCheat` | `NLTKWordTokenizer` | - | - | - |
+| `ThreeCheat` | `PottsTokenizer` | - | - | - |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | - | - | - |
+| `ThreeCheat` | `HuggingBertTokenizer` | - | - | - |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.808 | 0.705 | 0.757 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.814 | 0.715 | 0.765 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.795 | 0.686 | 0.741 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.822 | 0.710 | 0.766 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.796 | 0.679 | 0.738 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.789 | 0.678 | 0.734 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.845 | 0.870 | 0.858 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.864 | 0.877 | 0.871 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.866 | 0.872 | 0.869 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.869 | 0.883 | 0.876 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.874 | 0.896 | 0.885 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.860 | 0.879 | 0.870 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.862 | 0.888 | 0.875 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.866 | 0.878 | 0.872 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.870 | 0.879 | 0.874 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.868 | 0.888 | 0.878 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.883 | 0.863 | 0.873 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.864 | 0.872 | 0.868 |
+
+#### Recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
+
+| Analyzer | Tokenizer | Precision 1* | Precision 2* | Precision 3* | Precision 4* | Precision 5* | Precision Avg |
+|---|---|---:|---:|---:|---:|---:|---|
+| `ThreeCheat` | `PlainTokenizer` | - | - | 0.200 | - | - | 0.200 |
+| `ThreeCheat` | `LowercaseTokenizer` | - | - | 0.200 | - | - | 0.200 |
+| `ThreeCheat` | `NLTKWordTokenizer` | - | - | 0.200 | - | - | 0.200 |
+| `ThreeCheat` | `PottsTokenizer` | - | - | 0.200 | - | - | 0.200 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | - | - | 0.200 | - | - | 0.200 |
+| `ThreeCheat` | `HuggingBertTokenizer` | - | - | 0.200 | - | - | 0.200 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.487 | 0.341 | 0.294 | 0.352 | 0.305 | 0.356 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.465 | 0.306 | 0.325 | 0.393 | 0.298 | 0.357 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.430 | 0.305 | 0.306 | 0.347 | 0.305 | 0.338 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.507 | 0.313 | 0.302 | 0.369 | 0.298 | 0.358 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.463 | 0.294 | 0.293 | 0.333 | 0.305 | 0.338 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.490 | 0.318 | 0.328 | 0.357 | 0.279 | 0.354 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.335 | - | - | - | 0.335 | 0.335 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.344 | - | - | - | 0.341 | 0.343 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.359 | - | - | - | 0.323 | 0.341 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.338 | - | - | - | 0.352 | 0.345 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.345 | - | - | - | 0.342 | 0.344 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.334 | - | - | - | 0.360 | 0.347 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.549 | 0.326 | 0.301 | 0.360 | 0.574 | 0.422 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.555 | 0.395 | 0.348 | 0.347 | 0.569 | 0.443 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.566 | 0.367 | 0.341 | 0.358 | 0.568 | 0.440 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.567 | 0.393 | 0.350 | 0.383 | 0.583 | 0.455 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.537 | 0.356 | 0.362 | 0.323 | 0.539 | 0.424 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.549 | 0.350 | 0.331 | 0.374 | 0.580 | 0.437 |
+
+### F1-measure
+
+Si calcola la F1-measure sui valori medi di recall e precision ottenuti da ciascun modello.
+
+#### Recensioni 1* e 5* - `sample_reviews_polar`
+
+| Analyzer | Tokenizer | F1-measure |
+|---|---|---:|
+| `ThreeCheat` | `PlainTokenizer` | - |
+| `ThreeCheat` | `LowercaseTokenizer` | - |
+| `ThreeCheat` | `NLTKWordTokenizer` | - |
+| `ThreeCheat` | `PottsTokenizer` | - |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | - |
+| `ThreeCheat` | `HuggingBertTokenizer` | - |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.751 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.760 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.735 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.760 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.730 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.727 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.857 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.870 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.868 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.875 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.884 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.869 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.875 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.872 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.874 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.878 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.872 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.868 |
+
+#### Recensioni 1*, 2*, 3*, 4* e 5* - `sample_reviews_varied`
+
+| Analyzer | Tokenizer | F1-measure |
+|---|---|---:|
+| `ThreeCheat` | `PlainTokenizer` | 0.200 |
+| `ThreeCheat` | `LowercaseTokenizer` | 0.200 |
+| `ThreeCheat` | `NLTKWordTokenizer` | 0.200 |
+| `ThreeCheat` | `PottsTokenizer` | 0.200 |
+| `ThreeCheat` | `PottsTokenizerWithNegation` | 0.200 |
+| `ThreeCheat` | `HuggingBertTokenizer` | 0.200 |
+| `NLTKSentimentAnalyzer` | `PlainTokenizer` | 0.348 |
+| `NLTKSentimentAnalyzer` | `LowercaseTokenizer` | 0.346 |
+| `NLTKSentimentAnalyzer` | `NLTKWordTokenizer` | 0.334 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizer` | 0.348 |
+| `NLTKSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.332 |
+| `NLTKSentimentAnalyzer` | `HuggingBertTokenizer` | 0.337 |
+| `TensorflowPolarSentimentAnalyzer` | `PlainTokenizer` | 0.334 |
+| `TensorflowPolarSentimentAnalyzer` | `LowercaseTokenizer` | 0.340 |
+| `TensorflowPolarSentimentAnalyzer` | `NLTKWordTokenizer` | 0.340 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizer` | 0.344 |
+| `TensorflowPolarSentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.342 |
+| `TensorflowPolarSentimentAnalyzer` | `HuggingBertTokenizer` | 0.346 |
+| `TensorflowCategorySentimentAnalyzer` | `PlainTokenizer` | 0.410 |
+| `TensorflowCategorySentimentAnalyzer` | `LowercaseTokenizer` | 0.435 |
+| `TensorflowCategorySentimentAnalyzer` | `NLTKWordTokenizer` | 0.433 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizer` | 0.450 |
+| `TensorflowCategorySentimentAnalyzer` | `PottsTokenizerWithNegation` | 0.419 |
+| `TensorflowCategorySentimentAnalyzer` | `HuggingBertTokenizer` | 0.432 |
+
+### Commento
+
+Tutte le misure effettuate, dallo scarto, all'accuracy, alla F1-measure, indicano come più efficaci i modelli Tensorflow, favorendo leggermente `TensorflowPolarSentimentAnalyzer` quando il dataset è `sample_reviews_polar`, e invece favorendo fortemente `TensorflowCategorySentimentAnalyzer` quando il dataset è `sample_reviews_varied`.
+
+Mantenendo fisso invece l'analyzer, e confrontando tra loro i tokenizer, si nota che non c'è chiarezza su quali siano meglio degli altri; l'unico pattern individuabile è che il `PottsTokenizer` tende ad avere metriche leggermente migliori rispetto agli altri, ottenendo spesso poco più di un punto percentuale di differenza rispetto agli altri tokenizer.
+
+La combinazione migliore pertanto si direbbe quella del `TensorflowCategorySentimentAnalyzer` con il `PottsTokenizer`.
 
 
+<!--Collegamenti-->
 
 [`jq`]: https://jqlang.github.io/jq/
 [`cfig`]: https://cfig.readthedocs.io
